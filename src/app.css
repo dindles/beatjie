@@ -1,0 +1,52 @@
+/*
+  Josh's CSS Reset (more or less)
+  https://www.joshwcomeau.com/css/custom-css-reset/
+*/
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+* {
+	margin: 0;
+	padding: 0;
+	line-height: calc(1em + 0.5rem);
+	/* * temporary debugging tool */
+	border: solid 1px black;
+}
+
+html,
+body {
+	height: 100%;
+}
+
+body {
+	-webkit-font-smoothing: antialiased;
+	font-family: 'Noto Emoji Variable', 'Courier New', monospace;
+	text-align: center;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+	display: block;
+	max-width: 100%;
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+li,
+dl,
+dt,
+blockquote {
+	overflow-wrap: break-word;
+}
