@@ -6,17 +6,14 @@
   // Tone
   import * as Tone from 'tone'
 
-  // === DATA ===
-  console.log(packs)
-
   // === VARIABLES ===
   // Tone
   const synth = new Tone.Synth()
   // Sequencer grid
   const seq_length = 16
   const steps = Array(seq_length)
-  let active_step_index = 0
-  let selected_pack_index = 0
+  let active_step_index = $state(0)
+  let selected_pack_index = $state(0)
 
   // === FUNCTIONS ===
   // Called to initialise
@@ -47,10 +44,7 @@
 <main>
   <div class="spacer" />
   <h2>GRID</h2>
-  <div
-    class="grid"
-    style="grid-template-rows: repeat(4, 80px); grid-template-columns: repeat(4, 80px);"
-  >
+  <div class="sequencer grid">
     {#each steps as step, index}
       <div class="tile" class:active={active_step_index === index}>
         {index}
@@ -64,6 +58,13 @@
   <button class="tile" onclick={selectPack}
     >selected pack: {packs[selected_pack_index].name}</button
   >
+  {#key selected_pack_index}
+    <div class="pack grid">
+      {#each packs[selected_pack_index].samples as sample}
+        <button class="tile">{sample.emoji}</button>
+      {/each}
+    </div>
+  {/key}
   <div class="spacer" />
   <h2>SAMPLES</h2>
 </main>
@@ -86,6 +87,8 @@
   .grid {
     display: grid;
     place-items: center;
+    grid-template-rows: repeat(4, 80px);
+    grid-template-columns: repeat(4, 80px);
   }
 
   .tile {
