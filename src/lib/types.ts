@@ -11,8 +11,8 @@ export type PackHeader = {
   samples: SampleHeader[]
 }
 
-export type Pack = Sample[]
-export type Samples = Pack[]
+export type Pack = SampleHeader[]
+export type Packs = PackHeader[]
 
 export type Sample = SampleHeader & {
   sampler: Tone.Sampler
@@ -22,5 +22,4 @@ export type Sample = SampleHeader & {
 }
 
 export type Sequence = boolean[]
-
 export type Sequences = [boolean[][]]

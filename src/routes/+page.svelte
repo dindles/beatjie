@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { packs } from '$lib/assets/audio/packs'
   // === IMPORTS ===
   // Svelte
 
@@ -6,6 +7,7 @@
   import * as Tone from 'tone'
 
   // === DATA ===
+  console.log(packs)
 
   // === VARIABLES ===
   // Tone
@@ -14,6 +16,7 @@
   const seq_length = 16
   const steps = Array(seq_length)
   let active_step_index = 0
+  let selected_pack_index = 0
 
   // === FUNCTIONS ===
   // Called to initialise
@@ -30,6 +33,10 @@
 
   function advanceSelectedStep() {
     active_step_index = (active_step_index + 1) % seq_length
+  }
+
+  function selectPack() {
+    selected_pack_index = (selected_pack_index + 1) % packs.length
   }
 </script>
 
@@ -54,8 +61,10 @@
   <h2>FUNCTIONALITY</h2>
   <button class="tile" onclick={advanceSelectedStep}>next step</button>
   <button class="tile" onclick={notePlay}>play</button>
+  <button class="tile" onclick={selectPack}
+    >selected pack: {packs[selected_pack_index].name}</button
+  >
   <div class="spacer" />
-
   <h2>SAMPLES</h2>
 </main>
 
