@@ -8,7 +8,6 @@
   // Data
   import { packs } from '$lib/assets/audio/packs'
   import { Sample, type SampleHeader, type Packs } from '$lib/models'
-  import type { MidiNote } from 'tone/build/esm/core/type/NoteUnits'
 
   // === VARIABLES ==============================
   // Tone
@@ -60,28 +59,20 @@
     return Toned_samples
   }
 
-  function setSampleParams(samples: Sample<SampleHeader>[]) {
-    samples.forEach((sample) => {
-      sample.setSamplerParams(sample.pitch, buffers.get(sample.id.toString()))
-      sample.setEnvParams(0.5, 0.5, 0.5, 0.5)
-      sample.setFilterParams('lowpass', 2000)
-    })
-    return samples
-  }
-
   // Called on effect
-  function chainSamples(Toned_samples: Sample<SampleHeader>[]) {
+  function initSamples(Toned_samples: Sample<SampleHeader>[]) {
     for (let i = 0; i < Toned_samples.length; i++) {
       const sample = Toned_samples[i]
-      sample.sampler.toDestination()
-      // sample.sampler.chain(
-      //   sample.envelope,
-      //   sample.filter,
-      //   sample.panner,
-      //   // sample.analyser
-      //   // sample.meter
-      //   Tone.Destination
-      // )
+      sample.setSamplerBuffers(sample.pitch, buffers.get(sample.id.toString()))
+
+      // sample.sampler.toDestination()
+      sample.sampler.chain(
+        sample.filter,
+        sample.panner,
+        // sample.analyser
+        // sample.meter
+        Tone.Destination
+      )
       console.log('sample ' + i + ' chained')
     }
     console.log('all samples chained')
@@ -97,7 +88,7 @@
     synth.triggerAttackRelease('A#3', '8n')
   }
 
-  function triggerSample() {
+  function triggerSample(sample_id: number) {
     console.log('trigger sample function called')
 
     if (Tone.context.state !== 'running') {
@@ -105,9 +96,14 @@
       console.log('Tone.started', Tone.context.state)
     }
     // temp for testing
-    if (SAMPLES?.length) {
-      console.log('SAMPLES exists, and we should be able to trigger')
-      console.log(SAMPLES[10])
+    if (SAMPLES) {
+      // all of this stuff must be set on the triggerSample function
+      // set conceivably per-step params
+      SAMPLES[sample_id].sampler.attack = 0.01
+      SAMPLES[sample_id].sampler.release = 1
+      SAMPLES[sample_id].filter.type = 'highpass'
+      SAMPLES[sample_id].filter.frequency.value = 1600
+      // go team go
       SAMPLES[10].sampler.triggerAttackRelease('C3', Tone.now())
     }
   }
@@ -126,9 +122,7 @@
   console.log('buffers:', buffers)
   Toned_samples = makeSamples(packs)
   console.log('Toned_samples:', Toned_samples)
-  initialised_samples = setSampleParams(Toned_samples)
-  console.log('initialised_samples:', initialised_samples)
-  SAMPLES = chainSamples(Toned_samples)
+  SAMPLES = initSamples(Toned_samples)
   console.log('SAMPLES:', SAMPLES)
 
   $effect(() => {
@@ -154,7 +148,7 @@
   <div class="functionality">
     <button class="tile" onclick={advanceActiveStep}>next step</button>
     <button class="tile" onclick={triggerHelloTone}>play helloTone</button>
-    <button class="tile" onclick={triggerSample}>play sample</button>
+    <button class="tile" onclick={() => triggerSample(10)}>play sample</button>
     <button class="tile" onclick={selectPack}
       >selected pack: {packs[selected_pack_index].name}</button
     >

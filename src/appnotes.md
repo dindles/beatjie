@@ -2,26 +2,9 @@
 
 <!-- todo next -->
 
-get Sample class working
-
-- make empty loaded_samples array
-- loop through packs and sample headers,
-- and for each one:
-  - firstly, as proof of concept
-  - initialise Sample object using constructor
-    - that means assigning all sampler, env, filter, panner, analyser objects
-    - chaining them
-  -
-
-use play method to trigger sample
-
-OR
-
-- get chooseSample working
-- get playSample working through sampler
-
 <!-- todo -->
 
+change panner to channel, get env working
 Get sequence working.
 
 - try sequence as Sample attribute
