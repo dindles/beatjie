@@ -7,6 +7,7 @@
 
   // Data
   import { packs } from '$lib/assets/audio/packs'
+  import { Sample, type SampleHeader, type Packs } from '$lib/models'
 
   // === VARIABLES ===
   // Tone
@@ -16,10 +17,45 @@
   const sequencer_grid = Array(16)
   let active_step_index = $state(0)
   let selected_pack_index = $state(0)
+  // let loaded_samples: Sample<SampleHeader>[]
 
   // === FUNCTIONS ===
   // Called immediately
   synth.toDestination()
+
+  const loaded_samples = makeSamples(packs)
+  const avail_samples = chainSamples(loaded_samples)
+  console.log(avail_samples)
+
+  function makeSamples(packs: Packs) {
+    let loaded_samples = []
+    for (let i = 0; i < packs.length; i++) {
+      for (let j = 0; j < packs[i].samples.length; j++) {
+        loaded_samples.push(
+          new Sample(
+            packs[i].samples[j].id,
+            packs[i].samples[j].name,
+            packs[i].samples[j].emoji,
+            packs[i].samples[j].url
+          )
+        )
+      }
+    }
+    return loaded_samples
+  }
+
+  function chainSamples(loaded_samples: Sample<SampleHeader>[]) {
+    for (let i = 0; i < loaded_samples.length; i++) {
+      const sample = loaded_samples[i]
+      sample.sampler.connect(sample.envelope)
+      sample.envelope.connect(sample.filter)
+      sample.filter.connect(sample.panner)
+      sample.panner.connect(Tone.getDestination())
+      console.log('sample ' + i + ' chained')
+    }
+    console.log('all samples chained')
+    return loaded_samples
+  }
 
   // Called on event
   function triggerNotes() {

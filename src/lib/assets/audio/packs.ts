@@ -1,4 +1,4 @@
-import type { Packs } from '$lib/types'
+import type { Packs } from '$lib/models'
 
 const audio_path = 'src/lib/assets/audio'
 

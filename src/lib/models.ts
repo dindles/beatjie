@@ -22,6 +22,7 @@ export type Packs = PackHeader[]
 //   sequence: Sequence
 // }
 
+// todo - add analyser
 export class Sample<Sample extends SampleHeader> {
   id: number
   name: string
@@ -41,7 +42,6 @@ export class Sample<Sample extends SampleHeader> {
       urls: {
         C2: `${this.url}`,
       },
-      baseUrl: 'src/lib/assets/audio/',
       onload: () => {
         console.log('loaded:' + this.url)
       },
