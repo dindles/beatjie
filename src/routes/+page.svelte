@@ -8,6 +8,7 @@
   // Data
   import { packs } from '$lib/assets/audio/packs'
   import { Sample, type SampleHeader, type Packs } from '$lib/models'
+  import type { MidiNote } from 'tone/build/esm/core/type/NoteUnits'
 
   // === VARIABLES ==============================
   // Tone
@@ -19,8 +20,9 @@
 
   // Data
   let buffers: Tone.ToneAudioBuffers
-  let loaded_samples: Sample<SampleHeader>[]
-  let SAMPLES: Sample<SampleHeader>[] | undefined = $state([])
+  let Toned_samples: Sample<SampleHeader>[]
+  let initialised_samples: Sample<SampleHeader>[]
+  let SAMPLES: Sample<SampleHeader>[] | undefined
   let selected_pack_index = $state(0)
 
   // === FUNCTIONS ==============================
@@ -41,34 +43,49 @@
   }
 
   function makeSamples(packs: Packs) {
-    let loaded_samples = []
+    let Toned_samples = []
     for (let i = 0; i < packs.length; i++) {
       for (let j = 0; j < packs[i].samples.length; j++) {
-        loaded_samples.push(
+        Toned_samples.push(
           new Sample(
             packs[i].samples[j].id,
             packs[i].samples[j].name,
             packs[i].samples[j].emoji,
+            packs[i].samples[j].pitch,
             packs[i].samples[j].url
           )
         )
       }
     }
-    return loaded_samples
+    return Toned_samples
+  }
+
+  function setSampleParams(samples: Sample<SampleHeader>[]) {
+    samples.forEach((sample) => {
+      sample.setSamplerParams(sample.pitch, buffers.get(sample.id.toString()))
+      sample.setEnvParams(0.5, 0.5, 0.5, 0.5)
+      sample.setFilterParams('lowpass', 2000)
+    })
+    return samples
   }
 
   // Called on effect
-  function chainSamples(loaded_samples: Sample<SampleHeader>[]) {
-    for (let i = 0; i < loaded_samples.length; i++) {
-      const sample = loaded_samples[i]
-      sample.sampler.connect(sample.envelope)
-      sample.envelope.connect(sample.filter)
-      sample.filter.connect(sample.panner)
-      sample.panner.connect(Tone.getDestination())
+  function chainSamples(Toned_samples: Sample<SampleHeader>[]) {
+    for (let i = 0; i < Toned_samples.length; i++) {
+      const sample = Toned_samples[i]
+      sample.sampler.toDestination()
+      // sample.sampler.chain(
+      //   sample.envelope,
+      //   sample.filter,
+      //   sample.panner,
+      //   // sample.analyser
+      //   // sample.meter
+      //   Tone.Destination
+      // )
       console.log('sample ' + i + ' chained')
     }
     console.log('all samples chained')
-    return loaded_samples
+    return Toned_samples
   }
 
   // Called on event
@@ -82,14 +99,16 @@
 
   function triggerSample() {
     console.log('trigger sample function called')
-    console.log('SAMPLES:', SAMPLES)
 
     if (Tone.context.state !== 'running') {
       Tone.start()
+      console.log('Tone.started', Tone.context.state)
     }
     // temp for testing
-    if (SAMPLES) {
-      SAMPLES[8].sampler.triggerAttack('C2', Tone.now())
+    if (SAMPLES?.length) {
+      console.log('SAMPLES exists, and we should be able to trigger')
+      console.log(SAMPLES[10])
+      SAMPLES[10].sampler.triggerAttackRelease('C3', Tone.now())
     }
   }
 
@@ -104,14 +123,16 @@
   // === LIFECYCLE ==============================
   synth.toDestination()
   buffers = createBuffers(packs)
-  loaded_samples = makeSamples(packs)
-  console.log('loaded_samples:', loaded_samples)
+  console.log('buffers:', buffers)
+  Toned_samples = makeSamples(packs)
+  console.log('Toned_samples:', Toned_samples)
+  initialised_samples = setSampleParams(Toned_samples)
+  console.log('initialised_samples:', initialised_samples)
+  SAMPLES = chainSamples(Toned_samples)
+  console.log('SAMPLES:', SAMPLES)
 
   $effect(() => {
-    if (loaded_samples) {
-      SAMPLES = chainSamples(loaded_samples)
-    }
-    console.log('samples:', SAMPLES)
+    console.log('mounted')
   })
 </script>
 
