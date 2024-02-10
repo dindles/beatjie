@@ -26,14 +26,18 @@
   // === FUNCTIONS ==============================
   // Called immediately
   function createBuffers(packs: Packs): Tone.ToneAudioBuffers {
-    // Use the reduce function to transform the packs array into the desired object format
-    const urlsObject = packs.reduce((result, pack) => {
-      pack.samples.forEach((sample) => {
-        result[sample.id] = sample.url
-      })
-      return result
-    }, {} as Tone.ToneAudioBuffers)
-    return urlsObject
+    const urlsObject = packs.reduce(
+      (result, pack) => {
+        pack.samples.forEach((sample) => {
+          result[sample.id.toString() as string] = sample.url
+        })
+        return result
+      },
+      {} as { [key: string]: string }
+    )
+    return new Tone.ToneAudioBuffers(urlsObject, () => {
+      console.log('buffers loaded', buffers)
+    })
   }
 
   function makeSamples(packs: Packs) {
@@ -100,7 +104,6 @@
   // === LIFECYCLE ==============================
   synth.toDestination()
   buffers = createBuffers(packs)
-  console.log('buffers:', buffers)
   loaded_samples = makeSamples(packs)
   console.log('loaded_samples:', loaded_samples)
 
