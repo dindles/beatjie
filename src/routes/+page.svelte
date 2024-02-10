@@ -1,5 +1,5 @@
 <script lang="ts">
-  // === IMPORTS ===
+  // === IMPORTS ================================
   // Svelte
 
   // Tone
@@ -9,24 +9,20 @@
   import { packs } from '$lib/assets/audio/packs'
   import { Sample, type SampleHeader, type Packs } from '$lib/models'
 
-  // === VARIABLES ===
+  // === VARIABLES ==============================
   // Tone
   const synth = new Tone.Synth()
 
   // Sequencer grid
   const sequencer_grid = Array(16)
   let active_step_index = $state(0)
+
+  // Data
+  let SAMPLES: Sample<SampleHeader>[] | undefined = $state([])
   let selected_pack_index = $state(0)
-  // let loaded_samples: Sample<SampleHeader>[]
 
-  // === FUNCTIONS ===
+  // === FUNCTIONS ==============================
   // Called immediately
-  synth.toDestination()
-
-  const loaded_samples = makeSamples(packs)
-  const avail_samples = chainSamples(loaded_samples)
-  console.log(avail_samples)
-
   function makeSamples(packs: Packs) {
     let loaded_samples = []
     for (let i = 0; i < packs.length; i++) {
@@ -44,6 +40,7 @@
     return loaded_samples
   }
 
+  // Called on effect
   function chainSamples(loaded_samples: Sample<SampleHeader>[]) {
     for (let i = 0; i < loaded_samples.length; i++) {
       const sample = loaded_samples[i]
@@ -58,12 +55,25 @@
   }
 
   // Called on event
-  function triggerNotes() {
+  function triggerHelloTone() {
     if (Tone.context.state !== 'running') {
       Tone.start()
     }
     // temp for testing
-    synth.triggerAttackRelease('G1', '8n')
+    synth.triggerAttackRelease('A#3', '8n')
+  }
+
+  function triggerSample() {
+    console.log('trigger sample function called')
+    console.log('SAMPLES:', SAMPLES)
+
+    if (Tone.context.state !== 'running') {
+      Tone.start()
+    }
+    // temp for testing
+    if (SAMPLES) {
+      SAMPLES[8].sampler.triggerAttack('C2', Tone.now())
+    }
   }
 
   function advanceActiveStep() {
@@ -73,6 +83,18 @@
   function selectPack() {
     selected_pack_index = (selected_pack_index + 1) % packs.length
   }
+
+  // === LIFECYCLE ==============================
+  synth.toDestination()
+  const loaded_samples = makeSamples(packs)
+  console.log('loaded_samples:', loaded_samples)
+
+  $effect(() => {
+    if (loaded_samples) {
+      SAMPLES = chainSamples(loaded_samples)
+    }
+    console.log('samples:', SAMPLES)
+  })
 </script>
 
 <div class="header">
@@ -92,7 +114,8 @@
   <h2>FUNCTIONALITY</h2>
   <div class="functionality">
     <button class="tile" onclick={advanceActiveStep}>next step</button>
-    <button class="tile" onclick={triggerNotes}>play</button>
+    <button class="tile" onclick={triggerHelloTone}>play helloTone</button>
+    <button class="tile" onclick={triggerSample}>play sample</button>
     <button class="tile" onclick={selectPack}
       >selected pack: {packs[selected_pack_index].name}</button
     >
