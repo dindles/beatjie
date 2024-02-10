@@ -18,11 +18,24 @@
   let active_step_index = $state(0)
 
   // Data
+  let buffers: Tone.ToneAudioBuffers
+  let loaded_samples: Sample<SampleHeader>[]
   let SAMPLES: Sample<SampleHeader>[] | undefined = $state([])
   let selected_pack_index = $state(0)
 
   // === FUNCTIONS ==============================
   // Called immediately
+  function createBuffers(packs: Packs): Tone.ToneAudioBuffers {
+    // Use the reduce function to transform the packs array into the desired object format
+    const urlsObject = packs.reduce((result, pack) => {
+      pack.samples.forEach((sample) => {
+        result[sample.id] = sample.url
+      })
+      return result
+    }, {} as Tone.ToneAudioBuffers)
+    return urlsObject
+  }
+
   function makeSamples(packs: Packs) {
     let loaded_samples = []
     for (let i = 0; i < packs.length; i++) {
@@ -86,7 +99,9 @@
 
   // === LIFECYCLE ==============================
   synth.toDestination()
-  const loaded_samples = makeSamples(packs)
+  buffers = createBuffers(packs)
+  console.log('buffers:', buffers)
+  loaded_samples = makeSamples(packs)
   console.log('loaded_samples:', loaded_samples)
 
   $effect(() => {

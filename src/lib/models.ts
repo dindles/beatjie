@@ -14,14 +14,6 @@ export type PackHeader = {
 export type Pack = SampleHeader[]
 export type Packs = PackHeader[]
 
-// export type Sample = SampleHeader & {
-//   sampler: Tone.Sampler
-//   envelope: Tone.AmplitudeEnvelope
-//   filter: Tone.Filter
-//   panner: Tone.Panner
-//   sequence: Sequence
-// }
-
 // todo - add analyser
 export class Sample<Sample extends SampleHeader> {
   id: number
