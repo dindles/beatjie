@@ -27,36 +27,29 @@
   // CALLED IMMEDIATELY
   // This creates buffers for each sample in each pack
   function createBuffers(packs: Packs): Tone.ToneAudioBuffers {
-    const urlsObject = packs.reduce(
-      (result, pack) => {
-        pack.samples.forEach((sample) => {
-          // I think the buffers are being wrongly assigned to the samples here, because
-          // they're using indices rather than ids
-          result[sample.id.toString() as string] = sample.url
-        })
-        return result
-      },
-      {} as { [key: string]: string }
-    )
+    const urlsObject: { [key: string]: string } = {}
+    packs.forEach((pack) => {
+      pack.samples.forEach((sample) => {
+        urlsObject[sample.id.toString()] = sample.url
+      })
+    })
     return new Tone.ToneAudioBuffers(urlsObject, () => {})
   }
 
   // This adds the sampler, filter and other Tone components to each SampleHeader, making a Sample
   function addToneToSamples(packs: Packs) {
-    let toned_samples = []
-    for (let i = 0; i < packs.length; i++) {
-      for (let j = 0; j < packs[i].samples.length; j++) {
-        toned_samples.push(
+    let toned_samples = packs.flatMap((pack) =>
+      pack.samples.map(
+        (sample) =>
           new Sample(
-            packs[i].samples[j].id,
-            packs[i].samples[j].name,
-            packs[i].samples[j].emoji,
-            packs[i].samples[j].pitch,
-            packs[i].samples[j].url
+            sample.id,
+            sample.name,
+            sample.emoji,
+            sample.pitch,
+            sample.url
           )
-        )
-      }
-    }
+      )
+    )
     return toned_samples
   }
 
