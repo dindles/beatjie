@@ -8,7 +8,6 @@
   // Data
   import { packs } from '$lib/assets/audio/packs'
   import { Sample, type SampleHeader, type Packs } from '$lib/models'
-  import type { MidiNote } from 'tone/build/esm/core/type/NoteUnits'
 
   // === VARIABLES ==============================
   // Tone
@@ -24,6 +23,7 @@
   let initialised_samples: Sample<SampleHeader>[]
   let SAMPLES: Sample<SampleHeader>[] | undefined
   let selected_pack_index = $state(0)
+  let selected_sample: Sample<SampleHeader> | undefined = $state(undefined)
 
   // === FUNCTIONS ==============================
   // Called immediately
@@ -60,28 +60,12 @@
     return Toned_samples
   }
 
-  function setSampleParams(samples: Sample<SampleHeader>[]) {
-    samples.forEach((sample) => {
-      sample.setSamplerParams(sample.pitch, buffers.get(sample.id.toString()))
-      sample.setEnvParams(0.5, 0.5, 0.5, 0.5)
-      sample.setFilterParams('lowpass', 2000)
-    })
-    return samples
-  }
-
-  // Called on effect
-  function chainSamples(Toned_samples: Sample<SampleHeader>[]) {
+  function initSamples(Toned_samples: Sample<SampleHeader>[]) {
     for (let i = 0; i < Toned_samples.length; i++) {
       const sample = Toned_samples[i]
-      sample.sampler.toDestination()
-      // sample.sampler.chain(
-      //   sample.envelope,
-      //   sample.filter,
-      //   sample.panner,
-      //   // sample.analyser
-      //   // sample.meter
-      //   Tone.Destination
-      // )
+      sample.setSamplerBuffers(sample.pitch, buffers.get(sample.id.toString()))
+
+      sample.sampler.chain(sample.filter, sample.panner, Tone.Destination)
       console.log('sample ' + i + ' chained')
     }
     console.log('all samples chained')
@@ -97,19 +81,8 @@
     synth.triggerAttackRelease('A#3', '8n')
   }
 
-  function triggerSample() {
-    console.log('trigger sample function called')
-
-    if (Tone.context.state !== 'running') {
-      Tone.start()
-      console.log('Tone.started', Tone.context.state)
-    }
-    // temp for testing
-    if (SAMPLES?.length) {
-      console.log('SAMPLES exists, and we should be able to trigger')
-      console.log(SAMPLES[10])
-      SAMPLES[10].sampler.triggerAttackRelease('C3', Tone.now())
-    }
+  function selectSample(sample: Sample<SampleHeader>) {
+    selected_sample = sample
   }
 
   function advanceActiveStep() {
@@ -120,19 +93,38 @@
     selected_pack_index = (selected_pack_index + 1) % packs.length
   }
 
+  function triggerSample(sample_id: number | undefined) {
+    if (!sample_id) {
+      console.log('sample is undefined')
+    } else {
+      if (Tone.context.state !== 'running') {
+        Tone.start()
+        console.log('Tone.started', Tone.context.state)
+      }
+
+      if (SAMPLES) {
+        // set conceivably per-step params
+        SAMPLES[sample_id].sampler.attack = 0.01
+        SAMPLES[sample_id].sampler.release = 1
+        SAMPLES[sample_id].filter.type = 'highpass'
+        SAMPLES[sample_id].filter.frequency.value = 1600
+        // go team go
+        SAMPLES[sample_id].sampler.triggerAttackRelease('C2', Tone.now())
+      }
+    }
+  }
+
   // === LIFECYCLE ==============================
   synth.toDestination()
-  buffers = createBuffers(packs)
-  console.log('buffers:', buffers)
-  Toned_samples = makeSamples(packs)
-  console.log('Toned_samples:', Toned_samples)
-  initialised_samples = setSampleParams(Toned_samples)
-  console.log('initialised_samples:', initialised_samples)
-  SAMPLES = chainSamples(Toned_samples)
-  console.log('SAMPLES:', SAMPLES)
 
   $effect(() => {
     console.log('mounted')
+    buffers = createBuffers(packs)
+    console.log('buffers:', buffers)
+    Toned_samples = makeSamples(packs)
+    console.log('Toned_samples:', Toned_samples)
+    SAMPLES = initSamples(Toned_samples)
+    console.log('SAMPLES:', SAMPLES)
   })
 </script>
 
@@ -154,17 +146,27 @@
   <div class="functionality">
     <button class="tile" onclick={advanceActiveStep}>next step</button>
     <button class="tile" onclick={triggerHelloTone}>play helloTone</button>
-    <button class="tile" onclick={triggerSample}>play sample</button>
+    <button
+      class="tile"
+      onclick={() => triggerSample(selected_sample ? selected_sample?.id : 0)}
+      >play sample</button
+    >
     <button class="tile" onclick={selectPack}
       >selected pack: {packs[selected_pack_index].name}</button
     >
+    <p>selected sample: {selected_sample?.name}</p>
   </div>
   <h2>SAMPLES</h2>
   <div class="samples">
     {#key selected_pack_index}
       <div class="pack grid">
         {#each packs[selected_pack_index].samples as sample}
-          <button class="moji tile">{sample.emoji}</button>
+          <!-- todo: when clicking sample tile, selected_sample should become relevant Sample -->
+          <button
+            class="moji tile"
+            onclick={() => (SAMPLES ? selectSample(SAMPLES[sample.id]) : null)}
+            >{sample.emoji}</button
+          >
         {/each}
       </div>
     {/key}

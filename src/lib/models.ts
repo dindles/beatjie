@@ -24,7 +24,6 @@ export class Sample<SampleHeader> {
   pitch: Note
   url: string
   sampler: Tone.Sampler
-  envelope: Tone.AmplitudeEnvelope
   filter: Tone.Filter
   panner: Tone.Panner
   sequence: Sequence
@@ -42,27 +41,14 @@ export class Sample<SampleHeader> {
     this.pitch = pitch
     this.url = url
     this.sampler = new Tone.Sampler()
-    this.envelope = new Tone.AmplitudeEnvelope()
     this.filter = new Tone.Filter()
     this.panner = new Tone.Panner()
     // todo - this sequence length should refer to a global store
     this.sequence = { sample_id: this.id, steps: new Array(16).fill(false) }
   }
 
-  setSamplerParams(pitch: Note, buffer: Tone.ToneAudioBuffer) {
+  setSamplerBuffers(pitch: Note, buffer: Tone.ToneAudioBuffer) {
     this.sampler.add(pitch, buffer)
-  }
-
-  setEnvParams(
-    attack: number,
-    decay: number,
-    sustain: number,
-    release: number
-  ) {
-    this.envelope.attack = attack
-    this.envelope.decay = decay
-    this.envelope.sustain = sustain
-    this.envelope.release = release
   }
 
   setFilterParams(
