@@ -136,11 +136,9 @@
   </div>
   <h2>FUNCTIONALITY</h2>
   <div class="functionality">
-    <button class="tile" onclick={advanceActiveStep}>next step</button>
-    <button class="tile" onclick={() => triggerSample(selected_sample)}
-      >play sample</button
-    >
-    <button class="tile" onclick={selectPack}
+    <button onclick={advanceActiveStep}>next step</button>
+    <button onclick={() => triggerSample(selected_sample)}>play sample</button>
+    <button onclick={selectPack}
       >selected pack: {packs[selected_pack_index].name}</button
     >
     <p>selected sample: {(selected_sample?.name, selected_sample?.id)}</p>
