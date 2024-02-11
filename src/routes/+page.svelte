@@ -10,27 +10,13 @@
 
   // === VARIABLES ==============================
 
-  // Debugging
-  let buffer_start = false
-  let buffer_end = false
-  let toning_start = false
-  let toning_end = false
-  let init_start = false
-  let init_end = false
-  if (buffer_start) console.log('buffer start')
-  if (buffer_end) console.log('buffer end')
-  if (toning_start) console.log('toning start')
-  if (toning_end) console.log('toning end')
-  if (init_start) console.log('init start')
-  if (init_end) console.log('init end')
-
   // Sequencer grid
   const sequencer_grid = Array(16)
   let active_step_index = $state(0)
 
   // Data
   let buffers: Tone.ToneAudioBuffers
-  let Toned_samples: Sample<SampleHeader>[]
+  let toned_samples: Sample<SampleHeader>[]
   let initialised_samples: Sample<SampleHeader>[]
   let SAMPLES: Sample<SampleHeader>[] | undefined
   let selected_pack_index = $state(0)
@@ -41,30 +27,26 @@
   // CALLED IMMEDIATELY
   // This creates buffers for each sample in each pack
   function createBuffers(packs: Packs): Tone.ToneAudioBuffers {
-    console.log('creating buffers')
-    buffer_start = true
     const urlsObject = packs.reduce(
       (result, pack) => {
         pack.samples.forEach((sample) => {
+          // I think the buffers are being wrongly assigned to the samples here, because
+          // they're using indices rather than ids
           result[sample.id.toString() as string] = sample.url
         })
         return result
       },
       {} as { [key: string]: string }
     )
-    console.log('buffers loaded', buffers)
-    buffer_end = true
     return new Tone.ToneAudioBuffers(urlsObject, () => {})
   }
 
   // This adds the sampler, filter and other Tone components to each SampleHeader, making a Sample
   function addToneToSamples(packs: Packs) {
-    console.log('adding tone to samples')
-    toning_start = true
-    let Toned_samples = []
+    let toned_samples = []
     for (let i = 0; i < packs.length; i++) {
       for (let j = 0; j < packs[i].samples.length; j++) {
-        Toned_samples.push(
+        toned_samples.push(
           new Sample(
             packs[i].samples[j].id,
             packs[i].samples[j].name,
@@ -75,26 +57,21 @@
         )
       }
     }
-    console.log('added Tone to samples')
-    toning_end = true
-    return Toned_samples
+    return toned_samples
   }
 
   // This loads each Sampler with its buffer, sets the starting parameters of
   // Tone elements, and connects them in a chain to Tone.Destination, which is the audio out
-  function initSamples(Toned_samples: Sample<SampleHeader>[]) {
-    console.log('initialising samples')
-    init_start = true
-    for (let i = 0; i < Toned_samples.length; i++) {
-      const sample = Toned_samples[i]
+  function initSamples(
+    toned_samples: Sample<SampleHeader>[],
+    buffers: Tone.ToneAudioBuffers
+  ) {
+    for (let i = 0; i < toned_samples.length; i++) {
+      const sample = toned_samples[i]
       sample.setSamplerBuffers(sample.pitch, buffers.get(sample.id.toString()))
-
       sample.sampler.chain(sample.filter, sample.panner, Tone.Destination)
-      console.log('sample ' + i + ' chained')
     }
-    console.log('all samples initialised')
-    init_end = true
-    return Toned_samples
+    return toned_samples
   }
 
   // CALLED ON EVENT
@@ -104,6 +81,7 @@
 
   function selectSample(sample: Sample<SampleHeader>) {
     selected_sample = sample
+    console.log(selected_sample)
   }
 
   function selectPack() {
@@ -117,10 +95,9 @@
       // The audio context needs to be launched by a user action
       if (Tone.context.state !== 'running') {
         Tone.start()
-        console.log('Tone.started', Tone.context.state)
       }
 
-      // If SAMPLES has been assigned (todo: sort this out with await)
+      // If SAMPLES has been assigned at this point
       // then set the sample and effect params if determining them per step
       // then trigger the sampler attack
       if (SAMPLES) {
@@ -138,17 +115,13 @@
 
   async function processSamples(packs: Packs) {
     buffers = await createBuffers(packs)
-    Toned_samples = addToneToSamples(packs)
-    SAMPLES = await initSamples(Toned_samples)
-    // ... do something with the results
+    toned_samples = addToneToSamples(packs)
+    initialised_samples = await initSamples(toned_samples, buffers)
+    SAMPLES = await initialised_samples
+    console.log('SAMPLES:', SAMPLES)
   }
 
   processSamples(packs)
-
-  // buffers = createBuffers(packs)
-  // Toned_samples = addToneToSamples(packs)
-  // SAMPLES = initSamples(Toned_samples)
-  console.log('SAMPLES:', SAMPLES)
 
   $effect(() => {
     console.log('mounted')

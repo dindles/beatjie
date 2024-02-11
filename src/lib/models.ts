@@ -35,6 +35,7 @@ export class Sample<SampleHeader> {
     pitch: Note,
     url: string
   ) {
+    // asssign random id
     this.id = id
     this.name = name
     this.emoji = emoji
