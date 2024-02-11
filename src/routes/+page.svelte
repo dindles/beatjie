@@ -79,7 +79,7 @@
     active_step_index = (active_step_index + 1) % 16
   }
 
-  function selectSample(sample: Sample<SampleHeader>) {
+  function selectSample(sample: Sample<SampleHeader> | undefined) {
     selected_sample = sample
     console.log(selected_sample)
   }
@@ -88,33 +88,29 @@
     selected_pack_index = (selected_pack_index + 1) % packs.length
   }
 
-  function triggerSample(sample_id: number | undefined) {
-    if (!sample_id) {
-      console.log('sample is undefined')
-    } else {
-      // The audio context needs to be launched by a user action
-      if (Tone.context.state !== 'running') {
-        Tone.start()
-      }
-
-      // If SAMPLES has been assigned at this point
-      // then set the sample and effect params if determining them per step
-      // then trigger the sampler attack
-      if (SAMPLES) {
-        SAMPLES[sample_id].sampler.attack = 0.01
-        SAMPLES[sample_id].sampler.release = 0.1
-        SAMPLES[sample_id].filter.type = 'highpass'
-        SAMPLES[sample_id].filter.frequency.value = 1600
-        // go team go
-        SAMPLES[sample_id].sampler.triggerAttack('C2', Tone.now())
-      }
+  function triggerSample(sample: Sample<SampleHeader> | undefined) {
+    // The audio context needs to be launched by a user action
+    if (Tone.context.state !== 'running') {
+      Tone.start()
+    }
+    // set the sample and effect params if determining them per step
+    // then trigger the sampler attack
+    if (sample) {
+      sample.sampler.attack = 0.01
+      sample.sampler.release = 0.1
+      sample.filter.type = 'highpass'
+      sample.filter.frequency.value = 1600
+      // go team go
+      sample.sampler.triggerAttack('C2', Tone.now())
     }
   }
 
   // === LIFECYCLE ==============================
 
   async function processSamples(packs: Packs) {
+    console.log('packs:', packs)
     buffers = await createBuffers(packs)
+    console.log('buffers:', buffers)
     toned_samples = addToneToSamples(packs)
     initialised_samples = await initSamples(toned_samples, buffers)
     SAMPLES = await initialised_samples
@@ -145,9 +141,7 @@
   <h2>FUNCTIONALITY</h2>
   <div class="functionality">
     <button class="tile" onclick={advanceActiveStep}>next step</button>
-    <button
-      class="tile"
-      onclick={() => triggerSample(selected_sample ? selected_sample?.id : 0)}
+    <button class="tile" onclick={() => triggerSample(selected_sample)}
       >play sample</button
     >
     <button class="tile" onclick={selectPack}
@@ -160,10 +154,10 @@
     {#key selected_pack_index}
       <div class="pack grid">
         {#each packs[selected_pack_index].samples as sample}
-          <!-- todo: when clicking sample tile, selected_sample should become relevant Sample -->
           <button
             class="moji tile"
-            onclick={() => (SAMPLES ? selectSample(SAMPLES[sample.id]) : null)}
+            onclick={() =>
+              selectSample(SAMPLES?.find((s) => s.id === sample.id))}
             >{(sample.emoji, sample.name)}</button
           >
         {/each}

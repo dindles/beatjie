@@ -2,7 +2,7 @@ import type { Packs } from '$lib/models'
 
 const audio_path = 'src/lib/assets/audio'
 
-export const packs: Packs = [
+const packs_noID: Packs = [
   {
     name: '909-Dirt',
     samples: [
@@ -246,3 +246,13 @@ export const packs: Packs = [
     ],
   },
 ]
+
+function assignIDs(packs: Packs) {
+  packs.forEach((pack, index) => {
+    pack.samples.forEach((sample, index) => {
+      sample.id = crypto.getRandomValues(new Uint32Array(1))[0]
+    })
+  })
+  return packs
+}
+export const packs = assignIDs(packs_noID)
