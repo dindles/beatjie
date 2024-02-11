@@ -2,9 +2,6 @@
 
 <!-- todo next -->
 
-- sample.ids are a bit fiddly – we got an OBO, how to use ids as key, not index?
-- Sequences
-
 <!-- todo -->
 
 change panner to channel, get env working

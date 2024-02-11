@@ -1,6 +1,5 @@
 <script lang="ts">
   // === IMPORTS ================================
-  // Svelte
 
   // Tone
   import * as Tone from 'tone'
@@ -10,8 +9,20 @@
   import { Sample, type SampleHeader, type Packs } from '$lib/models'
 
   // === VARIABLES ==============================
-  // Tone
-  const synth = new Tone.Synth()
+
+  // Debugging
+  let buffer_start = false
+  let buffer_end = false
+  let toning_start = false
+  let toning_end = false
+  let init_start = false
+  let init_end = false
+  if (buffer_start) console.log('buffer start')
+  if (buffer_end) console.log('buffer end')
+  if (toning_start) console.log('toning start')
+  if (toning_end) console.log('toning end')
+  if (init_start) console.log('init start')
+  if (init_end) console.log('init end')
 
   // Sequencer grid
   const sequencer_grid = Array(16)
@@ -26,8 +37,12 @@
   let selected_sample: Sample<SampleHeader> | undefined = $state(undefined)
 
   // === FUNCTIONS ==============================
-  // Called immediately
+
+  // CALLED IMMEDIATELY
+  // This creates buffers for each sample in each pack
   function createBuffers(packs: Packs): Tone.ToneAudioBuffers {
+    console.log('creating buffers')
+    buffer_start = true
     const urlsObject = packs.reduce(
       (result, pack) => {
         pack.samples.forEach((sample) => {
@@ -37,12 +52,15 @@
       },
       {} as { [key: string]: string }
     )
-    return new Tone.ToneAudioBuffers(urlsObject, () => {
-      console.log('buffers loaded', buffers)
-    })
+    console.log('buffers loaded', buffers)
+    buffer_end = true
+    return new Tone.ToneAudioBuffers(urlsObject, () => {})
   }
 
-  function makeSamples(packs: Packs) {
+  // This adds the sampler, filter and other Tone components to each SampleHeader, making a Sample
+  function addToneToSamples(packs: Packs) {
+    console.log('adding tone to samples')
+    toning_start = true
     let Toned_samples = []
     for (let i = 0; i < packs.length; i++) {
       for (let j = 0; j < packs[i].samples.length; j++) {
@@ -57,11 +75,16 @@
         )
       }
     }
+    console.log('added Tone to samples')
+    toning_end = true
     return Toned_samples
   }
 
-  // Called on effect
+  // This loads each Sampler with its buffer, sets the starting parameters of
+  // Tone elements, and connects them in a chain to Tone.Destination, which is the audio out
   function initSamples(Toned_samples: Sample<SampleHeader>[]) {
+    console.log('initialising samples')
+    init_start = true
     for (let i = 0; i < Toned_samples.length; i++) {
       const sample = Toned_samples[i]
       sample.setSamplerBuffers(sample.pitch, buffers.get(sample.id.toString()))
@@ -69,25 +92,18 @@
       sample.sampler.chain(sample.filter, sample.panner, Tone.Destination)
       console.log('sample ' + i + ' chained')
     }
-    console.log('all samples chained')
+    console.log('all samples initialised')
+    init_end = true
     return Toned_samples
   }
 
-  // Called on event
-  function triggerHelloTone() {
-    if (Tone.context.state !== 'running') {
-      Tone.start()
-    }
-    // temp for testing
-    synth.triggerAttackRelease('A#3', '8n')
+  // CALLED ON EVENT
+  function advanceActiveStep() {
+    active_step_index = (active_step_index + 1) % 16
   }
 
   function selectSample(sample: Sample<SampleHeader>) {
     selected_sample = sample
-  }
-
-  function advanceActiveStep() {
-    active_step_index = (active_step_index + 1) % 16
   }
 
   function selectPack() {
@@ -98,30 +114,40 @@
     if (!sample_id) {
       console.log('sample is undefined')
     } else {
+      // The audio context needs to be launched by a user action
       if (Tone.context.state !== 'running') {
         Tone.start()
         console.log('Tone.started', Tone.context.state)
       }
 
+      // If SAMPLES has been assigned (todo: sort this out with await)
+      // then set the sample and effect params if determining them per step
+      // then trigger the sampler attack
       if (SAMPLES) {
-        // set conceivably per-step params
         SAMPLES[sample_id].sampler.attack = 0.01
-        SAMPLES[sample_id].sampler.release = 1
+        SAMPLES[sample_id].sampler.release = 0.1
         SAMPLES[sample_id].filter.type = 'highpass'
         SAMPLES[sample_id].filter.frequency.value = 1600
         // go team go
-        SAMPLES[sample_id].sampler.triggerAttackRelease('C2', Tone.now())
+        SAMPLES[sample_id].sampler.triggerAttack('C2', Tone.now())
       }
     }
   }
 
   // === LIFECYCLE ==============================
-  synth.toDestination()
-  buffers = createBuffers(packs)
-  console.log('buffers:', buffers)
-  Toned_samples = makeSamples(packs)
-  console.log('Toned_samples:', Toned_samples)
-  SAMPLES = initSamples(Toned_samples)
+
+  async function processSamples(packs: Packs) {
+    buffers = await createBuffers(packs)
+    Toned_samples = addToneToSamples(packs)
+    SAMPLES = await initSamples(Toned_samples)
+    // ... do something with the results
+  }
+
+  processSamples(packs)
+
+  // buffers = createBuffers(packs)
+  // Toned_samples = addToneToSamples(packs)
+  // SAMPLES = initSamples(Toned_samples)
   console.log('SAMPLES:', SAMPLES)
 
   $effect(() => {
@@ -146,7 +172,6 @@
   <h2>FUNCTIONALITY</h2>
   <div class="functionality">
     <button class="tile" onclick={advanceActiveStep}>next step</button>
-    <button class="tile" onclick={triggerHelloTone}>play helloTone</button>
     <button
       class="tile"
       onclick={() => triggerSample(selected_sample ? selected_sample?.id : 0)}
@@ -155,7 +180,7 @@
     <button class="tile" onclick={selectPack}
       >selected pack: {packs[selected_pack_index].name}</button
     >
-    <p>selected sample: {selected_sample?.name}</p>
+    <p>selected sample: {(selected_sample?.name, selected_sample?.id)}</p>
   </div>
   <h2>SAMPLES</h2>
   <div class="samples">
@@ -166,7 +191,7 @@
           <button
             class="moji tile"
             onclick={() => (SAMPLES ? selectSample(SAMPLES[sample.id]) : null)}
-            >{sample.emoji}</button
+            >{(sample.emoji, sample.name)}</button
           >
         {/each}
       </div>
