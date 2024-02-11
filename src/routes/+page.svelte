@@ -60,6 +60,7 @@
     return Toned_samples
   }
 
+  // Called on effect
   function initSamples(Toned_samples: Sample<SampleHeader>[]) {
     for (let i = 0; i < Toned_samples.length; i++) {
       const sample = Toned_samples[i]
@@ -116,15 +117,15 @@
 
   // === LIFECYCLE ==============================
   synth.toDestination()
+  buffers = createBuffers(packs)
+  console.log('buffers:', buffers)
+  Toned_samples = makeSamples(packs)
+  console.log('Toned_samples:', Toned_samples)
+  SAMPLES = initSamples(Toned_samples)
+  console.log('SAMPLES:', SAMPLES)
 
   $effect(() => {
     console.log('mounted')
-    buffers = createBuffers(packs)
-    console.log('buffers:', buffers)
-    Toned_samples = makeSamples(packs)
-    console.log('Toned_samples:', Toned_samples)
-    SAMPLES = initSamples(Toned_samples)
-    console.log('SAMPLES:', SAMPLES)
   })
 </script>
 
