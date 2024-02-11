@@ -248,11 +248,12 @@ const packs_noID: Packs = [
 ]
 
 function assignIDs(packs: Packs) {
-  packs.forEach((pack, index) => {
-    pack.samples.forEach((sample, index) => {
+  packs.forEach((pack) => {
+    pack.samples.forEach((sample) => {
       sample.id = crypto.getRandomValues(new Uint32Array(1))[0]
     })
   })
   return packs
 }
+
 export const packs = assignIDs(packs_noID)

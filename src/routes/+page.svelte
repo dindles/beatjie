@@ -6,6 +6,8 @@
 
   // Data
   import { packs } from '$lib/assets/audio/packs'
+
+  // Classes and types
   import { Sample, type SampleHeader, type Packs } from '$lib/models'
 
   // === VARIABLES ==============================
@@ -15,10 +17,7 @@
   let active_step_index = $state(0)
 
   // Data
-  let buffers: Tone.ToneAudioBuffers
-  let toned_samples: Sample<SampleHeader>[]
-  let initialised_samples: Sample<SampleHeader>[]
-  let SAMPLES: Sample<SampleHeader>[] | undefined
+  let SAMPLES: Sample<SampleHeader>[] = []
   let selected_pack_index = $state(0)
   let selected_sample: Sample<SampleHeader> | undefined = $state(undefined)
 
@@ -72,9 +71,8 @@
     active_step_index = (active_step_index + 1) % 16
   }
 
-  function selectSample(sample: Sample<SampleHeader> | undefined) {
-    selected_sample = sample
-    console.log(selected_sample)
+  function selectSample(sample_id: number) {
+    selected_sample = SAMPLES?.find((s) => s.id === sample_id)
   }
 
   function selectPack() {
@@ -94,6 +92,7 @@
       sample.filter.type = 'highpass'
       sample.filter.frequency.value = 1600
       // go team go
+      // todo: take sample.pitch into account
       sample.sampler.triggerAttack('C2', Tone.now())
     }
   }
@@ -101,16 +100,20 @@
   // === LIFECYCLE ==============================
 
   async function processSamples(packs: Packs) {
-    console.log('packs:', packs)
-    buffers = await createBuffers(packs)
-    console.log('buffers:', buffers)
-    toned_samples = addToneToSamples(packs)
-    initialised_samples = await initSamples(toned_samples, buffers)
-    SAMPLES = await initialised_samples
-    console.log('SAMPLES:', SAMPLES)
+    const buffers: Tone.ToneAudioBuffers = await createBuffers(packs)
+    const tone_samples: Sample<SampleHeader>[] = addToneToSamples(packs)
+    const samples: Sample<SampleHeader>[] = await initSamples(
+      tone_samples,
+      buffers
+    )
+
+    return samples
   }
 
-  processSamples(packs)
+  // Ensuring we have properly set up samples before using them
+  processSamples(packs).then((resolvedSamples) => {
+    SAMPLES = resolvedSamples
+  })
 
   $effect(() => {
     console.log('mounted')
@@ -147,10 +150,7 @@
     {#key selected_pack_index}
       <div class="pack grid">
         {#each packs[selected_pack_index].samples as sample}
-          <button
-            class="moji tile"
-            onclick={() =>
-              selectSample(SAMPLES?.find((s) => s.id === sample.id))}
+          <button class="moji tile" onclick={() => selectSample(sample.id)}
             >{(sample.emoji, sample.name)}</button
           >
         {/each}
