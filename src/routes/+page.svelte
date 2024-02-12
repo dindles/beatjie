@@ -18,6 +18,8 @@
 
   // Data
   let SAMPLES: Sample<SampleHeader>[] = []
+
+  // State
   let selected_pack_index = $state(0)
   let selected_sample: Sample<SampleHeader> | undefined = $state(undefined)
 
