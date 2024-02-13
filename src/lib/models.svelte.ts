@@ -1,5 +1,6 @@
 import * as Tone from 'tone'
 import type { MidiNote, Note } from 'tone/build/esm/core/type/NoteUnits'
+import type { Time } from 'tone/build/esm/core/type/Units'
 
 export type SampleHeader = {
   id: number
@@ -74,6 +75,10 @@ export class Sample {
   ) {
     this.filter.type = type
     this.filter.frequency.value = frequency
+  }
+
+  play(time: Time) {
+    this.sampler.triggerAttack(this.pitch, time)
   }
 }
 

@@ -12,9 +12,10 @@
 
   // === VARIABLES ==============================
 
-  // Sequencer grid
-  const sequencer_grid = Array(16)
+  // Sequencer
   let active_step_index = $state(0)
+  let SEQUENCES: Tone.Sequence[] = []
+  let is_playing = $state(false)
 
   // Data and state
   let SAMPLES: Sample[] = $state([])
@@ -106,6 +107,42 @@
     }
   }
 
+  async function toggleSeq() {
+    if (Tone.context.state !== 'running') {
+      await Tone.start()
+    }
+
+    if (!is_playing) {
+      SEQUENCES = createSequences(SAMPLES)
+      for (const sequence of SEQUENCES) {
+        sequence.start()
+      }
+      Tone.Transport.start('+0.1') // delay transport start 100ms to help avoid scheduling errors.
+      console.log('Tone.Transport started')
+    } else {
+      Tone.Transport.stop()
+      for (const sequence of SEQUENCES) {
+        sequence.stop()
+        sequence.dispose()
+      }
+    }
+
+    is_playing = !is_playing
+  }
+
+  function createSequences(SAMPLES: Sample[]) {
+    const sequences = SAMPLES.map((sample) => {
+      return new Tone.Sequence((time) => {
+        advanceActiveStep()
+        if (sample.sequence[active_step_index]) {
+          sample.play(time)
+        }
+      }, sample.sequence)
+    })
+
+    return sequences
+  }
+
   // === LIFECYCLE ==============================
 
   async function processSamples(packs: Packs) {
@@ -145,18 +182,23 @@
           <!-- if the active sample sequence is true for this step, the active class should be set -->
           <div
             class="moji tile"
-            class:active={selected_sample.sequence[index]}
+            class:active={index === active_step_index}
             onclick={() => handlSeqClick(sample, index)}
             onkeydown={() => handlSeqClick(sample, index)}
             role="button"
             tabindex="0"
-          />
+          >
+            {#if selected_sample.sequence[index]}
+              {selected_sample.emoji}
+            {/if}
+          </div>
         {/each}
       </div>
     {:else}{/if}
   {/each}
   <h2>FUNCTIONALITY</h2>
   <div class="functionality">
+    <button onclick={toggleSeq}>{is_playing ? 'stop' : 'play'}</button>
     <button onclick={advanceActiveStep}>next step</button>
     <button onclick={() => triggerSample(selected_sample)}>play sample</button>
     <button onclick={selectPack}
