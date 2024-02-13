@@ -8,7 +8,7 @@
   import { packs } from '$lib/assets/audio/packs'
 
   // Classes and types
-  import { Sample, type Packs } from '$lib/models'
+  import { Sample, type Packs } from '$lib/models.svelte'
 
   // === VARIABLES ==============================
 
@@ -16,10 +16,8 @@
   const sequencer_grid = Array(16)
   let active_step_index = $state(0)
 
-  // Data
-  let SAMPLES: Sample[] = []
-
-  // State
+  // Data and state
+  let SAMPLES: Sample[] = $state([])
   let selected_pack_index = $state(0)
   let selected_sample: Sample | undefined = $state(undefined)
 
@@ -39,7 +37,7 @@
 
   // This adds the SampleHeaders from the packs to the Tone elements, making Samples
   function makeSamples(packs: Packs) {
-    let full_samples = packs.flatMap((pack) =>
+    const samples = packs.flatMap((pack) =>
       pack.samples.map(
         (sample) =>
           new Sample(
@@ -51,7 +49,7 @@
           )
       )
     )
-    return full_samples
+    return samples
   }
 
   // This loads each Sampler with its buffer, sets the starting parameters of
@@ -69,6 +67,15 @@
   }
 
   // CALLED ON EVENT
+  // Seq refers to the sequencer. When we click on a sequencer step,
+  // the sequence array of the selected sample should be updated
+  function handlSeqClick(sample: Sample, step_index: number) {
+    sample.sequence[step_index] === false
+      ? (sample.sequence[step_index] = true)
+      : (sample.sequence[step_index] = false)
+    console.log('sample_sequence: ', sample.sequence)
+  }
+
   function advanceActiveStep() {
     active_step_index = (active_step_index + 1) % 16
   }
@@ -128,11 +135,26 @@
   <h2>DISPLAY</h2>
   <div class="display"></div>
   <!-- <h2>GRID</h2> -->
-  <div class="sequencer grid">
-    {#each sequencer_grid as step, index}
-      <div class="moji tile" class:active={active_step_index === index} />
-    {/each}
-  </div>
+  {#if !selected_sample}
+    <p>select a sample</p>
+  {/if}
+  {#each SAMPLES as sample}
+    {#if sample.id === selected_sample?.id}
+      <div class="sequencer grid">
+        {#each selected_sample.sequence as step, index}
+          <!-- if the active sample sequence is true for this step, the active class should be set -->
+          <div
+            class="moji tile"
+            class:active={selected_sample.sequence[index]}
+            onclick={() => handlSeqClick(sample, index)}
+            onkeydown={() => handlSeqClick(sample, index)}
+            role="button"
+            tabindex="0"
+          />
+        {/each}
+      </div>
+    {:else}{/if}
+  {/each}
   <h2>FUNCTIONALITY</h2>
   <div class="functionality">
     <button onclick={advanceActiveStep}>next step</button>

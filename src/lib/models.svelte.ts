@@ -8,14 +8,14 @@ export type SampleHeader = {
   pitch: Note
   url: string
 }
-export type PackHeader = {
+export type Pack = {
   name: string
   samples: SampleHeader[]
 }
 
-export type Packs = PackHeader[]
+export type Packs = Pack[]
 
-// todo - add analyser
+// todo - add analyser, channel?
 export class Sample {
   id: number
   name: string
@@ -25,7 +25,24 @@ export class Sample {
   sampler: Tone.Sampler
   filter: Tone.Filter
   panner: Tone.Panner
-  sequence: Sequence
+  sequence: Sequence = $state([
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+  ])
 
   constructor(
     id: number,
@@ -43,8 +60,8 @@ export class Sample {
     this.sampler = new Tone.Sampler()
     this.filter = new Tone.Filter()
     this.panner = new Tone.Panner()
-    // todo - this sequence length should refer to a global store
-    this.sequence = { sample_id: this.id, steps: new Array(16).fill(false) }
+
+    // todo - chain here?
   }
 
   setSamplerBuffers(pitch: Note, buffer: Tone.ToneAudioBuffer) {
@@ -60,5 +77,5 @@ export class Sample {
   }
 }
 
-export type Sequence = { sample_id: number; steps: boolean[] }
+export type Sequence = boolean[]
 export type Sequences = [Sequence[]]
