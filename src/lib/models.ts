@@ -13,11 +13,10 @@ export type PackHeader = {
   samples: SampleHeader[]
 }
 
-export type Pack = SampleHeader[]
 export type Packs = PackHeader[]
 
 // todo - add analyser
-export class Sample<SampleHeader> {
+export class Sample {
   id: number
   name: string
   emoji: string

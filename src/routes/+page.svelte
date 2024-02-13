@@ -8,7 +8,7 @@
   import { packs } from '$lib/assets/audio/packs'
 
   // Classes and types
-  import { Sample, type SampleHeader, type Packs } from '$lib/models'
+  import { Sample, type Packs } from '$lib/models'
 
   // === VARIABLES ==============================
 
@@ -17,11 +17,11 @@
   let active_step_index = $state(0)
 
   // Data
-  let SAMPLES: Sample<SampleHeader>[] = []
+  let SAMPLES: Sample[] = []
 
   // State
   let selected_pack_index = $state(0)
-  let selected_sample: Sample<SampleHeader> | undefined = $state(undefined)
+  let selected_sample: Sample | undefined = $state(undefined)
 
   // === FUNCTIONS ==============================
 
@@ -37,9 +37,9 @@
     return new Tone.ToneAudioBuffers(urlsObject, () => {})
   }
 
-  // This adds the sampler, filter and other Tone components to each SampleHeader, making a Sample
-  function addToneToSamples(packs: Packs) {
-    let toned_samples = packs.flatMap((pack) =>
+  // This adds the SampleHeaders from the packs to the Tone elements, making Samples
+  function makeSamples(packs: Packs) {
+    let full_samples = packs.flatMap((pack) =>
       pack.samples.map(
         (sample) =>
           new Sample(
@@ -51,13 +51,13 @@
           )
       )
     )
-    return toned_samples
+    return full_samples
   }
 
   // This loads each Sampler with its buffer, sets the starting parameters of
   // Tone elements, and connects them in a chain to Tone.Destination, which is the audio out
   function initSamples(
-    toned_samples: Sample<SampleHeader>[],
+    toned_samples: Sample[],
     buffers: Tone.ToneAudioBuffers
   ) {
     for (let i = 0; i < toned_samples.length; i++) {
@@ -81,7 +81,7 @@
     selected_pack_index = (selected_pack_index + 1) % packs.length
   }
 
-  function triggerSample(sample: Sample<SampleHeader> | undefined) {
+  function triggerSample(sample: Sample | undefined) {
     // The audio context needs to be launched by a user action
     if (Tone.context.state !== 'running') {
       Tone.start()
@@ -103,11 +103,8 @@
 
   async function processSamples(packs: Packs) {
     const buffers: Tone.ToneAudioBuffers = await createBuffers(packs)
-    const tone_samples: Sample<SampleHeader>[] = addToneToSamples(packs)
-    const samples: Sample<SampleHeader>[] = await initSamples(
-      tone_samples,
-      buffers
-    )
+    const tone_samples: Sample[] = makeSamples(packs)
+    const samples: Sample[] = await initSamples(tone_samples, buffers)
 
     return samples
   }
