@@ -12,13 +12,12 @@
 
   // === VARIABLES ==============================
 
-  // Sequencer
-  let active_step_index = $state(0)
-  let SEQUENCES: Tone.Sequence[] = []
   let is_playing = $state(false)
+  let active_step_index = $state(0)
 
-  // Data and state
+  let SEQUENCES: Tone.Sequence[] = []
   let SAMPLES: Sample[] = $state([])
+
   let selected_pack_index = $state(0)
   let selected_sample: Sample | undefined = $state(undefined)
 
@@ -36,7 +35,7 @@
     return new Tone.ToneAudioBuffers(urlsObject, () => {})
   }
 
-  // This adds the SampleHeaders from the packs to the Tone elements, making Samples
+  // This adds the SampleHeaders from the packs to the samplers and other Tone elements
   function makeSamples(packs: Packs) {
     const samples = packs.flatMap((pack) =>
       pack.samples.map(
@@ -53,16 +52,14 @@
     return samples
   }
 
-  // This loads each Sampler with its buffer, sets the starting parameters of
-  // Tone elements, and connects them in a chain to Tone.Destination, which is the audio out
-  function initSamples(
+  // This loads each Sampler with its buffer
+  function loadBuffers(
     toned_samples: Sample[],
     buffers: Tone.ToneAudioBuffers
   ) {
     for (let i = 0; i < toned_samples.length; i++) {
       const sample = toned_samples[i]
       sample.setSamplerBuffers(sample.pitch, buffers.get(sample.id.toString()))
-      sample.sampler.chain(sample.filter, sample.panner, Tone.Destination)
     }
     return toned_samples
   }
@@ -132,17 +129,19 @@
 
   function createSequences(SAMPLES: Sample[]) {
     const sequences = SAMPLES.map((sample) => {
-      return new Tone.Sequence((time) => {
-        advanceActiveStep()
-        console.log('active_step_index: ', active_step_index)
-        if (sample.sequence[active_step_index]) {
-          // sample.sampler.attack = 0.01
-          // sample.sampler.release = 0.1
-          // sample.filter.type = 'highpass'
-          // sample.filter.frequency.value = 1600
-          sample.play(time)
-        }
-      }, sample.sequence)
+      return new Tone.Sequence(
+        (time, step) => {
+          advanceActiveStep()
+          if (sample.sequence[step]) {
+            // sample.sampler.attack = 0.01
+            // sample.sampler.release = 0.1
+            // sample.filter.type = 'highpass'
+            // sample.filter.frequency.value = 1600
+            sample.play(time)
+          }
+        },
+        [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+      )
     })
 
     return sequences
@@ -153,7 +152,7 @@
   async function processSamples(packs: Packs) {
     const buffers: Tone.ToneAudioBuffers = await createBuffers(packs)
     const tone_samples: Sample[] = makeSamples(packs)
-    const samples: Sample[] = await initSamples(tone_samples, buffers)
+    const samples: Sample[] = await loadBuffers(tone_samples, buffers)
 
     return samples
   }
@@ -176,6 +175,8 @@
 <main>
   <h2>DISPLAY</h2>
   <div class="display"></div>
+  <p>{selected_sample?.name}</p>
+  <p>{active_step_index}</p>
   <!-- <h2>GRID</h2> -->
   {#if !selected_sample}
     <p>select a sample</p>

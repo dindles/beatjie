@@ -1,5 +1,5 @@
 import * as Tone from 'tone'
-import type { MidiNote, Note } from 'tone/build/esm/core/type/NoteUnits'
+import type { Note } from 'tone/build/esm/core/type/NoteUnits'
 import type { Time } from 'tone/build/esm/core/type/Units'
 
 export type SampleHeader = {
@@ -9,6 +9,7 @@ export type SampleHeader = {
   pitch: Note
   url: string
 }
+
 export type Pack = {
   name: string
   samples: SampleHeader[]
@@ -61,8 +62,8 @@ export class Sample {
     this.sampler = new Tone.Sampler()
     this.filter = new Tone.Filter()
     this.panner = new Tone.Panner()
-
     // todo - chain here?
+    this.sampler.chain(this.filter, this.panner, Tone.Destination)
   }
 
   setSamplerBuffers(pitch: Note, buffer: Tone.ToneAudioBuffer) {
