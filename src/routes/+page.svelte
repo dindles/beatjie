@@ -134,7 +134,12 @@
     const sequences = SAMPLES.map((sample) => {
       return new Tone.Sequence((time) => {
         advanceActiveStep()
+        console.log('active_step_index: ', active_step_index)
         if (sample.sequence[active_step_index]) {
+          // sample.sampler.attack = 0.01
+          // sample.sampler.release = 0.1
+          // sample.filter.type = 'highpass'
+          // sample.filter.frequency.value = 1600
           sample.play(time)
         }
       }, sample.sequence)
