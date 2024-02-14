@@ -25,7 +25,7 @@
 
   // CALLED IMMEDIATELY
   // This creates buffers for each sample in each pack
-  function createBuffers(packs: Packs): Tone.ToneAudioBuffers {
+  function makeBuffers(packs: Packs): Tone.ToneAudioBuffers {
     const urlsObject: { [key: string]: string } = {}
     packs.forEach((pack) => {
       pack.samples.forEach((sample) => {
@@ -67,7 +67,7 @@
   // CALLED ON EVENT
   // Seq refers to the sequencer. When we click on a sequencer step,
   // the sequence array of the selected sample should be updated
-  function handlSeqClick(sample: Sample, step_index: number) {
+  function handleSeqClick(sample: Sample, step_index: number) {
     sample.sequence[step_index] === false
       ? (sample.sequence[step_index] = true)
       : (sample.sequence[step_index] = false)
@@ -86,6 +86,7 @@
     selected_pack_index = (selected_pack_index + 1) % packs.length
   }
 
+  // Legacy function
   function triggerSample(sample: Sample | undefined) {
     // The audio context needs to be launched by a user action
     if (Tone.context.state !== 'running') {
@@ -105,12 +106,13 @@
   }
 
   async function toggleSeq() {
+    // The audio context needs to be launched by a user action
     if (Tone.context.state !== 'running') {
       await Tone.start()
     }
 
     if (!is_playing) {
-      SEQUENCES = createSequences(SAMPLES)
+      SEQUENCES = makeSequences(SAMPLES)
       for (const sequence of SEQUENCES) {
         sequence.start()
       }
@@ -127,20 +129,22 @@
     is_playing = !is_playing
   }
 
-  function createSequences(SAMPLES: Sample[]) {
+  // todo: figure out why this works to change samples on the fly,
+  // but 'if (step)', passing sample.sequence, doesn't
+  function makeSequences(SAMPLES: Sample[]) {
     const sequences = SAMPLES.map((sample) => {
       return new Tone.Sequence(
         (time, step) => {
-          advanceActiveStep()
           if (sample.sequence[step]) {
-            // sample.sampler.attack = 0.01
-            // sample.sampler.release = 0.1
-            // sample.filter.type = 'highpass'
-            // sample.filter.frequency.value = 1600
+            sample.sampler.attack = 0.01
+            sample.sampler.release = 0.1
+            sample.filter.type = 'lowpass'
+            sample.filter.frequency.value = 16000
             sample.play(time)
           }
         },
-        [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+        [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+        '16n'
       )
     })
 
@@ -150,7 +154,7 @@
   // === LIFECYCLE ==============================
 
   async function processSamples(packs: Packs) {
-    const buffers: Tone.ToneAudioBuffers = await createBuffers(packs)
+    const buffers: Tone.ToneAudioBuffers = await makeBuffers(packs)
     const tone_samples: Sample[] = makeSamples(packs)
     const samples: Sample[] = await loadBuffers(tone_samples, buffers)
 
@@ -189,8 +193,8 @@
           <div
             class="moji tile"
             class:active={index === active_step_index}
-            onclick={() => handlSeqClick(sample, index)}
-            onkeydown={() => handlSeqClick(sample, index)}
+            onclick={() => handleSeqClick(sample, index)}
+            onkeydown={() => handleSeqClick(sample, index)}
             role="button"
             tabindex="0"
           >
