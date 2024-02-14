@@ -17,7 +17,6 @@ export type Pack = {
 
 export type Packs = Pack[]
 
-// todo - add analyser, channel?
 export class Sample {
   id: number
   name: string
@@ -26,7 +25,7 @@ export class Sample {
   url: string
   sampler: Tone.Sampler
   filter: Tone.Filter
-  panner: Tone.Panner
+  channel: Tone.Channel
   sequence: Sequence = $state([
     false,
     false,
@@ -61,9 +60,8 @@ export class Sample {
     this.url = url
     this.sampler = new Tone.Sampler()
     this.filter = new Tone.Filter()
-    this.panner = new Tone.Panner()
-    // todo - chain here?
-    this.sampler.chain(this.filter, this.panner, Tone.Destination)
+    this.channel = new Tone.Channel()
+    // todo: try set sequence length and values here
   }
 
   setSamplerBuffers(pitch: Note, buffer: Tone.ToneAudioBuffer) {

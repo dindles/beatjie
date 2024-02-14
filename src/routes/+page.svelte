@@ -9,17 +9,26 @@
 
   // Classes and types
   import { Sample, type Packs } from '$lib/models.svelte'
+  import type { Frequency } from 'tone/build/esm/core/type/Units'
 
   // === VARIABLES ==============================
 
-  let is_playing = $state(false)
-  let active_step_index = $state(0)
-
+  // todo: fix naming amster and snake
+  // Tone
+  const masterFilter = new Tone.Filter()
+  const masterDistortion = new Tone.Distortion()
+  const masterAnalyser = new Tone.Analyser()
   let SEQUENCES: Tone.Sequence[] = []
-  let SAMPLES: Sample[] = $state([])
 
+  // Settings
+  let main_filter_freq: Tone.Unit.Frequency = $state(20000)
+
+  // State
+  let SAMPLES: Sample[] = $state([])
   let selected_pack_index = $state(0)
   let selected_sample: Sample | undefined = $state(undefined)
+  let is_playing = $state(false)
+  let active_step_index = $state(0)
 
   // === FUNCTIONS ==============================
 
@@ -62,6 +71,32 @@
       sample.setSamplerBuffers(sample.pitch, buffers.get(sample.id.toString()))
     }
     return toned_samples
+  }
+
+  // this chains each sampler to its channel, and then all sampler channels
+  // to master filter, effects and tone.destination
+  function setChains(SAMPLES: Sample[]) {
+    SAMPLES.forEach((sample) => {
+      sample.sampler.chain(
+        sample.filter,
+        sample.channel,
+        masterFilter,
+        masterDistortion,
+        masterAnalyser,
+        Tone.Destination
+      )
+    })
+  }
+
+  function setSampleParams(sample: Sample) {
+    sample.sampler.attack = 0.01
+    sample.filter.type = 'lowpass'
+    sample.filter.frequency.value = 20000
+  }
+
+  function setMainParams() {
+    masterFilter.type = 'lowpass'
+    masterFilter.frequency.value = main_filter_freq
   }
 
   // CALLED ON EVENT
@@ -136,10 +171,8 @@
       return new Tone.Sequence(
         (time, step) => {
           if (sample.sequence[step]) {
-            sample.sampler.attack = 0.01
-            sample.sampler.release = 0.1
-            sample.filter.type = 'lowpass'
-            sample.filter.frequency.value = 16000
+            setSampleParams(sample)
+            setMainParams()
             sample.play(time)
           }
         },
@@ -157,6 +190,7 @@
     const buffers: Tone.ToneAudioBuffers = await makeBuffers(packs)
     const tone_samples: Sample[] = makeSamples(packs)
     const samples: Sample[] = await loadBuffers(tone_samples, buffers)
+    setChains(samples)
 
     return samples
   }
@@ -209,6 +243,7 @@
   <h2>FUNCTIONALITY</h2>
   <div class="functionality">
     <button onclick={toggleSeq}>{is_playing ? 'stop' : 'play'}</button>
+    <input type="range" min="100" max="18000" bind:value={main_filter_freq} />
     <button onclick={advanceActiveStep}>next step</button>
     <button onclick={() => triggerSample(selected_sample)}>play sample</button>
     <button onclick={selectPack}
