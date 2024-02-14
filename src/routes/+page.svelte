@@ -20,7 +20,8 @@
   let SEQUENCES: Tone.Sequence[] = []
 
   // Settings
-  let main_filter_freq: Tone.Unit.Frequency = $state(20000)
+  let main_filter_freq: Tone.Unit.Frequency = $state(18000)
+  let main_distortion_amount: number = $state(0.5)
 
   // State
   let SAMPLES: Sample[] = $state([])
@@ -94,6 +95,7 @@
   }
 
   function setMainParams() {
+    main_distortion.wet.value = main_distortion_amount
     main_filter.type = 'lowpass'
     main_filter.frequency.value = main_filter_freq
   }
@@ -119,6 +121,16 @@
   function selectPack() {
     selected_pack_index = (selected_pack_index + 1) % packs.length
   }
+
+  // not working
+  // function savePreset(samples: Sample[]) {
+  //   localStorage.setItem('samples', JSON.stringify(samples))
+  // }
+
+  // not working
+  // function loadPreset() {
+  //   SAMPLES = JSON.parse(localStorage.getItem('samples') || '[]')
+  // }
 
   // Legacy function
   function triggerSample(sample: Sample | undefined) {
@@ -243,12 +255,23 @@
   <div class="functionality">
     <button onclick={toggleSeq}>{is_playing ? 'stop' : 'play'}</button>
     <input type="range" min="100" max="18000" bind:value={main_filter_freq} />
+    <p>{main_filter_freq}</p>
+    <input
+      type="range"
+      min="0"
+      max="1"
+      step="0.2"
+      bind:value={main_distortion_amount}
+    />
+    <p>{main_distortion_amount}</p>
     <button onclick={advanceActiveStep}>next step</button>
     <button onclick={() => triggerSample(selected_sample)}>play sample</button>
     <button onclick={selectPack}
       >selected pack: {packs[selected_pack_index].name}</button
     >
     <p>selected sample: {(selected_sample?.name, selected_sample?.id)}</p>
+    <!-- <button onclick={() => savePreset(SAMPLES)}>save preset</button> -->
+    <!-- <button onclick={() => loadPreset()}>load preset</button> -->
   </div>
   <h2>SAMPLES</h2>
   <div class="samples">
