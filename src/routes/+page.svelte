@@ -13,11 +13,10 @@
 
   // === VARIABLES ==============================
 
-  // todo: fix naming amster and snake
   // Tone
-  const masterFilter = new Tone.Filter()
-  const masterDistortion = new Tone.Distortion()
-  const masterAnalyser = new Tone.Analyser()
+  const main_filter = new Tone.Filter()
+  const main_distortion = new Tone.Distortion()
+  const main_analyser = new Tone.Analyser()
   let SEQUENCES: Tone.Sequence[] = []
 
   // Settings
@@ -74,15 +73,15 @@
   }
 
   // this chains each sampler to its channel, and then all sampler channels
-  // to master filter, effects and tone.destination
+  // to main filter, effects and tone.destination
   function setChains(SAMPLES: Sample[]) {
     SAMPLES.forEach((sample) => {
       sample.sampler.chain(
         sample.filter,
         sample.channel,
-        masterFilter,
-        masterDistortion,
-        masterAnalyser,
+        main_filter,
+        main_distortion,
+        main_analyser,
         Tone.Destination
       )
     })
@@ -95,8 +94,8 @@
   }
 
   function setMainParams() {
-    masterFilter.type = 'lowpass'
-    masterFilter.frequency.value = main_filter_freq
+    main_filter.type = 'lowpass'
+    main_filter.frequency.value = main_filter_freq
   }
 
   // CALLED ON EVENT
