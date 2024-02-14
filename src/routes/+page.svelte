@@ -9,7 +9,6 @@
 
   // Classes and types
   import { Sample, type Packs } from '$lib/models.svelte'
-  import type { Frequency } from 'tone/build/esm/core/type/Units'
 
   // === VARIABLES ==============================
 
@@ -33,7 +32,7 @@
   // === FUNCTIONS ==============================
 
   // CALLED IMMEDIATELY
-  // This creates buffers for each sample in each pack
+  // This creates an audio buffer for each sample, pack by pack
   function makeBuffers(packs: Packs): Tone.ToneAudioBuffers {
     const urlsObject: { [key: string]: string } = {}
     packs.forEach((pack) => {
@@ -44,7 +43,7 @@
     return new Tone.ToneAudioBuffers(urlsObject, () => {})
   }
 
-  // This adds the SampleHeaders from the packs to the samplers and other Tone elements
+  // This adds samplers and other Tone elements to the SampleHeaders
   function makeSamples(packs: Packs) {
     const samples = packs.flatMap((pack) =>
       pack.samples.map(
@@ -61,7 +60,7 @@
     return samples
   }
 
-  // This loads each Sampler with its buffer
+  // This loads each sampler with its buffer
   function loadBuffers(
     toned_samples: Sample[],
     buffers: Tone.ToneAudioBuffers
@@ -73,8 +72,8 @@
     return toned_samples
   }
 
-  // this chains each sampler to its channel, and then all sampler channels
-  // to main filter, effects and tone.destination
+  // This chains each sampler to its filter and channel
+  // Then all sampler channels to main filter, effects, analyser and Tone.Destination
   function setChains(SAMPLES: Sample[]) {
     SAMPLES.forEach((sample) => {
       sample.sampler.chain(
@@ -88,12 +87,14 @@
     })
   }
 
+  // Sets sampler, filter parameters per sample
   function setSampleParams(sample: Sample) {
     sample.sampler.attack = 0.01
     sample.filter.type = 'lowpass'
-    sample.filter.frequency.value = 20000
+    sample.filter.frequency.value = 18000
   }
 
+  // Sets effect, filter parameters on the main channel
   function setMainParams() {
     main_distortion.wet.value = main_distortion_amount
     main_filter.type = 'lowpass'
@@ -102,37 +103,24 @@
 
   // CALLED ON EVENT
   // Seq refers to the sequencer. When we click on a sequencer step,
-  // the sequence array of the selected sample should be updated
+  // the sequence array of the selected sample is updated
   function handleSeqClick(sample: Sample, step_index: number) {
     sample.sequence[step_index] === false
       ? (sample.sequence[step_index] = true)
       : (sample.sequence[step_index] = false)
-    console.log('sample_sequence: ', sample.sequence)
   }
 
-  function advanceActiveStep() {
-    active_step_index = (active_step_index + 1) % 16
+  // This sets the active sample and triggers the sampler
+  function handleSampleClick(sample: Sample | undefined) {
+    if (!sample) return
+    selectSample(sample.id)
+    triggerSample(sample)
   }
 
   function selectSample(sample_id: number) {
     selected_sample = SAMPLES?.find((s) => s.id === sample_id)
   }
 
-  function selectPack() {
-    selected_pack_index = (selected_pack_index + 1) % packs.length
-  }
-
-  // not working
-  // function savePreset(samples: Sample[]) {
-  //   localStorage.setItem('samples', JSON.stringify(samples))
-  // }
-
-  // not working
-  // function loadPreset() {
-  //   SAMPLES = JSON.parse(localStorage.getItem('samples') || '[]')
-  // }
-
-  // Legacy function
   function triggerSample(sample: Sample | undefined) {
     // The audio context needs to be launched by a user action
     if (Tone.context.state !== 'running') {
@@ -141,14 +129,21 @@
     // set the sample and effect params if determining them per step
     // then trigger the sampler attack
     if (sample) {
-      sample.sampler.attack = 0.01
-      sample.sampler.release = 0.1
-      sample.filter.type = 'highpass'
-      sample.filter.frequency.value = 1600
       // go team go
       // todo: take sample.pitch into account
+      setSampleParams(sample)
+      setMainParams()
       sample.sampler.triggerAttack('C2', Tone.now())
     }
+  }
+
+  // todo
+  function advanceActiveStep() {
+    active_step_index = (active_step_index + 1) % 16
+  }
+
+  function selectPack() {
+    selected_pack_index = (selected_pack_index + 1) % packs.length
   }
 
   async function toggleSeq() {
@@ -193,6 +188,22 @@
     })
 
     return sequences
+  }
+
+  // not working
+  // function savePreset(samples: Sample[]) {
+  //   localStorage.setItem('samples', JSON.stringify(samples))
+  // }
+
+  // not working
+  // function loadPreset() {
+  //   SAMPLES = JSON.parse(localStorage.getItem('samples') || '[]')
+  // }
+
+  // Utility functions
+  // todo: use this in the other instances
+  function getSampleByID(sample_id: number) {
+    return SAMPLES.find((s) => s.id === sample_id)
   }
 
   // === LIFECYCLE ==============================
@@ -278,9 +289,13 @@
     {#key selected_pack_index}
       <div class="pack grid">
         {#each packs[selected_pack_index].samples as sample}
-          <button class="moji tile" onclick={() => selectSample(sample.id)}
-            >{(sample.emoji, sample.name)}</button
-          >
+          {#if sample}
+            <button
+              class="moji tile"
+              onclick={() => handleSampleClick(getSampleByID(sample.id))}
+              >{(sample.emoji, sample.name)}</button
+            >
+          {/if}
         {/each}
       </div>
     {/key}
