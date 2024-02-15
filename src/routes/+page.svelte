@@ -121,7 +121,7 @@
 
   // todo: use util function here instead
   function selectSample(sample_id: number) {
-    selected_sample = SAMPLES?.find((s) => s.id === sample_id)
+    selected_sample = getSampleByID(sample_id)
   }
 
   // Set the sample and effect params if determining them per step
@@ -173,6 +173,8 @@
     is_playing = !is_playing
   }
 
+  // Creates a Tone.Sequence for each sample, and specifies what happens on each step
+  // todo add Tone.Draw to this
   // todo: figure out why this works to change samples on the fly,
   // but 'if (step)', passing sample.sequence, doesn't
   function makeSequences(SAMPLES: Sample[]) {
@@ -193,14 +195,14 @@
     return sequences
   }
 
-  // not working
+  // roughest first stab, not tested
   // function savePreset(samples: Sample[]) {
-  //   localStorage.setItem('samples', JSON.stringify(samples))
+  //   localStorage.setItem('local_samples', JSON.stringify(samples))
   // }
 
-  // not working
+  // roughest first stab, not tested
   // function loadPreset() {
-  //   SAMPLES = JSON.parse(localStorage.getItem('samples') || '[]')
+  //   SAMPLES = JSON.parse(localStorage.getItem('local_samples') || '[]')
   // }
 
   // Utility functions
