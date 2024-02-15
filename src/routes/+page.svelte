@@ -229,7 +229,7 @@
     console.log('mounted')
   })
 
-  // ===DIAGNOSTICS==============================
+  // === DIAGNOSTICS ==============================
   $inspect('step: ', active_step_index)
 </script>
 
