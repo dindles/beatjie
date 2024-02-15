@@ -32,7 +32,7 @@
   // === FUNCTIONS ==============================
 
   // CALLED IMMEDIATELY
-  // This creates an audio buffer for each sample, pack by pack
+  // Creates an audio buffer for each sample, pack by pack
   function makeBuffers(packs: Packs): Tone.ToneAudioBuffers {
     const urlsObject: { [key: string]: string } = {}
     packs.forEach((pack) => {
@@ -43,7 +43,8 @@
     return new Tone.ToneAudioBuffers(urlsObject, () => {})
   }
 
-  // This adds samplers and other Tone elements to the SampleHeaders
+  // Creates a new Sample object from each SampleHeader
+  // Each Sample also contains a Tone.js sampler, filter and channel (see models.svelte.ts)
   function makeSamples(packs: Packs) {
     const samples = packs.flatMap((pack) =>
       pack.samples.map(
@@ -60,7 +61,7 @@
     return samples
   }
 
-  // This loads each sampler with its buffer
+  // Loads each sampler with its buffer
   function loadBuffers(
     toned_samples: Sample[],
     buffers: Tone.ToneAudioBuffers
@@ -72,7 +73,7 @@
     return toned_samples
   }
 
-  // This chains each sampler to its filter and channel
+  // Chains each sampler to its filter and channel
   // Then all sampler channels to main filter, effects, analyser and Tone.Destination
   function setChains(SAMPLES: Sample[]) {
     SAMPLES.forEach((sample) => {
@@ -102,7 +103,7 @@
   }
 
   // CALLED ON EVENT
-  // Seq refers to the sequencer. When we click on a sequencer step,
+  // When we click on a sequencer (seq) step,
   // the sequence array of the selected sample is updated
   function handleSeqClick(sample: Sample, step_index: number) {
     sample.sequence[step_index] === false
@@ -110,24 +111,26 @@
       : (sample.sequence[step_index] = false)
   }
 
-  // This sets the active sample and triggers the sampler
+  // When we click on a sample in the sample library,
+  // that sample is set as the selected_sample, and we trigger sample playback
   function handleSampleClick(sample: Sample | undefined) {
     if (!sample) return
     selectSample(sample.id)
     triggerSample(sample)
   }
 
+  // todo: use util function here instead
   function selectSample(sample_id: number) {
     selected_sample = SAMPLES?.find((s) => s.id === sample_id)
   }
 
+  // Set the sample and effect params if determining them per step
+  // then trigger the sampler attack
   function triggerSample(sample: Sample | undefined) {
     // The audio context needs to be launched by a user action
     if (Tone.context.state !== 'running') {
       Tone.start()
     }
-    // set the sample and effect params if determining them per step
-    // then trigger the sampler attack
     if (sample) {
       // go team go
       // todo: take sample.pitch into account
@@ -137,7 +140,7 @@
     }
   }
 
-  // todo
+  // todo – fix reverse oddness, and trigger this from Tone.Draw?
   function advanceActiveStep() {
     active_step_index = (active_step_index + 1) % 16
   }
