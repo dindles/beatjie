@@ -117,26 +117,24 @@
     if (!sample) return
     selectSample(sample.id)
     triggerSample(sample)
-  }
 
-  // todo: use util function here instead
-  function selectSample(sample_id: number) {
-    selected_sample = getSampleByID(sample_id)
-  }
-
-  // Set the sample and effect params if determining them per step
-  // then trigger the sampler attack
-  function triggerSample(sample: Sample | undefined) {
-    // The audio context needs to be launched by a user action
-    if (Tone.context.state !== 'running') {
-      Tone.start()
+    function selectSample(sample_id: number) {
+      selected_sample = getSampleByID(sample_id)
     }
-    if (sample) {
-      // go team go
-      // todo: take sample.pitch into account
-      setSampleParams(sample)
-      setMainParams()
-      sample.sampler.triggerAttack('C2', Tone.now())
+
+    // Set the sample and effect params then trigger the sampler attack
+    function triggerSample(sample: Sample | undefined) {
+      // The audio context needs to be launched by a user action
+      if (Tone.context.state !== 'running') {
+        Tone.start()
+      }
+      if (sample) {
+        // go team go
+        // todo: take sample.pitch into account
+        setSampleParams(sample)
+        setMainParams()
+        sample.sampler.triggerAttack('C2', Tone.now())
+      }
     }
   }
 
@@ -149,7 +147,7 @@
     selected_pack_index = (selected_pack_index + 1) % packs.length
   }
 
-  async function toggleSeq() {
+  async function toggleSeqPlayback() {
     // The audio context needs to be launched by a user action
     if (Tone.context.state !== 'running') {
       await Tone.start()
@@ -222,7 +220,7 @@
     return samples
   }
 
-  // Ensuring we have properly set up samples before using them
+  // Ensuring each setup step resolves properly before we use SAMPLES
   processSamples(packs).then((resolvedSamples) => {
     SAMPLES = resolvedSamples
   })
@@ -230,6 +228,9 @@
   $effect(() => {
     console.log('mounted')
   })
+
+  // ===DIAGNOSTICS==============================
+  $inspect('step: ', active_step_index)
 </script>
 
 <div class="header">
@@ -243,33 +244,34 @@
   <p>{selected_sample?.name}</p>
   <p>{active_step_index}</p>
   <!-- <h2>GRID</h2> -->
-  {#if !selected_sample}
-    <p>select a sample</p>
-  {/if}
-  {#each SAMPLES as sample}
-    {#if sample.id === selected_sample?.id}
-      <div class="sequencer grid">
-        {#each selected_sample.sequence as step, index}
-          <!-- if the active sample sequence is true for this step, the active class should be set -->
-          <div
-            class="moji tile"
-            class:active={index === active_step_index}
-            onclick={() => handleSeqClick(sample, index)}
-            onkeydown={() => handleSeqClick(sample, index)}
-            role="button"
-            tabindex="0"
-          >
-            {#if selected_sample.sequence[index]}
-              {selected_sample.emoji}
-            {/if}
-          </div>
-        {/each}
-      </div>
-    {:else}{/if}
-  {/each}
+  <div class="sequencer">
+    {#if !selected_sample}
+      <p>select a sample</p>
+    {/if}
+    <div class="grid">
+      {#each SAMPLES as sample}
+        {#if sample.id === selected_sample?.id}
+          {#each selected_sample.sequence as step, index}
+            <div
+              class="moji tile"
+              class:active={index === active_step_index}
+              onclick={() => handleSeqClick(sample, index)}
+              onkeydown={() => handleSeqClick(sample, index)}
+              role="button"
+              tabindex="0"
+            >
+              {#if selected_sample.sequence[index]}
+                {selected_sample.emoji}
+              {/if}
+            </div>
+          {/each}
+        {/if}
+      {/each}
+    </div>
+  </div>
   <h2>FUNCTIONALITY</h2>
   <div class="functionality">
-    <button onclick={toggleSeq}>{is_playing ? 'stop' : 'play'}</button>
+    <button onclick={toggleSeqPlayback}>{is_playing ? 'stop' : 'play'}</button>
     <input type="range" min="100" max="18000" bind:value={main_filter_freq} />
     <p>{main_filter_freq}</p>
     <input
@@ -281,11 +283,9 @@
     />
     <p>{main_distortion_amount}</p>
     <button onclick={advanceActiveStep}>next step</button>
-    <button onclick={() => triggerSample(selected_sample)}>play sample</button>
     <button onclick={selectPack}
       >selected pack: {packs[selected_pack_index].name}</button
     >
-    <p>selected sample: {(selected_sample?.name, selected_sample?.id)}</p>
     <!-- <button onclick={() => savePreset(SAMPLES)}>save preset</button> -->
     <!-- <button onclick={() => loadPreset()}>load preset</button> -->
   </div>
@@ -326,6 +326,13 @@
     width: 288px;
     height: 144px;
     border: solid 3px;
+  }
+
+  .sequencer {
+    border: solid 1px red;
+    display: grid;
+    place-items: center;
+    min-height: 288px;
   }
 
   .grid {
