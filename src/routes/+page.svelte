@@ -17,13 +17,13 @@
   const main_distortion = new Tone.Distortion()
   const main_analyser = new Tone.Analyser()
   let SEQUENCES: Tone.Sequence[] = []
+  let SAMPLES: Sample[] = $state([])
 
   // Settings
   let main_filter_freq: Tone.Unit.Frequency = $state(18000)
   let main_distortion_amount: number = $state(0.5)
 
   // State
-  let SAMPLES: Sample[] = $state([])
   let selected_pack_index = $state(0)
   let selected_sample: Sample | undefined = $state(undefined)
   let is_playing = $state(false)
@@ -143,6 +143,7 @@
     active_step_index = (active_step_index + 1) % 16
   }
 
+  // todo - this could take 'left' or 'right' as a parameter
   function selectPack() {
     selected_pack_index = (selected_pack_index + 1) % packs.length
   }
@@ -154,6 +155,8 @@
     }
 
     if (!is_playing) {
+      // todo: i don't think this needs to be here, can be part of init
+      // incidentally, that's why we don;t read the sequence arrays directly
       SEQUENCES = makeSequences(SAMPLES)
       for (const sequence of SEQUENCES) {
         sequence.start()
@@ -173,8 +176,6 @@
 
   // Creates a Tone.Sequence for each sample, and specifies what happens on each step
   // todo add Tone.Draw to this
-  // todo: figure out why this works to change samples on the fly,
-  // but 'if (step)', passing sample.sequence, doesn't
   function makeSequences(SAMPLES: Sample[]) {
     const sequences = SAMPLES.map((sample) => {
       return new Tone.Sequence(
