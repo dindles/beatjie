@@ -17,7 +17,8 @@
   const main_distortion = new Tone.Distortion()
   const main_analyser = new Tone.Analyser()
 
-  let SEQUENCE: Tone.Sequence
+  // let SEQUENCE: Tone.Sequence
+  let SEQUENCES: Tone.Sequence[] = []
   let SAMPLES: Sample[] = $state([])
 
   // Settings
@@ -123,6 +124,25 @@
     return sequence
   }
 
+  // Creates a Tone.Sequence for each sample, and specifies what happens on each step
+  // todo add Tone.Draw to this
+  function makeSequences(SAMPLES: Sample[]) {
+    const sequences = SAMPLES.map((sample) => {
+      return new Tone.Sequence(
+        (time, step) => {
+          if (sample.sequence[step]) {
+            setSampleParams(sample)
+            setMainParams()
+            sample.play(time)
+          }
+        },
+        [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+        '16n'
+      )
+    })
+
+    return sequences
+  }
   // CALLED ON EVENT
   // When we click on a sequencer (seq) step,
   // the sequence array of the selected sample is updated
@@ -183,14 +203,22 @@
     }, '16n')
 
     if (!is_playing) {
-      SEQUENCE.start()
+      SEQUENCES = makeSequences(SAMPLES)
+      for (const sequence of SEQUENCES) {
+        sequence.start()
+      }
+      // SEQUENCE.start()
       Tone.Transport.start('+0.1') // delay transport start 100ms to help avoid scheduling errors.
       console.log('Tone.Transport started')
     } else {
       Tone.Transport.stop()
       Tone.Transport.cancel(draw_repeat_event)
-      SEQUENCE.stop()
-      SEQUENCE.dispose()
+      for (const sequence of SEQUENCES) {
+        sequence.stop()
+        sequence.dispose()
+      }
+      // SEQUENCE.stop()
+      // SEQUENCE.dispose()
     }
 
     is_playing = !is_playing
@@ -218,7 +246,7 @@
     SAMPLES = resolvedSamples
   })
 
-  SEQUENCE = makeSequence()
+  // SEQUENCE = makeSequence()
 
   $effect(() => {
     console.log('mounted')
