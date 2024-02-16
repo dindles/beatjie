@@ -53,6 +53,7 @@
         (sample) =>
           new Sample(
             sample.id,
+            pack.name,
             sample.name,
             sample.emoji,
             sample.pitch,
@@ -107,6 +108,7 @@
   // Creates a sequence which cycles through every sample each step,
   // checks if that sample should be played, sets the sample and main params,
   // and plays the sample
+  // This seems to result in flamming when changing the filter while playing
   function makeSequence() {
     const sequence = new Tone.Sequence(
       (time, step) => {
@@ -115,6 +117,7 @@
             setSampleParams(sample)
             setMainParams()
             sample.play(time)
+          } else {
           }
         }
       },
@@ -315,8 +318,8 @@
   <div class="samples">
     {#key selected_pack_index}
       <div class="pack grid">
-        {#each packs[selected_pack_index].samples as sample}
-          {#if sample}
+        {#each SAMPLES as sample}
+          {#if sample && sample.pack === packs[selected_pack_index].name}
             <button
               class="moji tile"
               onclick={() => handleSampleClick(getSampleByID(sample.id))}

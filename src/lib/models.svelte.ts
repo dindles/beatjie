@@ -19,6 +19,7 @@ export type Packs = Pack[]
 
 export class Sample {
   id: number
+  pack: string
   name: string
   emoji: string
   pitch: Note
@@ -47,6 +48,7 @@ export class Sample {
 
   constructor(
     id: number,
+    pack: string,
     name: string,
     emoji: string,
     pitch: Note,
@@ -54,6 +56,7 @@ export class Sample {
   ) {
     // asssign random id
     this.id = id
+    this.pack = pack
     this.name = name
     this.emoji = emoji
     this.pitch = pitch
