@@ -16,6 +16,7 @@
   const main_filter = new Tone.Filter()
   const main_distortion = new Tone.Distortion()
   const main_analyser = new Tone.Analyser()
+  let draw_repeat_event: number | null = null
   let SEQUENCES: Tone.Sequence[] = []
   let SAMPLES: Sample[] = $state([])
 
@@ -148,6 +149,19 @@
     selected_pack_index = (selected_pack_index + 1) % packs.length
   }
 
+  function makeDrawRepeatEvent() {
+    // TODO: Fix - active step is being advanced three times somewhen, somewhy
+    return (draw_repeat_event = Tone.Transport.scheduleRepeat((time) => {
+      // Inside this callback, schedule a drawing callback with Tone.Draw
+      Tone.Draw.schedule(() => {
+        // Perform drawing or DOM manipulation here
+        // This inner callback will be executed on the next animation frame,
+        // synchronized with the audio event at the specified time
+        advanceActiveStep()
+      }, time)
+    }, '16n')) // This schedules the callback every 16th note
+  }
+
   async function toggleSeqPlayback() {
     // The audio context needs to be launched by a user action
     if (Tone.context.state !== 'running') {
@@ -156,22 +170,11 @@
 
     if (!is_playing) {
       // todo: i don't think this needs to be here, can be part of init
-      // incidentally, that's why we don;t read the sequence arrays directly
+      // incidentally, that's why we don't read the sequence arrays directly
       SEQUENCES = makeSequences(SAMPLES)
       for (const sequence of SEQUENCES) {
         sequence.start()
       }
-      // TODO: Fix - active step is being advanced three times somewhen, somewhy
-      Tone.Transport.scheduleRepeat((time) => {
-        // Inside this callback, schedule a drawing callback with Tone.Draw
-        Tone.Draw.schedule(() => {
-          // This inner callback will be executed on the next animation frame,
-          // synchronized with the audio event at the specified time
-          // Perform drawing or DOM manipulation here
-          console.log('Scheduled time:', time)
-          advanceActiveStep()
-        }, time)
-      }, '16n') // This schedules the callback 0 seconds from now
 
       Tone.Transport.start('+0.1') // delay transport start 100ms to help avoid scheduling errors.
       console.log('Tone.Transport started')
@@ -238,6 +241,12 @@
   processSamples(packs).then((resolvedSamples) => {
     SAMPLES = resolvedSamples
   })
+
+  async function initSequences() {
+    draw_repeat_event = makeDrawRepeatEvent()
+  }
+
+  initSequences()
 
   $effect(() => {
     console.log('mounted')
