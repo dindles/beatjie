@@ -1,14 +1,13 @@
-## todo
+# todo
 
 <!-- todo next -->
 
+- try a single sequencer, which each step loops through the samples.
+- fix active_step update
+
 <!-- todo -->
 
-- choose emojis
-
-# issues
-
-grids and mojis don't behave well when zoomed – use rem for tile size?
+## componentise
 
 <Header />
     <AppSettings />
@@ -24,3 +23,7 @@ grids and mojis don't behave well when zoomed – use rem for tile size?
 
 <LeftButton />
 <RightButton />
+
+## issues
+
+grids and mojis don't behave well when zoomed – use rem for tile size?

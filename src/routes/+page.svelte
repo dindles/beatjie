@@ -161,7 +161,7 @@
       for (const sequence of SEQUENCES) {
         sequence.start()
       }
-      // TODO: Add Tone.Draw() here
+      // TODO: Fix - active step is being advanced three times somewhen, somewhy
       Tone.Transport.scheduleRepeat((time) => {
         // Inside this callback, schedule a drawing callback with Tone.Draw
         Tone.Draw.schedule(() => {
