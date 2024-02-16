@@ -106,8 +106,8 @@
   }
 
   // Creates a Tone.Sequence for each sample, and specifies what happens on each step
-  // I tried making a single sequence instead, which looped through all samples, but
-  // that led to a bit of flamming when adjusting filter frequency during playback
+  // I tried making a single sequence instead, which looped through all samples each step,
+  // but that led to a bit of flamming when adjusting filter frequency during playback
   function makeSequences(SAMPLES: Sample[]) {
     const sequences = SAMPLES.map((sample) => {
       return new Tone.Sequence(
@@ -129,6 +129,7 @@
 
     return sequences
   }
+
   // CALLED ON EVENT
   // When we click on a sequencer (seq) step,
   // the sequence array of the selected sample is updated
@@ -170,10 +171,6 @@
     selected_pack_index = (selected_pack_index + 1) % packs.length
   }
 
-  function advanceActiveStep() {
-    active_step_index = (active_step_index + 1) % 16
-  }
-
   async function toggleSeqPlayback() {
     active_step_index = 0
     // The audio context needs to be launched by a user action
@@ -201,6 +198,10 @@
 
   // Utility functions
   // todo: use this in the other instances
+  function advanceActiveStep() {
+    active_step_index = (active_step_index + 1) % 16
+  }
+
   function getSampleByID(sample_id: number) {
     return SAMPLES.find((s) => s.id === sample_id)
   }
@@ -232,7 +233,7 @@
   <div class="display"></div>
   <p>{selected_sample?.name}</p>
   <p>{active_step_index}</p>
-  <!-- <h2>GRID</h2> -->
+  <h2>GRID</h2>
   <div class="sequencer">
     {#if !selected_sample}
       <p>select a sample</p>
