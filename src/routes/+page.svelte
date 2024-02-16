@@ -124,12 +124,15 @@
     return sequence
   }
 
+  // ==OR==
+
   // Creates a Tone.Sequence for each sample, and specifies what happens on each step
   // todo add Tone.Draw to this
   function makeSequences(SAMPLES: Sample[]) {
     const sequences = SAMPLES.map((sample) => {
       return new Tone.Sequence(
         (time, step) => {
+          active_step_index = step
           if (sample.sequence[step]) {
             setSampleParams(sample)
             setMainParams()
@@ -179,14 +182,14 @@
     }
   }
 
-  // todo – fix reverse oddness, and trigger this from Tone.Draw?
-  function advanceActiveStep() {
-    active_step_index = (active_step_index + 1) % 16
-  }
-
   // todo - this could take 'left' or 'right' as a parameter
   function selectPack() {
     selected_pack_index = (selected_pack_index + 1) % packs.length
+  }
+
+  // todo – fix reverse oddness, and trigger this from Tone.Draw?
+  function advanceActiveStep() {
+    active_step_index = (active_step_index + 1) % 16
   }
 
   async function toggleSeqPlayback() {
@@ -196,11 +199,11 @@
       await Tone.start()
     }
 
-    const draw_repeat_event = Tone.Transport.scheduleRepeat((time) => {
-      Tone.Draw.schedule(() => {
-        advanceActiveStep()
-      }, time)
-    }, '16n')
+    // const draw_repeat_event = Tone.Transport.scheduleRepeat((time) => {
+    //   Tone.Draw.schedule(() => {
+    //     advanceActiveStep()
+    //   }, time)
+    // }, '16n')
 
     if (!is_playing) {
       SEQUENCES = makeSequences(SAMPLES)
@@ -211,8 +214,8 @@
       Tone.Transport.start('+0.1') // delay transport start 100ms to help avoid scheduling errors.
       console.log('Tone.Transport started')
     } else {
+      // Tone.Transport.cancel(draw_repeat_event)
       Tone.Transport.stop()
-      Tone.Transport.cancel(draw_repeat_event)
       for (const sequence of SEQUENCES) {
         sequence.stop()
         sequence.dispose()
@@ -247,10 +250,6 @@
   })
 
   // SEQUENCE = makeSequence()
-
-  $effect(() => {
-    console.log('mounted')
-  })
 
   // === DIAGNOSTICS ==============================
   $inspect('step: ', active_step_index)
