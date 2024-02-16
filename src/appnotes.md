@@ -2,7 +2,6 @@
 
 <!-- todo next -->
 
-- try a single sequencer, which each step loops through the samples.
 - fix active_step update
 
 <!-- todo -->

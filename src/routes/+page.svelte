@@ -154,7 +154,7 @@
         // todo: take sample.pitch into account
         setSampleParams(sample)
         setMainParams()
-        sample.sampler.triggerAttack('C2', Tone.now())
+        sample.play(Tone.now())
       }
     }
   }
@@ -170,6 +170,7 @@
   }
 
   async function toggleSeqPlayback() {
+    active_step_index = 0
     // The audio context needs to be launched by a user action
     if (Tone.context.state !== 'running') {
       await Tone.start()
@@ -182,12 +183,10 @@
     }, '16n')
 
     if (!is_playing) {
-      active_step_index = 0
       SEQUENCE.start()
       Tone.Transport.start('+0.1') // delay transport start 100ms to help avoid scheduling errors.
       console.log('Tone.Transport started')
     } else {
-      active_step_index = 0
       Tone.Transport.stop()
       Tone.Transport.cancel(draw_repeat_event)
       SEQUENCE.stop()
