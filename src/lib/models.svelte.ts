@@ -27,24 +27,7 @@ export class Sample {
   sampler: Tone.Sampler
   filter: Tone.Filter
   channel: Tone.Channel
-  sequence: Sequence = $state([
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-  ])
+  sequence: Sequence = $state([])
   playing = $state(false)
 
   constructor(
@@ -65,8 +48,7 @@ export class Sample {
     this.sampler = new Tone.Sampler()
     this.filter = new Tone.Filter()
     this.channel = new Tone.Channel()
-
-    // todo: try set sequence length and values here
+    this.sequence = new Array(16).fill(false)
   }
 
   setSamplerBuffers(pitch: Note, buffer: Tone.ToneAudioBuffer) {
