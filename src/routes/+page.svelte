@@ -161,10 +161,23 @@
       for (const sequence of SEQUENCES) {
         sequence.start()
       }
+      // TODO: Add Tone.Draw() here
+      Tone.Transport.scheduleRepeat((time) => {
+        // Inside this callback, schedule a drawing callback with Tone.Draw
+        Tone.Draw.schedule(() => {
+          // This inner callback will be executed on the next animation frame,
+          // synchronized with the audio event at the specified time
+          // Perform drawing or DOM manipulation here
+          console.log('Scheduled time:', time)
+          advanceActiveStep()
+        }, time)
+      }, '16n') // This schedules the callback 0 seconds from now
+
       Tone.Transport.start('+0.1') // delay transport start 100ms to help avoid scheduling errors.
       console.log('Tone.Transport started')
     } else {
       Tone.Transport.stop()
+      active_step_index = 0
       for (const sequence of SEQUENCES) {
         sequence.stop()
         sequence.dispose()
