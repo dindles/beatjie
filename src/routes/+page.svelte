@@ -106,7 +106,6 @@
   }
 
   // Creates a Tone.Sequence for each sample, and specifies what happens on each step
-  // todo add Tone.Draw to this
   // I tried making a single sequence instead, which looped through all samples, but
   // that led to a bit of flamming when adjusting filter frequency during playback
   function makeSequences(SAMPLES: Sample[]) {
@@ -171,7 +170,6 @@
     selected_pack_index = (selected_pack_index + 1) % packs.length
   }
 
-  // todo – fix reverse oddness, and trigger this from Tone.Draw?
   function advanceActiveStep() {
     active_step_index = (active_step_index + 1) % 16
   }
@@ -183,29 +181,19 @@
       await Tone.start()
     }
 
-    // const draw_repeat_event = Tone.Transport.scheduleRepeat((time) => {
-    //   Tone.Draw.schedule(() => {
-    //     advanceActiveStep()
-    //   }, time)
-    // }, '16n')
-
     if (!is_playing) {
       SEQUENCES = makeSequences(SAMPLES)
       for (const sequence of SEQUENCES) {
         sequence.start()
       }
-      // SEQUENCE.start()
       Tone.Transport.start('+0.1') // delay transport start 100ms to help avoid scheduling errors.
       console.log('Tone.Transport started')
     } else {
-      // Tone.Transport.cancel(draw_repeat_event)
       Tone.Transport.stop()
       for (const sequence of SEQUENCES) {
         sequence.stop()
         sequence.dispose()
       }
-      // SEQUENCE.stop()
-      // SEQUENCE.dispose()
     }
 
     is_playing = !is_playing
@@ -232,9 +220,6 @@
   processSamples(packs).then((resolvedSamples) => {
     SAMPLES = resolvedSamples
   })
-
-  // === DIAGNOSTICS ==============================
-  $inspect('step: ', active_step_index)
 </script>
 
 <div class="header">
