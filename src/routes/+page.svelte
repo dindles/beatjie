@@ -23,7 +23,7 @@
 
   // Settings
   let main_filter_freq: Tone.Unit.Frequency = $state(18000)
-  let main_distortion_amount: number = $state(0.5)
+  let main_distortion_amount = $state(0.5)
 
   // State
   let selected_pack_index = $state(0)
