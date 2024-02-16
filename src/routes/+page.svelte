@@ -16,8 +16,8 @@
   const main_filter = new Tone.Filter()
   const main_distortion = new Tone.Distortion()
   const main_analyser = new Tone.Analyser()
-  let draw_repeat_event: number | null = null
   let SEQUENCES: Tone.Sequence[] = []
+  let SEQUENCEUNO: Tone.Sequence
   let SAMPLES: Sample[] = $state([])
 
   // Settings
@@ -103,6 +103,44 @@
     main_filter.frequency.value = main_filter_freq
   }
 
+  // Creates a single sequence, which, every loop, cycles through all samples and triggers them if necessary
+  function makeSequence() {
+    const sequence = new Tone.Sequence(
+      (time, step) => {
+        for (const sample of SAMPLES) {
+          if (sample.sequence[step]) {
+            setSampleParams(sample)
+            setMainParams()
+            sample.play(time)
+          }
+        }
+      },
+      [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+      '16n'
+    )
+    return sequence
+  }
+
+  // Creates a Tone.Sequence for each sample, and specifies what happens on each step
+  // todo add Tone.Draw to this
+  function makeSequences(SAMPLES: Sample[]) {
+    const sequences = SAMPLES.map((sample) => {
+      return new Tone.Sequence(
+        (time, step) => {
+          if (sample.sequence[step]) {
+            setSampleParams(sample)
+            setMainParams()
+            sample.play(time)
+          }
+        },
+        [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+        '16n'
+      )
+    })
+
+    return sequences
+  }
+
   // CALLED ON EVENT
   // When we click on a sequencer (seq) step,
   // the sequence array of the selected sample is updated
@@ -149,24 +187,16 @@
     selected_pack_index = (selected_pack_index + 1) % packs.length
   }
 
-  function makeDrawRepeatEvent() {
-    // TODO: Fix - active step is being advanced three times somewhen, somewhy
-    return (draw_repeat_event = Tone.Transport.scheduleRepeat((time) => {
-      // Inside this callback, schedule a drawing callback with Tone.Draw
-      Tone.Draw.schedule(() => {
-        // Perform drawing or DOM manipulation here
-        // This inner callback will be executed on the next animation frame,
-        // synchronized with the audio event at the specified time
-        advanceActiveStep()
-      }, time)
-    }, '16n')) // This schedules the callback every 16th note
-  }
-
   async function toggleSeqPlayback() {
     // The audio context needs to be launched by a user action
     if (Tone.context.state !== 'running') {
       await Tone.start()
     }
+    const draw_repeat_event = Tone.Transport.scheduleRepeat((time) => {
+      Tone.Draw.schedule(() => {
+        advanceActiveStep()
+      }, time)
+    }, '16n')
 
     if (!is_playing) {
       // todo: i don't think this needs to be here, can be part of init
@@ -180,34 +210,15 @@
       console.log('Tone.Transport started')
     } else {
       Tone.Transport.stop()
-      active_step_index = 0
+      Tone.Transport.cancel(draw_repeat_event)
       for (const sequence of SEQUENCES) {
         sequence.stop()
         sequence.dispose()
       }
     }
 
+    active_step_index = 0
     is_playing = !is_playing
-  }
-
-  // Creates a Tone.Sequence for each sample, and specifies what happens on each step
-  // todo add Tone.Draw to this
-  function makeSequences(SAMPLES: Sample[]) {
-    const sequences = SAMPLES.map((sample) => {
-      return new Tone.Sequence(
-        (time, step) => {
-          if (sample.sequence[step]) {
-            setSampleParams(sample)
-            setMainParams()
-            sample.play(time)
-          }
-        },
-        [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
-        '16n'
-      )
-    })
-
-    return sequences
   }
 
   // roughest first stab, not tested
@@ -242,11 +253,7 @@
     SAMPLES = resolvedSamples
   })
 
-  async function initSequences() {
-    draw_repeat_event = makeDrawRepeatEvent()
-  }
-
-  initSequences()
+  SEQUENCEUNO = makeSequence()
 
   $effect(() => {
     console.log('mounted')
