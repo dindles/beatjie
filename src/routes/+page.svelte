@@ -105,32 +105,10 @@
     main_filter.frequency.value = main_filter_freq
   }
 
-  // Creates a sequence which cycles through every sample each step,
-  // checks if that sample should be played, sets the sample and main params,
-  // and plays the sample
-  // This seems to result in flamming when changing the filter while playing
-  function makeSequence() {
-    const sequence = new Tone.Sequence(
-      (time, step) => {
-        for (const sample of SAMPLES) {
-          if (sample.sequence[step]) {
-            setSampleParams(sample)
-            setMainParams()
-            sample.play(time)
-          } else {
-          }
-        }
-      },
-      [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
-      '16n'
-    )
-    return sequence
-  }
-
-  // ==OR==
-
   // Creates a Tone.Sequence for each sample, and specifies what happens on each step
   // todo add Tone.Draw to this
+  // I tried making a single sequence instead, which looped through all samples, but
+  // that led to a bit of flamming when adjusting filter frequency during playback
   function makeSequences(SAMPLES: Sample[]) {
     const sequences = SAMPLES.map((sample) => {
       return new Tone.Sequence(
@@ -254,8 +232,6 @@
   processSamples(packs).then((resolvedSamples) => {
     SAMPLES = resolvedSamples
   })
-
-  // SEQUENCE = makeSequence()
 
   // === DIAGNOSTICS ==============================
   $inspect('step: ', active_step_index)
