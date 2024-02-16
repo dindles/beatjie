@@ -137,9 +137,12 @@
         (time, step) => {
           active_step_index = step
           if (sample.sequence[step]) {
+            sample.playing = true
             setSampleParams(sample)
             setMainParams()
             sample.play(time)
+          } else {
+            sample.playing = false
           }
         },
         [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
@@ -322,6 +325,7 @@
           {#if sample && sample.pack === packs[selected_pack_index].name}
             <button
               class="moji tile"
+              class:playing={sample.playing}
               onclick={() => handleSampleClick(getSampleByID(sample.id))}
               >{(sample.emoji, sample.name)}</button
             >
@@ -388,5 +392,9 @@
 
   .tile.active {
     background-color: teal;
+  }
+
+  .tile.playing {
+    background-color: rgb(178, 26, 178);
   }
 </style>

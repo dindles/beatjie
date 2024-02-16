@@ -45,6 +45,7 @@ export class Sample {
     false,
     false,
   ])
+  playing = $state(false)
 
   constructor(
     id: number,
@@ -64,6 +65,7 @@ export class Sample {
     this.sampler = new Tone.Sampler()
     this.filter = new Tone.Filter()
     this.channel = new Tone.Channel()
+
     // todo: try set sequence length and values here
   }
 
