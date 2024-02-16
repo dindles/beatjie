@@ -16,8 +16,8 @@
   const main_filter = new Tone.Filter()
   const main_distortion = new Tone.Distortion()
   const main_analyser = new Tone.Analyser()
-  let SEQUENCES: Tone.Sequence[] = []
-  let SEQUENCEUNO: Tone.Sequence
+
+  let SEQUENCE: Tone.Sequence
   let SAMPLES: Sample[] = $state([])
 
   // Settings
@@ -103,7 +103,9 @@
     main_filter.frequency.value = main_filter_freq
   }
 
-  // Creates a single sequence, which, every loop, cycles through all samples and triggers them if necessary
+  // Creates a sequence which cycles through every sample each step,
+  // checks if that sample should be played, sets the sample and main params,
+  // and plays the sample
   function makeSequence() {
     const sequence = new Tone.Sequence(
       (time, step) => {
@@ -119,26 +121,6 @@
       '16n'
     )
     return sequence
-  }
-
-  // Creates a Tone.Sequence for each sample, and specifies what happens on each step
-  // todo add Tone.Draw to this
-  function makeSequences(SAMPLES: Sample[]) {
-    const sequences = SAMPLES.map((sample) => {
-      return new Tone.Sequence(
-        (time, step) => {
-          if (sample.sequence[step]) {
-            setSampleParams(sample)
-            setMainParams()
-            sample.play(time)
-          }
-        },
-        [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
-        '16n'
-      )
-    })
-
-    return sequences
   }
 
   // CALLED ON EVENT
@@ -192,6 +174,7 @@
     if (Tone.context.state !== 'running') {
       await Tone.start()
     }
+
     const draw_repeat_event = Tone.Transport.scheduleRepeat((time) => {
       Tone.Draw.schedule(() => {
         advanceActiveStep()
@@ -199,37 +182,20 @@
     }, '16n')
 
     if (!is_playing) {
-      // todo: i don't think this needs to be here, can be part of init
-      // incidentally, that's why we don't read the sequence arrays directly
-      SEQUENCES = makeSequences(SAMPLES)
-      for (const sequence of SEQUENCES) {
-        sequence.start()
-      }
-
+      active_step_index = 0
+      SEQUENCE.start()
       Tone.Transport.start('+0.1') // delay transport start 100ms to help avoid scheduling errors.
       console.log('Tone.Transport started')
     } else {
+      active_step_index = 0
       Tone.Transport.stop()
       Tone.Transport.cancel(draw_repeat_event)
-      for (const sequence of SEQUENCES) {
-        sequence.stop()
-        sequence.dispose()
-      }
+      SEQUENCE.stop()
+      SEQUENCE.dispose()
     }
 
-    active_step_index = 0
     is_playing = !is_playing
   }
-
-  // roughest first stab, not tested
-  // function savePreset(samples: Sample[]) {
-  //   localStorage.setItem('local_samples', JSON.stringify(samples))
-  // }
-
-  // roughest first stab, not tested
-  // function loadPreset() {
-  //   SAMPLES = JSON.parse(localStorage.getItem('local_samples') || '[]')
-  // }
 
   // Utility functions
   // todo: use this in the other instances
@@ -253,7 +219,7 @@
     SAMPLES = resolvedSamples
   })
 
-  SEQUENCEUNO = makeSequence()
+  SEQUENCE = makeSequence()
 
   $effect(() => {
     console.log('mounted')
