@@ -2,6 +2,8 @@
 
 <!-- todo next -->
 
+Add analyser and threlte visualiser
+
 <!-- todo -->
 
 ## componentise
