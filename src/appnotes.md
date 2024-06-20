@@ -1,10 +1,22 @@
 # todo
 
-<!-- todo next -->
+Add analyser and display
 
-Add analyser and threlte visualiser
+future: threlte visualiser?
 
 <!-- todo -->
+
+## effects
+
+- choose effects
+- add effects
+- set parameters
+- create controls
+
+## samples
+
+- create samples
+- load samples
 
 ## componentise
 
@@ -20,6 +32,7 @@ Add analyser and threlte visualiser
 <Samples />
     <Pack />
 
+<!-- and each one has a -->
 <LeftButton />
 <RightButton />
 
