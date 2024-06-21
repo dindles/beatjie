@@ -12,6 +12,8 @@
 
   // === VARIABLES ==============================
 
+  // Meta
+  const doc_bg_color = $state('#000000')
   // Tone
   const main_filter = new Tone.Filter()
   const main_distortion = new Tone.Distortion()
@@ -23,6 +25,12 @@
   // Settings
   let main_filter_freq: Tone.Unit.Frequency = $state(18000)
   let main_distortion_amount = $state(0.5)
+
+  // Display
+  let animation_frame_id: number
+  let canvas: HTMLCanvasElement
+
+  let analysis_values: Float32Array | Float32Array[] = $state([])
 
   // State
   let selected_pack_index = $state(0)
@@ -207,6 +215,88 @@
     is_playing = !is_playing
   }
 
+  // CALLED ON MOUNT
+  $effect(() => {
+    const canvasElement = document.querySelector('canvas')
+    if (canvasElement) {
+      canvas = canvasElement
+    } else {
+      console.error('Canvas element not found')
+    }
+
+    canvas.width = 300
+    canvas.height = 200
+
+    startDrawingLoop()
+  })
+
+  // CALLED FOR DISPLAY
+  function startDrawingLoop() {
+    animation_frame_id = requestAnimationFrame(draw)
+  }
+
+  function stopDrawingLoop() {
+    cancelAnimationFrame(animation_frame_id)
+  }
+
+  function draw() {
+    const dim = Math.min(canvas.width, canvas.height)
+    const ctx = canvas.getContext('2d', { alpha: false })
+
+    if (ctx) {
+      // Background
+      ctx.fillStyle = 'rgba(0, 0, 0)'
+      ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+      ctx.strokeStyle = 'cyan'
+      ctx.lineWidth = dim * 0.015 // set line thickness
+
+      // Draw waveform if playing
+
+      analysis_values = main_analyser.getValue()
+      const scalingFactor = calculateScalingFactor(
+        analysis_values instanceof Float32Array
+          ? analysis_values
+          : analysis_values[0]
+      ) // Ensure analysis_values is of type Float32Array
+
+      ctx.beginPath()
+      for (let i = 0; i < analysis_values.length; i++) {
+        const amplitude = (analysis_values[i] as number) * scalingFactor // Apply scaling factor to amplitude
+        const x = map(i, 0, analysis_values.length - 1, 0, canvas.width)
+        const y = canvas.height / 2 + amplitude * canvas.height
+
+        // Place vertex
+        if (i === 0) {
+          ctx.moveTo(x, y)
+        } else {
+          ctx.lineTo(x, y)
+        }
+      }
+      ctx.stroke()
+    }
+
+    requestAnimationFrame(draw)
+  }
+
+  // Utility - Vertical waveform scaling factor
+  function calculateScalingFactor(analysis_values: Float32Array) {
+    const maxAmplitude = Math.max(...analysis_values.map(Math.abs)) // Find the maximum absolute amplitude
+    const scalingFactor = 0.2 / maxAmplitude // Calculate scaling factor based on max amplitude (0.9 to leave some padding)
+    return scalingFactor
+  }
+
+  // Utility - Map a value from one range to another
+  function map(
+    value: number,
+    start1: number,
+    stop1: number,
+    start2: number,
+    stop2: number
+  ) {
+    return ((value - start1) / (stop1 - start1)) * (stop2 - start2) + start2
+  }
+
   // Utility functions
   // todo: use this in the other instances
   function advanceActiveStep() {
@@ -241,7 +331,9 @@
 <div class="spacer" />
 <main>
   <h2>DISPLAY</h2>
-  <div class="display"></div>
+  <div class="display">
+    <canvas></canvas>
+  </div>
   <div class="selected_sample">
     <p>{selected_sample?.name}</p>
     <div class="active_sample_gain">
@@ -345,6 +437,7 @@
     width: 288px;
     height: 144px;
     border: solid 3px;
+    background-color: var(--bg-color);
   }
 
   .sequencer {
