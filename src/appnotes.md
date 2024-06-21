@@ -1,6 +1,6 @@
 # todo
 
-Add analyser and display
+Add display
 
 future: threlte visualiser?
 
@@ -12,6 +12,10 @@ future: threlte visualiser?
 - add effects
 - set parameters
 - create controls
+
+## active sample settings
+
+- three volume options (-3, -6, -12?)
 
 ## samples
 

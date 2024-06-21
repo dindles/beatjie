@@ -15,9 +15,8 @@
   // Tone
   const main_filter = new Tone.Filter()
   const main_distortion = new Tone.Distortion()
-  const main_analyser = new Tone.Analyser()
+  const main_analyser = new Tone.Analyser('waveform', 256)
 
-  // let SEQUENCE: Tone.Sequence
   let SEQUENCES: Tone.Sequence[] = []
   let SAMPLES: Sample[] = $state([])
 
@@ -96,18 +95,19 @@
     sample.sampler.attack = 0.01
     sample.filter.type = 'lowpass'
     sample.filter.frequency.value = 18000
+    sample.channel.volume.value = -3
   }
 
   // Sets effect, filter parameters on the main channel
   function setMainParams() {
-    main_distortion.wet.value = main_distortion_amount
+    main_distortion.wet.value = main_distortion_amount / 2
     main_filter.type = 'lowpass'
     main_filter.frequency.value = main_filter_freq
   }
 
   // Creates a Tone.Sequence for each sample, and specifies what happens on each step
   // I tried making a single sequence instead, which looped through all samples each step,
-  // but that led to a bit of flamming when adjusting filter frequency during playback
+  // but that led to flamming when adjusting filter frequency during playback?
   function makeSequences(SAMPLES: Sample[]) {
     const sequences = SAMPLES.map((sample) => {
       return new Tone.Sequence(
@@ -166,11 +166,22 @@
     }
   }
 
-  // todo - this could take 'left' or 'right' as a parameter
-  function selectPack() {
-    selected_pack_index = (selected_pack_index + 1) % packs.length
+  // TODO: not yet hooked up
+  function selectPack(direction: 'prev' | 'next') {
+    switch (direction) {
+      case 'prev':
+        selected_pack_index =
+          (selected_pack_index - 1 + packs.length) % packs.length
+        break
+      case 'next':
+        selected_pack_index = (selected_pack_index + 1) % packs.length
+        break
+      default:
+        console.error('Invalid direction for selectPack')
+    }
   }
 
+  // PLAYBACK START/STOP – makes all sequences and toggles the transport
   async function toggleSeqPlayback() {
     active_step_index = 0
     // The audio context needs to be launched by a user action
@@ -231,7 +242,14 @@
 <main>
   <h2>DISPLAY</h2>
   <div class="display"></div>
-  <p>{selected_sample?.name}</p>
+  <div class="selected_sample">
+    <p>{selected_sample?.name}</p>
+    <div class="active_sample_gain">
+      <button>🔇</button>
+      <button>🔈</button>
+      <button>🔊</button>
+    </div>
+  </div>
   <p>{active_step_index}</p>
   <h2>GRID</h2>
   <div class="sequencer">
@@ -273,9 +291,10 @@
     />
     <p>{main_distortion_amount}</p>
     <button onclick={advanceActiveStep}>next step</button>
-    <button onclick={selectPack}
-      >selected pack: {packs[selected_pack_index].name}</button
-    >
+    <button onclick={() => selectPack('next')}>next pack</button>
+    <button onclick={() => selectPack('prev')}>prev pack</button>
+    <p>Selected pack: {packs[selected_pack_index].name}</p>
+    <!-- TODO -->
     <!-- <button onclick={() => savePreset(SAMPLES)}>save preset</button> -->
     <!-- <button onclick={() => loadPreset()}>load preset</button> -->
   </div>
@@ -289,7 +308,7 @@
               class="moji tile"
               class:playing={sample.playing}
               onclick={() => handleSampleClick(getSampleByID(sample.id))}
-              >{(sample.emoji, sample.name)}</button
+              >{sample.emoji}</button
             >
           {/if}
         {/each}
@@ -311,6 +330,15 @@
   h1 {
     font-size: 3rem;
     font-weight: 800;
+  }
+
+  button {
+    text-align: center;
+    font-family: 'Noto Emoji Variable';
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    border: solid 3px;
   }
 
   .display {
