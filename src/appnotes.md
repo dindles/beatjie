@@ -13,10 +13,16 @@ future: threlte visualiser?
 
 ## effects
 
+- add mainChannelConfig object?
 - choose effects
 - add effects
 - set parameters
 - create controls
+
+### per sample
+
+- pitch. three choices - original, up a fifth, down a third?
+- add values to the Sample class, as with volume
 
 ## active sample settings
 

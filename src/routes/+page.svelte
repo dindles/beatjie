@@ -25,7 +25,6 @@
   let main_channel_volume: Tone.Unit.Decibels = $state(-3)
   let main_filter_freq: Tone.Unit.Frequency = $state(18000)
   let main_distortion_amount = $state(0.5)
-  let sample_channel_volume: Tone.Unit.Decibels | undefined = $state(undefined)
 
   // Display
   let animation_frame_id: number
@@ -360,7 +359,7 @@
   <div class="selected_sample">
     <p>{selected_sample?.name}</p>
     <p>chanvolval - {selected_sample?.channel.volume.value}</p>
-    <p>selsamp.vol - {sample_channel_volume}</p>
+    <p>selsamp.vol - {selected_sample?.volume}</p>
     <div class="active_sample_gain">
       <button on:click={() => setSampleGain('mute')}>🔇</button>
       <button on:click={() => setSampleGain('-12')}>🔈</button>
