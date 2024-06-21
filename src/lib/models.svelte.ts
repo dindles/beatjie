@@ -29,6 +29,7 @@ export class Sample {
   channel: Tone.Channel
   sequence: Sequence = $state([])
   playing = $state(false)
+  volume = $state(-3)
 
   constructor(
     id: number,

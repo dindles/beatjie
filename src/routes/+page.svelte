@@ -13,6 +13,7 @@
   // === VARIABLES ==============================
 
   // Tone
+  const main_channel = new Tone.Channel()
   const main_filter = new Tone.Filter()
   const main_distortion = new Tone.Distortion()
   const main_analyser = new Tone.Analyser('waveform', 128) // 128/256 samples both look good
@@ -21,8 +22,10 @@
   let SAMPLES: Sample[] = $state([])
 
   // Settings
+  let main_channel_volume: Tone.Unit.Decibels = $state(-3)
   let main_filter_freq: Tone.Unit.Frequency = $state(18000)
   let main_distortion_amount = $state(0.5)
+  let sample_channel_volume: Tone.Unit.Decibels | undefined = $state(undefined)
 
   // Display
   let animation_frame_id: number
@@ -88,6 +91,7 @@
       sample.sampler.chain(
         sample.filter,
         sample.channel,
+        main_channel,
         main_filter,
         main_distortion,
         main_analyser,
@@ -101,7 +105,7 @@
     sample.sampler.attack = 0.01
     sample.filter.type = 'lowpass'
     sample.filter.frequency.value = 18000
-    sample.channel.volume.value = -3
+    sample.channel.volume.value = sample.volume
   }
 
   // Sets effect, filter parameters on the main channel
@@ -109,6 +113,7 @@
     main_distortion.wet.value = main_distortion_amount / 2
     main_filter.type = 'lowpass'
     main_filter.frequency.value = main_filter_freq
+    main_channel.volume.value = main_channel_volume
   }
 
   // Creates a Tone.Sequence for each sample, and specifies what happens on each step
@@ -121,7 +126,9 @@
           active_step_index = step
           if (sample.sequence[step]) {
             sample.playing = true
-            setSampleParams(sample)
+            if (selected_sample) {
+              setSampleParams(selected_sample)
+            }
             setMainParams()
             sample.play(time)
           } else {
@@ -165,7 +172,9 @@
       if (sample) {
         // go team go
         // todo: take sample.pitch into account
-        setSampleParams(sample)
+        if (selected_sample) {
+          setSampleParams(selected_sample)
+        }
         setMainParams()
         sample.play(Tone.now())
       }
@@ -247,7 +256,7 @@
       ctx.fillRect(0, 0, canvas.width, canvas.height)
 
       ctx.strokeStyle = 'cyan'
-      ctx.lineWidth = dim * 0.015 // set line thickness
+      ctx.lineWidth = dim * 0.02 // set line thickness
 
       // Draw waveform
       analysis_values = main_analyser.getValue()
@@ -260,7 +269,7 @@
       ctx.beginPath()
       for (let i = 0; i < analysis_values.length; i++) {
         const amplitude = (analysis_values[i] as number) * scalingFactor // Apply scaling factor to amplitude
-        const x = map(i, 0, analysis_values.length - 1, 0, canvas.width)
+        const x = myMap(i, 0, analysis_values.length - 1, 0, canvas.width)
         const y = canvas.height / 2 + amplitude * canvas.height
 
         // Place vertex
@@ -284,7 +293,7 @@
   }
 
   // Utility - Map a value from one range to another
-  function map(
+  function myMap(
     value: number,
     start1: number,
     stop1: number,
@@ -319,6 +328,23 @@
   processSamples(packs).then((resolvedSamples) => {
     SAMPLES = resolvedSamples
   })
+
+  function setSampleGain(gain: 'mute' | '-3' | '-12') {
+    if (!selected_sample) console.log('No sample selected')
+    else if (selected_sample) {
+      switch (gain) {
+        case 'mute':
+          selected_sample.volume = -108
+          break
+        case '-3':
+          selected_sample.volume = -3
+          break
+        case '-12':
+          selected_sample.volume = -12
+          break
+      }
+    }
+  }
 </script>
 
 <div class="header">
@@ -333,10 +359,12 @@
   </div>
   <div class="selected_sample">
     <p>{selected_sample?.name}</p>
+    <p>chanvolval - {selected_sample?.channel.volume.value}</p>
+    <p>selsamp.vol - {sample_channel_volume}</p>
     <div class="active_sample_gain">
-      <button>🔇</button>
-      <button>🔈</button>
-      <button>🔊</button>
+      <button on:click={() => setSampleGain('mute')}>🔇</button>
+      <button on:click={() => setSampleGain('-12')}>🔈</button>
+      <button on:click={() => setSampleGain('-3')}>🔊</button>
     </div>
   </div>
   <p>{active_step_index}</p>
@@ -369,8 +397,13 @@
   <h2>FUNCTIONALITY</h2>
   <div class="functionality">
     <button onclick={toggleSeqPlayback}>{is_playing ? 'stop' : 'play'}</button>
+
+    <input type="range" min="-108" max="0" bind:value={main_channel_volume} />
+    <p>main volume - {main_channel_volume}</p>
+
     <input type="range" min="100" max="18000" bind:value={main_filter_freq} />
-    <p>{main_filter_freq}</p>
+    <p>filter freq - {main_filter_freq}</p>
+
     <input
       type="range"
       min="0"
@@ -378,8 +411,8 @@
       step="0.2"
       bind:value={main_distortion_amount}
     />
-    <p>{main_distortion_amount}</p>
-    <button onclick={advanceActiveStep}>next step</button>
+    <p>dist amount - {main_distortion_amount}</p>
+    <!-- <button onclick={advanceActiveStep}>next step</button> -->
     <button onclick={() => selectPack('next')}>next pack</button>
     <button onclick={() => selectPack('prev')}>prev pack</button>
     <p>Selected pack: {packs[selected_pack_index].name}</p>
