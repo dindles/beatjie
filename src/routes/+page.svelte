@@ -113,7 +113,7 @@
 
   // Creates a Tone.Sequence for each sample, and specifies what happens on each step
   // I tried making a single sequence instead, which looped through all samples each step,
-  // but that led to flamming when adjusting filter frequency during playback?
+  // but that led to delays and flamming when adjusting filter frequency during playback?
   function makeSequences(SAMPLES: Sample[]) {
     const sequences = SAMPLES.map((sample) => {
       return new Tone.Sequence(
@@ -249,14 +249,13 @@
       ctx.strokeStyle = 'cyan'
       ctx.lineWidth = dim * 0.015 // set line thickness
 
-      // Draw waveform if playing
-
+      // Draw waveform
       analysis_values = main_analyser.getValue()
       const scalingFactor = calculateScalingFactor(
         analysis_values instanceof Float32Array
           ? analysis_values
           : analysis_values[0]
-      ) // Ensure analysis_values is of type Float32Array
+      ) // Check analysis_values is of type Float32Array
 
       ctx.beginPath()
       for (let i = 0; i < analysis_values.length; i++) {

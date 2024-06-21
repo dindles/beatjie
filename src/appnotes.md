@@ -27,7 +27,7 @@ future: threlte visualiser?
 - create samples
 - load samples
 
-## componentise
+## componentise??
 
 <Header />
     <AppSettings />
