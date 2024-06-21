@@ -1,10 +1,15 @@
 # todo
 
-Add display
-
 future: threlte visualiser?
 
 <!-- todo -->
+
+## colour
+
+- (check in draw function for canvas bg and stroke colours)
+- all backgrounds are black
+- set global color variable in js. $state()
+- set hue and vibe variables, sliders
 
 ## effects
 

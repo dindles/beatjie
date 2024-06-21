@@ -8,6 +8,7 @@
 
 <style>
   :global(:root) {
-    --bg-color: rgb(189, 107, 189);
+    --bg-color: #ffffff;
+    /* --bg-color: rgb(189, 107, 189); */
   }
 </style>

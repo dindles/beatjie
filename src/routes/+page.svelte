@@ -12,12 +12,10 @@
 
   // === VARIABLES ==============================
 
-  // Meta
-  const doc_bg_color = $state('#000000')
   // Tone
   const main_filter = new Tone.Filter()
   const main_distortion = new Tone.Distortion()
-  const main_analyser = new Tone.Analyser('waveform', 256)
+  const main_analyser = new Tone.Analyser('waveform', 128) // 128/256 samples both look good
 
   let SEQUENCES: Tone.Sequence[] = []
   let SAMPLES: Sample[] = $state([])
@@ -244,8 +242,8 @@
     const ctx = canvas.getContext('2d', { alpha: false })
 
     if (ctx) {
-      // Background
-      ctx.fillStyle = 'rgba(0, 0, 0)'
+      // Background and stroke color
+      ctx.fillStyle = '#000000'
       ctx.fillRect(0, 0, canvas.width, canvas.height)
 
       ctx.strokeStyle = 'cyan'
@@ -437,6 +435,11 @@
     width: 288px;
     height: 144px;
     border: solid 3px;
+  }
+
+  canvas {
+    width: 100%;
+    height: 100%;
     background-color: var(--bg-color);
   }
 
