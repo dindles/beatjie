@@ -8,23 +8,29 @@
   import { packs } from '$lib/assets/audio/packs'
 
   // Classes and types
-  import { Sample, type Packs } from '$lib/models.svelte'
+  import { MainSettings, Sample, type Packs } from '$lib/models.svelte'
 
   // === VARIABLES ==============================
 
   // Tone
+  const main_settings = new MainSettings(-3, 18000, false, 0.1, 64)
   const main_channel = new Tone.Channel()
-  const main_filter = new Tone.Filter()
+  const main_filter_lp = new Tone.Filter(main_settings.filter_freq, 'lowpass')
+  const main_filter_hp = new Tone.Filter(130, 'highpass')
   const main_distortion = new Tone.Distortion()
-  const main_analyser = new Tone.Analyser('waveform', 128) // 128/256 samples both look good
+  const main_analyser = new Tone.Analyser(
+    'waveform',
+    main_settings.analyser_resolution
+  )
 
   let SEQUENCES: Tone.Sequence[] = []
   let SAMPLES: Sample[] = $state([])
 
   // Settings
-  let main_channel_volume: Tone.Unit.Decibels = $state(-3)
-  let main_filter_freq: Tone.Unit.Frequency = $state(18000)
-  let main_distortion_amount = $state(0.5)
+
+  // let main_channel_volume: Tone.Unit.Decibels = $state(-3)
+  // let main_filter_freq: Tone.Unit.Frequency = $state(18000)
+  // let main_distortion_amount = $state(0.5)
 
   // Display
   let animation_frame_id: number
@@ -91,7 +97,8 @@
         sample.filter,
         sample.channel,
         main_channel,
-        main_filter,
+        main_filter_lp,
+        main_filter_hp,
         main_distortion,
         main_analyser,
         Tone.Destination
@@ -109,10 +116,9 @@
 
   // Sets effect, filter parameters on the main channel
   function setMainParams() {
-    main_distortion.wet.value = main_distortion_amount / 2
-    main_filter.type = 'lowpass'
-    main_filter.frequency.value = main_filter_freq
-    main_channel.volume.value = main_channel_volume
+    main_distortion.wet.value = main_settings.distortion_amount / 2
+    main_filter_lp.frequency.value = main_settings.filter_freq
+    main_channel.volume.value = main_settings.volume
   }
 
   // Creates a Tone.Sequence for each sample, and specifies what happens on each step
@@ -128,7 +134,7 @@
             if (selected_sample) {
               setSampleParams(selected_sample)
             }
-            setMainParams()
+            // setMainParams()
             sample.play(time)
           } else {
             sample.playing = false
@@ -397,20 +403,22 @@
   <div class="functionality">
     <button onclick={toggleSeqPlayback}>{is_playing ? 'stop' : 'play'}</button>
 
-    <input type="range" min="-108" max="0" bind:value={main_channel_volume} />
-    <p>main volume - {main_channel_volume}</p>
-
-    <input type="range" min="100" max="18000" bind:value={main_filter_freq} />
-    <p>filter freq - {main_filter_freq}</p>
+    <input
+      type="range"
+      min="100"
+      max="18000"
+      bind:value={main_filter_lp.frequency.value}
+    />
+    <p>filter freq - {main_filter_lp.frequency.value}</p>
 
     <input
       type="range"
-      min="0"
+      min="0.1"
       max="1"
-      step="0.2"
-      bind:value={main_distortion_amount}
+      step="0.1"
+      bind:value={main_distortion.wet.value}
     />
-    <p>dist amount - {main_distortion_amount}</p>
+    <p>dist amount - {main_distortion.wet.value}</p>
     <!-- <button onclick={advanceActiveStep}>next step</button> -->
     <button onclick={() => selectPack('next')}>next pack</button>
     <button onclick={() => selectPack('prev')}>prev pack</button>

@@ -13,7 +13,7 @@ future: threlte visualiser?
 
 ## effects
 
-- add mainChannelConfig object?
+- add mainChannelSettings object?
 - choose effects
 - add effects
 - set parameters

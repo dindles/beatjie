@@ -56,16 +56,30 @@ export class Sample {
     this.sampler.add(pitch, buffer)
   }
 
-  setFilterParams(
-    type: 'lowpass' | 'highpass' | 'bandpass',
-    frequency: number
-  ) {
-    this.filter.type = type
-    this.filter.frequency.value = frequency
-  }
-
   play(time: Time) {
     this.sampler.triggerAttack(this.pitch, time)
+  }
+}
+
+export class MainSettings {
+  volume: Tone.Unit.Decibels = $state(-3)
+  filter_freq: Tone.Unit.Frequency = $state(18000)
+  highpassed: boolean = $state(false)
+  distortion_amount: number = $state(0.1)
+  analyser_resolution: number = $state(256)
+
+  constructor(
+    volume: Tone.Unit.Decibels,
+    filter_freq: Tone.Unit.Frequency,
+    highpassed: boolean,
+    distortion_amount: number,
+    analyser_resolution: number
+  ) {
+    this.volume = volume
+    this.filter_freq = filter_freq
+    this.highpassed = highpassed
+    this.distortion_amount = distortion_amount
+    this.analyser_resolution = analyser_resolution
   }
 }
 
