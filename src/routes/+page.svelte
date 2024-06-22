@@ -13,10 +13,10 @@
   // === VARIABLES ==============================
 
   // Tone
-  const main_settings = new MainSettings(-3, 18000, false, 0.1, 64)
+  const main_settings = new MainSettings(-3, 18000, false, 200, 0.1, 128)
   const main_channel = new Tone.Channel()
-  const main_filter_lp = new Tone.Filter(main_settings.filter_freq, 'lowpass')
-  const main_filter_hp = new Tone.Filter(130, 'highpass')
+  const main_filter_lp = new Tone.Filter(main_settings.lowpass_freq, 'lowpass')
+  const main_filter_hp = new Tone.Filter(0, 'highpass')
   const main_distortion = new Tone.Distortion()
   const main_analyser = new Tone.Analyser(
     'waveform',
@@ -117,7 +117,7 @@
   // Sets effect, filter parameters on the main channel
   function setMainParams() {
     main_distortion.wet.value = main_settings.distortion_amount / 2
-    main_filter_lp.frequency.value = main_settings.filter_freq
+    main_filter_lp.frequency.value = main_settings.lowpass_freq
     main_channel.volume.value = main_settings.volume
   }
 
@@ -350,6 +350,15 @@
       }
     }
   }
+
+  function toggleHighPass() {
+    if (main_settings.highpassed) {
+      main_filter_hp.frequency.value = 0
+    } else {
+      main_filter_hp.frequency.value = main_settings.highpass_freq
+    }
+    main_settings.highpassed = !main_settings.highpassed
+  }
 </script>
 
 <div class="header">
@@ -402,6 +411,10 @@
   <h2>FUNCTIONALITY</h2>
   <div class="functionality">
     <button onclick={toggleSeqPlayback}>{is_playing ? 'stop' : 'play'}</button>
+
+    <button onclick={toggleHighPass}
+      >high pass {main_settings.highpassed ? 'on' : 'off'}</button
+    >
 
     <input
       type="range"
