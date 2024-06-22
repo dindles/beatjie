@@ -26,12 +26,6 @@
   let SEQUENCES: Tone.Sequence[] = []
   let SAMPLES: Sample[] = $state([])
 
-  // Settings
-
-  // let main_channel_volume: Tone.Unit.Decibels = $state(-3)
-  // let main_filter_freq: Tone.Unit.Frequency = $state(18000)
-  // let main_distortion_amount = $state(0.5)
-
   // Display
   let animation_frame_id: number
   let canvas: HTMLCanvasElement
@@ -114,13 +108,6 @@
     sample.channel.volume.value = sample.volume
   }
 
-  // Sets effect, filter parameters on the main channel
-  function setMainParams() {
-    main_distortion.wet.value = main_settings.distortion_amount / 2
-    main_filter_lp.frequency.value = main_settings.lowpass_freq
-    main_channel.volume.value = main_settings.volume
-  }
-
   // Creates a Tone.Sequence for each sample, and specifies what happens on each step
   // I tried making a single sequence instead, which looped through all samples each step,
   // but that led to delays and flamming when adjusting filter frequency during playback?
@@ -134,7 +121,6 @@
             if (selected_sample) {
               setSampleParams(selected_sample)
             }
-            // setMainParams()
             sample.play(time)
           } else {
             sample.playing = false
@@ -180,7 +166,6 @@
         if (selected_sample) {
           setSampleParams(selected_sample)
         }
-        setMainParams()
         sample.play(Tone.now())
       }
     }
