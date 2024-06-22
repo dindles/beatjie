@@ -351,6 +351,23 @@
     }
   }
 
+  function setSamplePitch(pitch: 'third' | 'tonic' | 'fifth') {
+    if (!selected_sample) console.log('No sample selected')
+    else if (selected_sample) {
+      switch (pitch) {
+        case 'third':
+          selected_sample.pitch = 'E2'
+          break
+        case 'tonic':
+          selected_sample.pitch = 'C2'
+          break
+        case 'fifth':
+          selected_sample.pitch = 'G2'
+          break
+      }
+    }
+  }
+
   function toggleHighPass() {
     if (main_settings.highpassed) {
       main_filter_hp.frequency.value = 0
@@ -379,6 +396,11 @@
       <button on:click={() => setSampleGain('mute')}>🔇</button>
       <button on:click={() => setSampleGain('-12')}>🔈</button>
       <button on:click={() => setSampleGain('-3')}>🔊</button>
+    </div>
+    <div class="active_sample_pitch">
+      <button on:click={() => setSamplePitch('tonic')}>I</button>
+      <button on:click={() => setSamplePitch('third')}>III</button>
+      <button on:click={() => setSamplePitch('fifth')}>V</button>
     </div>
   </div>
   <p>{active_step_index}</p>
