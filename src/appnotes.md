@@ -4,6 +4,9 @@ future: threlte visualiser?
 
 <!-- todo -->
 
+- add preview toggle to samples. if enabled, trigger sample when clicked. if not, only trigger via sequencer.
+- bpm
+
 ## colour
 
 - (check in draw function for canvas bg and stroke colours)

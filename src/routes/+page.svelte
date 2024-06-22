@@ -13,11 +13,12 @@
   // === VARIABLES ==============================
 
   // Tone
-  const main_settings = new MainSettings(-3, 18000, false, 200, 0.1, 128)
-  const main_channel = new Tone.Channel()
+  const main_settings = new MainSettings(0, 18000, false, 200, 0.2, 128)
+  const main_channel = new Tone.Channel(main_settings.volume)
   const main_filter_lp = new Tone.Filter(main_settings.lowpass_freq, 'lowpass')
   const main_filter_hp = new Tone.Filter(0, 'highpass')
   const main_distortion = new Tone.Distortion()
+  main_distortion.wet.value = main_settings.distortion_amount
   const main_analyser = new Tone.Analyser(
     'waveform',
     main_settings.analyser_resolution
@@ -26,17 +27,17 @@
   let SEQUENCES: Tone.Sequence[] = []
   let SAMPLES: Sample[] = $state([])
 
+  // State
+  let selected_pack_index: number = $state(0)
+  let selected_sample: Sample | undefined = $state(undefined)
+  let is_playing = $state(false)
+  let active_step_index: number = $state(0)
+  let preview_samples_active: boolean = $state(true)
+
   // Display
   let animation_frame_id: number
   let canvas: HTMLCanvasElement
-
   let analysis_values: Float32Array | Float32Array[] = $state([])
-
-  // State
-  let selected_pack_index = $state(0)
-  let selected_sample: Sample | undefined = $state(undefined)
-  let is_playing = $state(false)
-  let active_step_index = $state(0)
 
   // === FUNCTIONS ==============================
 
@@ -53,7 +54,7 @@
   }
 
   // Creates a new Sample object from each SampleHeader
-  // Each Sample also contains a Tone.js sampler, filter and channel (see models.svelte.ts)
+  // Each Sample also contains a Tone.js sampler and channel strip (see models.svelte.ts)
   function makeSamples(packs: Packs) {
     const samples = packs.flatMap((pack) =>
       pack.samples.map(
@@ -83,12 +84,11 @@
     return toned_samples
   }
 
-  // Chains each sampler to its filter and channel
-  // Then all sampler channels to main filter, effects, analyser and Tone.Destination
+  // Chains each sampler to its channel strip, then
+  // to main channel, effects, analyser and Tone.Destination
   function setChains(SAMPLES: Sample[]) {
     SAMPLES.forEach((sample) => {
       sample.sampler.chain(
-        sample.filter,
         sample.channel,
         main_channel,
         main_filter_lp,
@@ -103,8 +103,6 @@
   // Sets sampler, filter parameters per sample
   function setSampleParams(sample: Sample) {
     sample.sampler.attack = 0.01
-    sample.filter.type = 'lowpass'
-    sample.filter.frequency.value = 18000
     sample.channel.volume.value = sample.volume
   }
 
@@ -147,8 +145,12 @@
   // that sample is set as the selected_sample, and we trigger sample playback
   function handleSampleClick(sample: Sample | undefined) {
     if (!sample) return
+
     selectSample(sample.id)
-    triggerSample(sample)
+
+    if (preview_samples_active) {
+      triggerSample(sample)
+    }
 
     function selectSample(sample_id: number) {
       selected_sample = getSampleByID(sample_id)
@@ -162,7 +164,6 @@
       }
       if (sample) {
         // go team go
-        // todo: take sample.pitch into account
         if (selected_sample) {
           setSampleParams(selected_sample)
         }
@@ -171,7 +172,6 @@
     }
   }
 
-  // TODO: not yet hooked up
   function selectPack(direction: 'prev' | 'next') {
     switch (direction) {
       case 'prev':
@@ -282,7 +282,7 @@
     return scalingFactor
   }
 
-  // Utility - Map a value from one range to another
+  // Utility - Map one range to another
   function myMap(
     value: number,
     start1: number,
@@ -294,11 +294,6 @@
   }
 
   // Utility functions
-  // todo: use this in the other instances
-  function advanceActiveStep() {
-    active_step_index = (active_step_index + 1) % 16
-  }
-
   function getSampleByID(sample_id: number) {
     return SAMPLES.find((s) => s.id === sample_id)
   }
@@ -439,7 +434,6 @@
       bind:value={main_distortion.wet.value}
     />
     <p>dist amount - {main_distortion.wet.value}</p>
-    <!-- <button onclick={advanceActiveStep}>next step</button> -->
     <button onclick={() => selectPack('next')}>next pack</button>
     <button onclick={() => selectPack('prev')}>prev pack</button>
     <p>Selected pack: {packs[selected_pack_index].name}</p>
@@ -447,8 +441,15 @@
     <!-- <button onclick={() => savePreset(SAMPLES)}>save preset</button> -->
     <!-- <button onclick={() => loadPreset()}>load preset</button> -->
   </div>
-  <h2>SAMPLES</h2>
   <div class="samples">
+    <h2>SAMPLES</h2>
+    <button
+      onclick={() => {
+        preview_samples_active = !preview_samples_active
+      }}
+    >
+      {preview_samples_active ? 'X' : '🎧'}
+    </button>
     {#key selected_pack_index}
       <div class="pack grid">
         {#each SAMPLES as sample}
@@ -528,6 +529,7 @@
     background-color: white;
     border: solid 3px;
     border-radius: 6px;
+    padding: 0;
   }
 
   .moji {
