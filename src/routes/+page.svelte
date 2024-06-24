@@ -25,6 +25,7 @@
   const main_filter_lp = new Tone.Filter(20000, 'lowpass')
   const main_filter_hp = new Tone.Filter(0, 'highpass')
   const main_distortion = new Tone.Distortion()
+  // this is set here because the init distortion parameter is amount, not wet.
   main_distortion.wet.value = main_init.distortion_init
   const main_analyser = new Tone.Analyser(
     'waveform',

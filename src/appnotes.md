@@ -10,6 +10,7 @@ future: threlte visualiser?
 - add bpm
 - try short decay reverb?
 - randomise pack on mount
+- add const main_analyser_fft = new Tone.Analyser('fft', main_init.analyser_resolution) and add toggles between waveform and fft
 
 ## colour
 
