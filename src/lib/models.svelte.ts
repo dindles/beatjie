@@ -22,24 +22,23 @@ export class Sample {
   pack: string
   name: string
   emoji: string
-  pitch: Note
   url: string
   sampler: Tone.Sampler
-  filter: Tone.Filter
+  volume: number = $state(-3)
+  pitch: Note = $state('C2')
   channel: Tone.Channel
+  filter: Tone.Filter
   sequence: Sequence = $state([])
-  playing = $state(false)
-  volume = $state(-3)
+  playing: boolean = $state(false)
 
   constructor(
     id: number,
     pack: string,
     name: string,
     emoji: string,
-    pitch: Note,
-    url: string
+    url: string,
+    pitch: Note
   ) {
-    // asssign random id
     this.id = id
     this.pack = pack
     this.name = name
@@ -49,6 +48,7 @@ export class Sample {
     this.sampler = new Tone.Sampler()
     this.filter = new Tone.Filter()
     this.channel = new Tone.Channel()
+    // creates an empty sample-specific sequence accessed by the sequencer
     this.sequence = new Array(16).fill(false)
   }
 

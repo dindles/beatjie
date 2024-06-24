@@ -9,6 +9,7 @@ future: threlte visualiser?
 - add dist toggle
 - add bpm
 - try short decay reverb?
+- randomise pack on mount
 
 ## colour
 

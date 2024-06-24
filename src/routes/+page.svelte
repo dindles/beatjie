@@ -17,14 +17,15 @@
     volume: -3,
     lowpass_freq: 2000,
     highpass_freq: 200,
-    distortion_amount: 0.1,
+    distortion_init: 0.2,
+    distortion_amount: 0.8,
     analyser_resolution: 256,
   }
   const main_channel = new Tone.Channel(main_init.volume)
   const main_filter_lp = new Tone.Filter(20000, 'lowpass')
   const main_filter_hp = new Tone.Filter(0, 'highpass')
   const main_distortion = new Tone.Distortion()
-  main_distortion.wet.value = main_init.distortion_amount
+  main_distortion.wet.value = main_init.distortion_init
   const main_analyser = new Tone.Analyser(
     'waveform',
     main_init.analyser_resolution
@@ -41,6 +42,7 @@
   let preview_samples_active: boolean = $state(true)
   let main_lowpassed: boolean = $state(false)
   let main_highpassed: boolean = $state(false)
+  let main_distorted: boolean = $state(false)
 
   // Display
   let animation_frame_id: number
@@ -72,8 +74,8 @@
             pack.name,
             sample.name,
             sample.emoji,
-            sample.pitch,
-            sample.url
+            sample.url,
+            sample.pitch
           )
       )
     )
@@ -103,7 +105,7 @@
         main_filter_hp,
         main_distortion,
         main_analyser,
-        Tone.Destination
+        Tone.getDestination()
       )
     })
   }
@@ -167,7 +169,7 @@
     // Set the sample and effect params then trigger the sampler attack
     function triggerSample(sample: Sample | undefined) {
       // The audio context needs to be launched by a user action
-      if (Tone.context.state !== 'running') {
+      if (Tone.getContext().state !== 'running') {
         Tone.start()
       }
       if (sample) {
@@ -180,7 +182,7 @@
     }
   }
 
-  function selectPack(direction: 'prev' | 'next') {
+  function selectPack(direction: 'prev' | 'next' | 'random') {
     switch (direction) {
       case 'prev':
         selected_pack_index =
@@ -188,6 +190,9 @@
         break
       case 'next':
         selected_pack_index = (selected_pack_index + 1) % packs.length
+        break
+      case 'random':
+        selected_pack_index = Math.floor(Math.random() * packs.length)
         break
       default:
         console.error('Invalid direction for selectPack')
@@ -198,7 +203,7 @@
   async function toggleSeqPlayback() {
     active_step_index = 0
     // The audio context needs to be launched by a user action
-    if (Tone.context.state !== 'running') {
+    if (Tone.getContext().state !== 'running') {
       await Tone.start()
     }
 
@@ -207,10 +212,10 @@
       for (const sequence of SEQUENCES) {
         sequence.start()
       }
-      Tone.Transport.start('+0.1') // delay transport start 100ms to help avoid scheduling errors.
+      Tone.getTransport().start('+0.1') // delay transport start 100ms to help avoid scheduling errors.
       console.log('Tone.Transport started')
     } else {
-      Tone.Transport.stop()
+      Tone.getTransport().stop()
       for (const sequence of SEQUENCES) {
         sequence.stop()
         sequence.dispose()
@@ -222,6 +227,8 @@
 
   // CALLED ON MOUNT
   $effect(() => {
+    selectPack('random')
+
     const canvasElement = document.querySelector('canvas')
     if (canvasElement) {
       canvas = canvasElement
@@ -240,6 +247,7 @@
     animation_frame_id = requestAnimationFrame(draw)
   }
 
+  // todo: need this?
   function stopDrawingLoop() {
     cancelAnimationFrame(animation_frame_id)
   }
@@ -339,15 +347,15 @@
     }
   }
 
-  function setSamplePitch(pitch: 'third' | 'tonic' | 'fifth') {
+  function setSamplePitch(pitch: 'tonic' | 'fourth' | 'fifth') {
     if (!selected_sample) console.log('No sample selected')
     else if (selected_sample) {
       switch (pitch) {
-        case 'third':
-          selected_sample.pitch = 'E2'
-          break
         case 'tonic':
           selected_sample.pitch = 'C2'
+          break
+        case 'fourth':
+          selected_sample.pitch = 'F2'
           break
         case 'fifth':
           selected_sample.pitch = 'G2'
@@ -373,6 +381,15 @@
       main_filter_lp.frequency.value = main_init.lowpass_freq
     }
   }
+
+  function toggleDistortion() {
+    main_distorted = !main_distorted
+    if (!main_distorted) {
+      main_distortion.wet.value = 0.2
+    } else {
+      main_distortion.wet.value = main_init.distortion_amount
+    }
+  }
 </script>
 
 <div class="header">
@@ -384,6 +401,13 @@
     <!-- DISPLAY -->
     <div class="display">
       <canvas></canvas>
+    </div>
+
+    <!-- PACK SELECT -->
+    <div class="pack_select">
+      <button onclick={() => selectPack('prev')}>👈</button>
+      <p>{packs[selected_pack_index].name}</p>
+      <button onclick={() => selectPack('next')}>👉</button>
     </div>
 
     <!-- SAMPLES -->
@@ -411,31 +435,61 @@
       {/key}
     </div>
 
-    <!-- PACK SELECT -->
-    <div class="pack_select">
-      <button onclick={() => selectPack('prev')}>👈</button>
-      <p>{packs[selected_pack_index].name}</p>
-      <button onclick={() => selectPack('next')}>👉</button>
-    </div>
-
     <!-- SELECT A SAMPLE -->
     {#if !selected_sample}
       <p class="sample_select_message">select a sample</p>
     {:else}
       <!-- SELECTED SAMPLE SETTINGS -->
       <div class="selected_sample_settings">
-        <p>{selected_sample?.name}</p>
         <p>{selected_sample?.emoji}</p>
         <div class="active_sample_gain">
-          <button onclick={() => setSampleGain('mute')}>🔇</button>
-          <button onclick={() => setSampleGain('-12')}>🔈</button>
-          <button onclick={() => setSampleGain('-3')}>🔊</button>
+          <button
+            class={selected_sample.volume === -108 ? 'selected' : ''}
+            onclick={() => setSampleGain('mute')}>🔇</button
+          >
+          <button
+            class={selected_sample.volume === -12 ? 'selected' : ''}
+            onclick={() => setSampleGain('-12')}>🔈</button
+          >
+          <button
+            class={selected_sample.volume === -3 ? 'selected' : ''}
+            onclick={() => setSampleGain('-3')}>🔊</button
+          >
         </div>
         <div class="active_sample_pitch">
-          <button onclick={() => setSamplePitch('tonic')}>I</button>
-          <button onclick={() => setSamplePitch('third')}>III</button>
-          <button onclick={() => setSamplePitch('fifth')}>V</button>
+          <button
+            class={selected_sample.pitch === 'C2' ? 'selected' : ''}
+            onclick={() => setSamplePitch('tonic')}>I</button
+          >
+          <button
+            class={selected_sample.pitch === 'F2' ? 'selected' : ''}
+            onclick={() => setSamplePitch('fourth')}>IV</button
+          >
+          <button
+            class={selected_sample.pitch === 'G2' ? 'selected' : ''}
+            onclick={() => setSamplePitch('fifth')}>V</button
+          >
         </div>
+      </div>
+
+      <!-- MAIN SETTINGS -->
+      <div class="main_settings">
+        <button onclick={toggleSeqPlayback}>{is_playing ? '⏹' : '▶'}</button>
+
+        <button
+          onclick={toggleHighPass}
+          class={main_highpassed ? 'selected' : ''}>🫴</button
+        >
+        <button onclick={toggleLowPass} class={main_lowpassed ? 'selected' : ''}
+          >🫳</button
+        >
+        <button
+          onclick={toggleDistortion}
+          class={main_distorted ? 'selected' : ''}>💥</button
+        >
+        <!-- TODO -->
+        <!-- <button onclick={() => savePreset(SAMPLES)}>save preset</button> -->
+        <!-- <button onclick={() => loadPreset()}>load preset</button> -->
       </div>
 
       <!-- SEQUENCER -->
@@ -460,33 +514,6 @@
             {/if}
           {/each}
         </div>
-      </div>
-
-      <!-- MAIN SETTINGS -->
-      <div class="main_settings">
-        <button onclick={toggleSeqPlayback}>{is_playing ? '⏹' : '▶'}</button>
-
-        <button
-          onclick={toggleHighPass}
-          class={main_highpassed ? 'selected' : ''}>🫴</button
-        >
-        <p>{main_highpassed}</p>
-        <button onclick={toggleLowPass} class={main_lowpassed ? 'selected' : ''}
-          >🫳</button
-        >
-        <p>{main_lowpassed}</p>
-
-        <input
-          type="range"
-          min="0.1"
-          max="1"
-          step="0.1"
-          bind:value={main_distortion.wet.value}
-        />
-        <p>dist amount - {main_distortion.wet.value}</p>
-        <!-- TODO -->
-        <!-- <button onclick={() => savePreset(SAMPLES)}>save preset</button> -->
-        <!-- <button onclick={() => loadPreset()}>load preset</button> -->
       </div>
     {/if}
   </div>
