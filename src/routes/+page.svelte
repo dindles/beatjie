@@ -378,7 +378,7 @@
 <div class="header">
   <h1>mojibeat🔊</h1>
 </div>
-<div class="spacer" />
+<div class="spacer"></div>
 <main>
   <div class="app">
     <!-- DISPLAY -->
@@ -427,14 +427,14 @@
         <p>{selected_sample?.name}</p>
         <p>{selected_sample?.emoji}</p>
         <div class="active_sample_gain">
-          <button on:click={() => setSampleGain('mute')}>🔇</button>
-          <button on:click={() => setSampleGain('-12')}>🔈</button>
-          <button on:click={() => setSampleGain('-3')}>🔊</button>
+          <button onclick={() => setSampleGain('mute')}>🔇</button>
+          <button onclick={() => setSampleGain('-12')}>🔈</button>
+          <button onclick={() => setSampleGain('-3')}>🔊</button>
         </div>
         <div class="active_sample_pitch">
-          <button on:click={() => setSamplePitch('tonic')}>I</button>
-          <button on:click={() => setSamplePitch('third')}>III</button>
-          <button on:click={() => setSamplePitch('fifth')}>V</button>
+          <button onclick={() => setSamplePitch('tonic')}>I</button>
+          <button onclick={() => setSamplePitch('third')}>III</button>
+          <button onclick={() => setSamplePitch('fifth')}>V</button>
         </div>
       </div>
 
