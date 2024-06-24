@@ -26,6 +26,7 @@ export class Sample {
   sampler: Tone.Sampler
   volume: number = $state(-3)
   pitch: Note = $state('C2')
+  attack: number = $state(0.01)
   channel: Tone.Channel
   filter: Tone.Filter
   sequence: Sequence = $state([])
@@ -48,6 +49,7 @@ export class Sample {
     this.sampler = new Tone.Sampler()
     this.filter = new Tone.Filter()
     this.channel = new Tone.Channel()
+    this.channel.volume.value = this.volume
     // creates an empty sample-specific sequence accessed by the sequencer
     this.sequence = new Array(16).fill(false)
   }

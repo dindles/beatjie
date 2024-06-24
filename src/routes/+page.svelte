@@ -113,7 +113,7 @@
 
   // Sets sampler, filter parameters per sample
   function setSampleParams(sample: Sample) {
-    sample.sampler.attack = 0.01
+    sample.sampler.attack = sample.attack
     sample.channel.volume.value = sample.volume
   }
 
@@ -123,13 +123,11 @@
   function makeSequences(SAMPLES: Sample[]) {
     const sequences = SAMPLES.map((sample) => {
       return new Tone.Sequence(
-        (time, step) => {
-          active_step_index = step
-          if (sample.sequence[step]) {
+        (time, sequencer_step) => {
+          active_step_index = sequencer_step
+          if (sample.sequence[sequencer_step]) {
             sample.playing = true
-            if (selected_sample) {
-              setSampleParams(selected_sample)
-            }
+            setSampleParams(sample)
             sample.play(time)
           } else {
             sample.playing = false
