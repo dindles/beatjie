@@ -4,8 +4,11 @@ future: threlte visualiser?
 
 <!-- todo -->
 
-- add preview toggle to samples. if enabled, trigger sample when clicked. if not, only trigger via sequencer.
-- bpm
+- clean up html, ordering
+- add lowpass toggle
+- add dist toggle
+- add bpm
+- try short decay reverb?
 
 ## colour
 
@@ -14,46 +17,16 @@ future: threlte visualiser?
 - set global color variable in js. $state()
 - set hue and vibe variables, sliders
 
-## effects
-
-- add mainChannelSettings object?
-- choose effects
-- add effects
-- set parameters
-- create controls
-
-### per sample
-
-- pitch. three choices - original, up a fifth, down a third?
-- add values to the Sample class, as with volume
-
-## active sample settings
-
-- three volume options (-3, -6, -12?)
-
 ## samples
 
 - create samples
 - load samples
 
-## componentise??
+## config
 
-<Header />
-    <AppSettings />
-<Display />
-    <SampleSettings />
-    <MainSettings />
-    <Visualisation />
-<Sequencer />
-    <Steps />
-    <Transport />
-<Samples />
-    <Pack />
-
-<!-- and each one has a -->
-<LeftButton />
-<RightButton />
-
-## issues
-
-grids and mojis don't behave well when zoomed – use rem for tile size?
+- allow user to set:
+  - hp freq
+  - lp freq
+  - bpm options
+  - other fx?
+  - easter egg

@@ -8,20 +8,27 @@
   import { packs } from '$lib/assets/audio/packs'
 
   // Classes and types
-  import { MainSettings, Sample, type Packs } from '$lib/models.svelte'
+  import { Sample, type Packs } from '$lib/models.svelte'
 
   // === VARIABLES ==============================
 
   // Tone
-  const main_settings = new MainSettings(0, 18000, false, 200, 0.2, 128)
-  const main_channel = new Tone.Channel(main_settings.volume)
-  const main_filter_lp = new Tone.Filter(main_settings.lowpass_freq, 'lowpass')
+  const main_init = {
+    volume: -3,
+    lowpass_freq: 18000,
+    highpassed: false,
+    highpass_freq: 200,
+    distortion_amount: 0.1,
+    analyser_resolution: 256,
+  }
+  const main_channel = new Tone.Channel(main_init.volume)
+  const main_filter_lp = new Tone.Filter(main_init.lowpass_freq, 'lowpass')
   const main_filter_hp = new Tone.Filter(0, 'highpass')
   const main_distortion = new Tone.Distortion()
-  main_distortion.wet.value = main_settings.distortion_amount
+  main_distortion.wet.value = main_init.distortion_amount
   const main_analyser = new Tone.Analyser(
     'waveform',
-    main_settings.analyser_resolution
+    main_init.analyser_resolution
   )
 
   let SEQUENCES: Tone.Sequence[] = []
@@ -349,12 +356,12 @@
   }
 
   function toggleHighPass() {
-    if (main_settings.highpassed) {
+    if (main_init.highpassed) {
       main_filter_hp.frequency.value = 0
     } else {
-      main_filter_hp.frequency.value = main_settings.highpass_freq
+      main_filter_hp.frequency.value = main_init.highpass_freq
     }
-    main_settings.highpassed = !main_settings.highpassed
+    main_init.highpassed = !main_init.highpassed
   }
 </script>
 
@@ -364,14 +371,13 @@
 </div>
 <div class="spacer" />
 <main>
+  <!-- DISPLAY -->
   <h2>DISPLAY</h2>
   <div class="display">
     <canvas></canvas>
   </div>
   <div class="selected_sample">
     <p>{selected_sample?.name}</p>
-    <p>chanvolval - {selected_sample?.channel.volume.value}</p>
-    <p>selsamp.vol - {selected_sample?.volume}</p>
     <div class="active_sample_gain">
       <button on:click={() => setSampleGain('mute')}>🔇</button>
       <button on:click={() => setSampleGain('-12')}>🔈</button>
@@ -384,6 +390,33 @@
     </div>
   </div>
   <p>{active_step_index}</p>
+
+  <!-- SAMPLES -->
+  <div class="samples">
+    <h2>SAMPLES</h2>
+    <button
+      onclick={() => {
+        preview_samples_active = !preview_samples_active
+      }}
+    >
+      {preview_samples_active ? 'X' : '🎧'}
+    </button>
+    {#key selected_pack_index}
+      <div class="pack grid">
+        {#each SAMPLES as sample}
+          {#if sample && sample.pack === packs[selected_pack_index].name}
+            <button
+              class="moji tile"
+              class:playing={sample.playing}
+              onclick={() => handleSampleClick(getSampleByID(sample.id))}
+              >{sample.emoji}</button
+            >
+          {/if}
+        {/each}
+      </div>
+    {/key}
+  </div>
+
   <h2>GRID</h2>
   <div class="sequencer">
     {#if !selected_sample}
@@ -415,7 +448,7 @@
     <button onclick={toggleSeqPlayback}>{is_playing ? 'stop' : 'play'}</button>
 
     <button onclick={toggleHighPass}
-      >high pass {main_settings.highpassed ? 'on' : 'off'}</button
+      >high pass {main_init.highpassed ? 'on' : 'off'}</button
     >
 
     <input
@@ -440,30 +473,6 @@
     <!-- TODO -->
     <!-- <button onclick={() => savePreset(SAMPLES)}>save preset</button> -->
     <!-- <button onclick={() => loadPreset()}>load preset</button> -->
-  </div>
-  <div class="samples">
-    <h2>SAMPLES</h2>
-    <button
-      onclick={() => {
-        preview_samples_active = !preview_samples_active
-      }}
-    >
-      {preview_samples_active ? 'X' : '🎧'}
-    </button>
-    {#key selected_pack_index}
-      <div class="pack grid">
-        {#each SAMPLES as sample}
-          {#if sample && sample.pack === packs[selected_pack_index].name}
-            <button
-              class="moji tile"
-              class:playing={sample.playing}
-              onclick={() => handleSampleClick(getSampleByID(sample.id))}
-              >{sample.emoji}</button
-            >
-          {/if}
-        {/each}
-      </div>
-    {/key}
   </div>
 </main>
 
