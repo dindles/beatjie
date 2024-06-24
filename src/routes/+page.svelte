@@ -13,15 +13,13 @@
   // === VARIABLES ==============================
 
   // Tone
-  const main_init = $state({
+  const main_init = {
     volume: -3,
-    lowpassed: false,
     lowpass_freq: 2000,
-    highpassed: false,
     highpass_freq: 200,
     distortion_amount: 0.1,
     analyser_resolution: 256,
-  })
+  }
   const main_channel = new Tone.Channel(main_init.volume)
   const main_filter_lp = new Tone.Filter(20000, 'lowpass')
   const main_filter_hp = new Tone.Filter(0, 'highpass')
@@ -41,6 +39,8 @@
   let is_playing = $state(false)
   let active_step_index: number = $state(0)
   let preview_samples_active: boolean = $state(true)
+  let main_lowpassed: boolean = $state(false)
+  let main_highpassed: boolean = $state(false)
 
   // Display
   let animation_frame_id: number
@@ -357,8 +357,8 @@
   }
 
   function toggleHighPass() {
-    main_init.highpassed = !main_init.highpassed
-    if (!main_init.highpassed) {
+    main_highpassed = !main_highpassed
+    if (!main_highpassed) {
       main_filter_hp.frequency.value = 0
     } else {
       main_filter_hp.frequency.value = main_init.highpass_freq
@@ -366,8 +366,8 @@
   }
 
   function toggleLowPass() {
-    main_init.lowpassed = !main_init.lowpassed
-    if (!main_init.lowpassed) {
+    main_lowpassed = !main_lowpassed
+    if (!main_lowpassed) {
       main_filter_lp.frequency.value = 20000
     } else {
       main_filter_lp.frequency.value = main_init.lowpass_freq
@@ -468,14 +468,13 @@
 
         <button
           onclick={toggleHighPass}
-          class={main_init.highpassed ? 'selected' : ''}>🫴</button
+          class={main_highpassed ? 'selected' : ''}>🫴</button
         >
-        <p>{main_init.highpassed}</p>
-        <button
-          onclick={toggleLowPass}
-          class={main_init.lowpassed ? 'selected' : ''}>🫳</button
+        <p>{main_highpassed}</p>
+        <button onclick={toggleLowPass} class={main_lowpassed ? 'selected' : ''}
+          >🫳</button
         >
-        <p>{main_init.lowpassed}</p>
+        <p>{main_lowpassed}</p>
 
         <input
           type="range"
