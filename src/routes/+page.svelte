@@ -313,22 +313,6 @@
     return SAMPLES.find((s) => s.id === sample_id)
   }
 
-  // === LIFECYCLE ==============================
-
-  async function processSamples(packs: Packs) {
-    const buffers: Tone.ToneAudioBuffers = await makeBuffers(packs)
-    const tone_samples: Sample[] = makeSamples(packs)
-    const samples: Sample[] = await loadBuffers(tone_samples, buffers)
-    setChains(samples)
-
-    return samples
-  }
-
-  // Ensuring each setup step resolves properly before we use SAMPLES
-  processSamples(packs).then((resolvedSamples) => {
-    SAMPLES = resolvedSamples
-  })
-
   function setSampleGain(gain: 'mute' | '-3' | '-12') {
     if (!selected_sample) console.log('No sample selected')
     else if (selected_sample) {
@@ -389,6 +373,22 @@
       main_distortion.wet.value = main_init.distortion_amount
     }
   }
+
+  // === LIFECYCLE ==============================
+
+  async function processSamples(packs: Packs) {
+    const buffers: Tone.ToneAudioBuffers = await makeBuffers(packs)
+    const tone_samples: Sample[] = makeSamples(packs)
+    const samples: Sample[] = await loadBuffers(tone_samples, buffers)
+    setChains(samples)
+
+    return samples
+  }
+
+  // Ensuring each setup step resolves properly before we use SAMPLES
+  processSamples(packs).then((resolvedSamples) => {
+    SAMPLES = resolvedSamples
+  })
 </script>
 
 <div class="header">

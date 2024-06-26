@@ -1,12 +1,11 @@
 # todo
 
+http://the-veld.local/5173
 future: threlte visualiser?
 
 <!-- todo -->
 
-- clean up html, ordering
-- add lowpass toggle
-- add dist toggle
+- add touch indicator style
 - add bpm
 - try short decay reverb?
 - randomise pack on mount
