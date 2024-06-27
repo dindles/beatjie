@@ -5,10 +5,11 @@ future: threlte visualiser?
 
 <!-- todo -->
 
-- styels bois
-- add touch indicator style
 - try make seq divs buttons
+- add touch indicator style
 - add bpm
+- styels bois
+- add delay
 - try short decay reverb?
 - randomise pack on mount
 - add const main_analyser_fft = new Tone.Analyser('fft', main_init.analyser_resolution) and add toggles between waveform and fft

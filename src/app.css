@@ -13,7 +13,7 @@
   margin: 0;
   padding: 0;
   line-height: calc(1em + 0.5rem);
-  /* * temporary debugging tool */
+  /* temporary debugging tool */
   border: solid 1px black;
   /* disables double tap to zoom */
   touch-action: manipulation;

@@ -235,9 +235,6 @@
       console.error('Canvas element not found')
     }
 
-    canvas.width = 300
-    canvas.height = 200
-
     startDrawingLoop()
   })
 
@@ -403,15 +400,16 @@
     </div>
 
     <!-- PACK SELECT -->
-    <div class="pack_select">
-      <button onclick={() => selectPack('prev')}>👈</button>
-      <p>{packs[selected_pack_index].name}</p>
-      <button onclick={() => selectPack('next')}>👉</button>
-    </div>
 
-    <!-- SAMPLES -->
-    <div class="samples">
+    <!-- PACKS -->
+    <div class="packs">
+      <div class="pack_select">
+        <button class="small" onclick={() => selectPack('prev')}>👈</button>
+        <p>{packs[selected_pack_index].name}</p>
+        <button class="small" onclick={() => selectPack('next')}>👉</button>
+      </div>
       <button
+        class="small"
         onclick={() => {
           preview_samples_active = !preview_samples_active
         }}
@@ -419,11 +417,11 @@
         {preview_samples_active ? 'X' : '🎧'}
       </button>
       {#key selected_pack_index}
-        <div class="pack grid">
+        <div class="pack">
           {#each SAMPLES as sample}
             {#if sample && sample.pack === packs[selected_pack_index].name}
               <button
-                class="moji tile"
+                class="moji sample"
                 class:playing={sample.playing}
                 onclick={() => handleSampleClick(getSampleByID(sample.id))}
                 >{sample.emoji}</button
@@ -443,29 +441,35 @@
         <p>{selected_sample?.emoji}</p>
         <div class="active_sample_gain">
           <button
-            class={selected_sample.volume === -108 ? 'selected' : ''}
+            class="small"
+            class:selected={selected_sample.volume === -108 ? 'selected' : ''}
             onclick={() => setSampleGain('mute')}>🔇</button
           >
           <button
-            class={selected_sample.volume === -12 ? 'selected' : ''}
+            class="small"
+            class:selected={selected_sample.volume === -12 ? 'selected' : ''}
             onclick={() => setSampleGain('-12')}>🔈</button
           >
           <button
-            class={selected_sample.volume === -3 ? 'selected' : ''}
+            class="small"
+            class:selected={selected_sample.volume === -3 ? 'selected' : ''}
             onclick={() => setSampleGain('-3')}>🔊</button
           >
         </div>
         <div class="active_sample_pitch">
           <button
-            class={selected_sample.pitch === 'C2' ? 'selected' : ''}
+            class="small"
+            class:selected={selected_sample.pitch === 'C2' ? 'selected' : ''}
             onclick={() => setSamplePitch('tonic')}>I</button
           >
           <button
-            class={selected_sample.pitch === 'F2' ? 'selected' : ''}
+            class="small"
+            class:selected={selected_sample.pitch === 'F2' ? 'selected' : ''}
             onclick={() => setSamplePitch('fourth')}>IV</button
           >
           <button
-            class={selected_sample.pitch === 'G2' ? 'selected' : ''}
+            class="small"
+            class:selected={selected_sample.pitch === 'G2' ? 'selected' : ''}
             onclick={() => setSamplePitch('fifth')}>V</button
           >
         </div>
@@ -477,14 +481,18 @@
 
         <button
           onclick={toggleHighPass}
-          class={main_highpassed ? 'selected' : ''}>🫴</button
+          class="small"
+          class:selected={main_highpassed ? 'selected' : ''}>🫴</button
         >
-        <button onclick={toggleLowPass} class={main_lowpassed ? 'selected' : ''}
-          >🫳</button
+        <button
+          onclick={toggleLowPass}
+          class="small"
+          class:selected={main_lowpassed ? 'selected' : ''}>🫳</button
         >
         <button
           onclick={toggleDistortion}
-          class={main_distorted ? 'selected' : ''}>💥</button
+          class="small"
+          class:selected={main_distorted ? 'selected' : ''}>💥</button
         >
         <!-- TODO -->
         <!-- <button onclick={() => savePreset(SAMPLES)}>save preset</button> -->
@@ -493,26 +501,22 @@
 
       <!-- SEQUENCER -->
       <div class="sequencer">
-        <div class="grid">
-          {#each SAMPLES as sample}
-            {#if sample.id === selected_sample?.id}
-              {#each selected_sample.sequence as step, index}
-                <div
-                  class="moji tile"
-                  class:active={index === active_step_index}
-                  onclick={() => handleSeqClick(sample, index)}
-                  onkeydown={() => handleSeqClick(sample, index)}
-                  role="button"
-                  tabindex="0"
-                >
-                  {#if selected_sample.sequence[index]}
-                    {selected_sample.emoji}
-                  {/if}
-                </div>
-              {/each}
-            {/if}
-          {/each}
-        </div>
+        {#each SAMPLES as sample}
+          {#if sample.id === selected_sample?.id}
+            {#each selected_sample.sequence as _, index}
+              <button
+                class="moji step"
+                class:active={index === active_step_index}
+                onclick={() => handleSeqClick(sample, index)}
+                onkeydown={() => handleSeqClick(sample, index)}
+              >
+                {#if selected_sample.sequence[index]}
+                  {selected_sample.emoji}
+                {/if}
+              </button>
+            {/each}
+          {/if}
+        {/each}
       </div>
     {/if}
   </div>
@@ -523,9 +527,7 @@
     border: 1px solid blue;
     display: grid;
     place-items: center;
-    gap: 1rem;
-    max-width: 488px;
-    width: 100%;
+    max-width: var(--max-width);
     margin: 0 auto;
   }
 
@@ -542,19 +544,26 @@
     text-align: center;
     font-family: 'Noto Emoji Variable';
     font-size: 1rem;
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
+    width: var(--button-size);
+    border-radius: calc(var(--button-size) / 6);
     border: solid 3px;
     aspect-ratio: 1;
+    padding: 0;
   }
 
-  .button:active {
+  button.small {
+    width: calc(var(--button-size) / 2);
+    font-size: calc(1rem / 2);
+  }
+
+  button:active {
     background-color: var(--bg-color);
     color: black;
   }
 
   .display {
-    height: 144px;
+    height: calc(var(--max-width) / 2);
+    width: 100%;
     border: solid 3px;
   }
 
@@ -564,23 +573,29 @@
     background-color: var(--bg-color);
   }
 
-  .sequencer {
-    border: solid 1px red;
+  .packs {
+    width: 100%;
     display: grid;
     place-items: center;
   }
 
-  .grid {
+  .pack {
+    width: 100%;
     display: grid;
-    place-items: center;
+    grid-template-rows: repeat(2, 1fr);
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .sequencer {
+    display: grid;
     grid-template-rows: repeat(4, 1fr);
     grid-template-columns: repeat(4, 1fr);
   }
 
-  .tile {
+  .step,
+  .sample {
     display: grid;
     place-items: center;
-    width: 69px;
     aspect-ratio: 1;
     background-color: white;
     border: solid 3px;
@@ -594,14 +609,14 @@
 
   .moji {
     font-family: 'Noto Emoji Variable';
-    font-size: 2rem;
+    font-size: var(--moji-size);
   }
 
-  .tile.active {
+  .step.active {
     background-color: teal;
   }
 
-  .tile.playing {
+  .sample.playing {
     background-color: rgb(178, 26, 178);
   }
 
