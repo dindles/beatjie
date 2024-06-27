@@ -548,6 +548,11 @@
     aspect-ratio: 1;
   }
 
+  .button:active {
+    background-color: var(--bg-color);
+    color: black;
+  }
+
   .display {
     height: 144px;
     border: solid 3px;

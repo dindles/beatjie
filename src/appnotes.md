@@ -5,7 +5,9 @@ future: threlte visualiser?
 
 <!-- todo -->
 
+- styels bois
 - add touch indicator style
+- try make seq divs buttons
 - add bpm
 - try short decay reverb?
 - randomise pack on mount
@@ -17,6 +19,7 @@ future: threlte visualiser?
 - all backgrounds are black
 - set global color variable in js. $state()
 - set hue and vibe variables, sliders
+- can be global_colour or inverse, which makes background global_colour and foreground black
 
 ## samples
 
