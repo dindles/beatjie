@@ -437,41 +437,43 @@
       <p class="sample_select_message">select a sample</p>
     {:else}
       <!-- SELECTED SAMPLE SETTINGS -->
-      <div class="selected_sample_settings">
-        <p>{selected_sample?.emoji}</p>
-        <div class="active_sample_gain">
-          <button
-            class="small"
-            class:selected={selected_sample.volume === -108 ? 'selected' : ''}
-            onclick={() => setSampleGain('mute')}>🔇</button
-          >
-          <button
-            class="small"
-            class:selected={selected_sample.volume === -12 ? 'selected' : ''}
-            onclick={() => setSampleGain('-12')}>🔈</button
-          >
-          <button
-            class="small"
-            class:selected={selected_sample.volume === -3 ? 'selected' : ''}
-            onclick={() => setSampleGain('-3')}>🔊</button
-          >
-        </div>
-        <div class="active_sample_pitch">
-          <button
-            class="small"
-            class:selected={selected_sample.pitch === 'C2' ? 'selected' : ''}
-            onclick={() => setSamplePitch('tonic')}>I</button
-          >
-          <button
-            class="small"
-            class:selected={selected_sample.pitch === 'F2' ? 'selected' : ''}
-            onclick={() => setSamplePitch('fourth')}>IV</button
-          >
-          <button
-            class="small"
-            class:selected={selected_sample.pitch === 'G2' ? 'selected' : ''}
-            onclick={() => setSamplePitch('fifth')}>V</button
-          >
+      <div class="selected_sample_and_settings">
+        <p class="button selected_sample">{selected_sample?.emoji}</p>
+        <div class="selected_sample_settings">
+          <div class="active_sample_gain">
+            <button
+              class="small"
+              class:selected={selected_sample.volume === -108 ? 'selected' : ''}
+              onclick={() => setSampleGain('mute')}>🔇</button
+            >
+            <button
+              class="small"
+              class:selected={selected_sample.volume === -12 ? 'selected' : ''}
+              onclick={() => setSampleGain('-12')}>🔈</button
+            >
+            <button
+              class="small"
+              class:selected={selected_sample.volume === -3 ? 'selected' : ''}
+              onclick={() => setSampleGain('-3')}>🔊</button
+            >
+          </div>
+          <div class="active_sample_pitch">
+            <button
+              class="small"
+              class:selected={selected_sample.pitch === 'C2' ? 'selected' : ''}
+              onclick={() => setSamplePitch('tonic')}>I</button
+            >
+            <button
+              class="small"
+              class:selected={selected_sample.pitch === 'F2' ? 'selected' : ''}
+              onclick={() => setSamplePitch('fourth')}>IV</button
+            >
+            <button
+              class="small"
+              class:selected={selected_sample.pitch === 'G2' ? 'selected' : ''}
+              onclick={() => setSamplePitch('fifth')}>V</button
+            >
+          </div>
         </div>
       </div>
 
@@ -540,7 +542,8 @@
     font-weight: 800;
   }
 
-  button {
+  button,
+  .button {
     text-align: center;
     font-family: 'Noto Emoji Variable';
     font-size: 1rem;
@@ -586,6 +589,10 @@
     grid-template-columns: repeat(4, 1fr);
   }
 
+  .selected_sample_and_settings {
+    display: flex;
+  }
+
   .sequencer {
     display: grid;
     grid-template-rows: repeat(4, 1fr);
@@ -622,6 +629,12 @@
 
   .pack_select {
     display: flex;
+  }
+
+  .selected_sample {
+    font-size: var(--moji-size);
+    display: grid;
+    place-items: center;
   }
 
   .sample_select_message {
