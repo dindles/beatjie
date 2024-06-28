@@ -445,34 +445,40 @@
         <div class="selected-sample-settings">
           <div class="active-sample-gain">
             <button
-              class="small"
+              class="smallbutt
+              "
               class:selected={selected_sample.volume === -108 ? 'selected' : ''}
               onclick={() => setSampleGain('mute')}>🔇</button
             >
             <button
-              class="small"
+              class="smallbutt
+              "
               class:selected={selected_sample.volume === -12 ? 'selected' : ''}
               onclick={() => setSampleGain('-12')}>🔈</button
             >
             <button
-              class="small"
+              class="smallbutt
+              "
               class:selected={selected_sample.volume === -3 ? 'selected' : ''}
               onclick={() => setSampleGain('-3')}>🔊</button
             >
           </div>
           <div class="active-sample-pitch">
             <button
-              class="small"
+              class="smallbutt
+              "
               class:selected={selected_sample.pitch === 'C2' ? 'selected' : ''}
               onclick={() => setSamplePitch('tonic')}>I</button
             >
             <button
-              class="small"
+              class="smallbutt
+              "
               class:selected={selected_sample.pitch === 'F2' ? 'selected' : ''}
               onclick={() => setSamplePitch('fourth')}>IV</button
             >
             <button
-              class="small"
+              class="smallbutt
+              "
               class:selected={selected_sample.pitch === 'G2' ? 'selected' : ''}
               onclick={() => setSamplePitch('fifth')}>V</button
             >
@@ -500,29 +506,35 @@
       </div>
 
       <div class="main-settings">
-        <button onclick={toggleSeqPlayback}>{is_playing ? '⏹' : '▶'}</button>
+        <button class="bigbutt" onclick={toggleSeqPlayback}
+          >{is_playing ? '⏹' : '▶'}</button
+        >
 
         <button
+          class="smallbutt
+          "
           onclick={toggleHighPass}
-          class="small"
           class:selected={main_highpassed ? 'selected' : ''}>🫴</button
         >
         <button
-          onclick={toggleLowPass}
-          class="small"
-          class:selected={main_lowpassed ? 'selected' : ''}>🫳</button
+          class="smallbutt
+          "
+          class:selected={main_lowpassed ? 'selected' : ''}
+          onclick={toggleLowPass}>🫳</button
         >
         <button
-          onclick={toggleDistortion}
-          class="small"
-          class:selected={main_distorted ? 'selected' : ''}>💥</button
+          class="smallbutt
+          "
+          class:selected={main_distorted ? 'selected' : ''}
+          onclick={toggleDistortion}>💥</button
         >
         <!-- here temporarily, not sure where preview button should go -->
         <button
+          class="smallbutt
+          "
           onclick={() => {
             preview_samples_active = !preview_samples_active
           }}
-          class="small"
         >
           {preview_samples_active ? 'X' : '🎧'}
         </button>
@@ -642,9 +654,8 @@
     display: flex;
   }
 
-  button,
-  .button {
-    width: 25vw;
+  .bigbutt,
+  .smallbutt {
     aspect-ratio: 1;
     display: grid;
     place-items: center;
@@ -653,10 +664,6 @@
     border-radius: calc(100% / 6);
     border: solid 3px;
     padding: 0;
-  }
-
-  button.small {
-    width: 12.5%;
   }
 
   button:active {
