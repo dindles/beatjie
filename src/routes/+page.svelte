@@ -408,14 +408,6 @@
         <p>{packs[selected_pack_index].name}</p>
         <button class="small" onclick={() => selectPack('next')}>👉</button>
       </div>
-      <button
-        class="small"
-        onclick={() => {
-          preview_samples_active = !preview_samples_active
-        }}
-      >
-        {preview_samples_active ? 'X' : '🎧'}
-      </button>
       {#key selected_pack_index}
         <div class="pack">
           {#each SAMPLES as sample}
@@ -477,30 +469,6 @@
         </div>
       </div>
 
-      <!-- MAIN SETTINGS -->
-      <div class="main_settings">
-        <button onclick={toggleSeqPlayback}>{is_playing ? '⏹' : '▶'}</button>
-
-        <button
-          onclick={toggleHighPass}
-          class="small"
-          class:selected={main_highpassed ? 'selected' : ''}>🫴</button
-        >
-        <button
-          onclick={toggleLowPass}
-          class="small"
-          class:selected={main_lowpassed ? 'selected' : ''}>🫳</button
-        >
-        <button
-          onclick={toggleDistortion}
-          class="small"
-          class:selected={main_distorted ? 'selected' : ''}>💥</button
-        >
-        <!-- TODO -->
-        <!-- <button onclick={() => savePreset(SAMPLES)}>save preset</button> -->
-        <!-- <button onclick={() => loadPreset()}>load preset</button> -->
-      </div>
-
       <!-- SEQUENCER -->
       <div class="sequencer">
         {#each SAMPLES as sample}
@@ -520,12 +488,45 @@
           {/if}
         {/each}
       </div>
+      <!-- MAIN SETTINGS -->
+      <div class="main_settings">
+        <button onclick={toggleSeqPlayback}>{is_playing ? '⏹' : '▶'}</button>
+
+        <button
+          onclick={toggleHighPass}
+          class="small"
+          class:selected={main_highpassed ? 'selected' : ''}>🫴</button
+        >
+        <button
+          onclick={toggleLowPass}
+          class="small"
+          class:selected={main_lowpassed ? 'selected' : ''}>🫳</button
+        >
+        <button
+          onclick={toggleDistortion}
+          class="small"
+          class:selected={main_distorted ? 'selected' : ''}>💥</button
+        >
+        <!-- here temporarily, not sure where preview button should go -->
+        <button
+          onclick={() => {
+            preview_samples_active = !preview_samples_active
+          }}
+          class="small"
+        >
+          {preview_samples_active ? 'X' : '🎧'}
+        </button>
+        <!-- TODO -->
+        <!-- <button onclick={() => savePreset(SAMPLES)}>save preset</button> -->
+        <!-- <button onclick={() => loadPreset()}>load preset</button> -->
+      </div>
     {/if}
   </div>
 </main>
 
 <style>
   .app {
+    width: 100%;
     border: 1px solid blue;
     display: grid;
     place-items: center;
@@ -540,6 +541,80 @@
   h1 {
     font-size: 3rem;
     font-weight: 800;
+  }
+
+  .display {
+    height: calc(var(--max-width) / 2);
+    width: 100%;
+    border: solid 3px;
+  }
+
+  canvas {
+    width: 100%;
+    height: 100%;
+    background-color: var(--bg-color);
+  }
+
+  .packs {
+    width: 100%;
+    display: grid;
+    place-items: center;
+  }
+
+  .pack_select {
+    display: flex;
+  }
+
+  .pack {
+    width: 100%;
+    display: grid;
+    grid-template-rows: repeat(2, 1fr);
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .selected_sample_and_settings {
+    width: 100%;
+    display: flex;
+  }
+
+  .selected_sample {
+    font-size: var(--moji-size);
+    display: grid;
+    place-items: center;
+  }
+
+  .sample.playing {
+    background-color: rgb(178, 26, 178);
+  }
+  .sample_select_message {
+    font-size: 2rem;
+  }
+
+  .main_settings {
+    width: 100%;
+    display: flex;
+  }
+
+  .sequencer {
+    width: 100%;
+    display: grid;
+    grid-template-rows: repeat(4, 1fr);
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .step,
+  .sample {
+    display: grid;
+    place-items: center;
+    aspect-ratio: 1;
+    background-color: white;
+    border: solid 3px;
+    border-radius: 6px;
+    padding: 0;
+  }
+
+  .step.active {
+    background-color: teal;
   }
 
   button,
@@ -564,80 +639,12 @@
     color: black;
   }
 
-  .display {
-    height: calc(var(--max-width) / 2);
-    width: 100%;
-    border: solid 3px;
-  }
-
-  canvas {
-    width: 100%;
-    height: 100%;
-    background-color: var(--bg-color);
-  }
-
-  .packs {
-    width: 100%;
-    display: grid;
-    place-items: center;
-  }
-
-  .pack {
-    width: 100%;
-    display: grid;
-    grid-template-rows: repeat(2, 1fr);
-    grid-template-columns: repeat(4, 1fr);
-  }
-
-  .selected_sample_and_settings {
-    display: flex;
-  }
-
-  .sequencer {
-    display: grid;
-    grid-template-rows: repeat(4, 1fr);
-    grid-template-columns: repeat(4, 1fr);
-  }
-
-  .step,
-  .sample {
-    display: grid;
-    place-items: center;
-    aspect-ratio: 1;
-    background-color: white;
-    border: solid 3px;
-    border-radius: 6px;
-    padding: 0;
-  }
-
-  .selected {
-    color: rgb(0, 238, 255);
-  }
-
   .moji {
     font-family: 'Noto Emoji Variable';
     font-size: var(--moji-size);
   }
 
-  .step.active {
-    background-color: teal;
-  }
-
-  .sample.playing {
-    background-color: rgb(178, 26, 178);
-  }
-
-  .pack_select {
-    display: flex;
-  }
-
-  .selected_sample {
-    font-size: var(--moji-size);
-    display: grid;
-    place-items: center;
-  }
-
-  .sample_select_message {
-    font-size: 2rem;
+  .selected {
+    color: rgb(0, 238, 255);
   }
 </style>
