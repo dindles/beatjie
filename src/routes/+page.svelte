@@ -445,40 +445,34 @@
         <div class="selected-sample-settings">
           <div class="active-sample-gain">
             <button
-              class="smallbutt
-              "
+              class="smallbutt"
               class:selected={selected_sample.volume === -108 ? 'selected' : ''}
               onclick={() => setSampleGain('mute')}>🔇</button
             >
             <button
-              class="smallbutt
-              "
+              class="smallbutt"
               class:selected={selected_sample.volume === -12 ? 'selected' : ''}
               onclick={() => setSampleGain('-12')}>🔈</button
             >
             <button
-              class="smallbutt
-              "
+              class="smallbutt"
               class:selected={selected_sample.volume === -3 ? 'selected' : ''}
               onclick={() => setSampleGain('-3')}>🔊</button
             >
           </div>
           <div class="active-sample-pitch">
             <button
-              class="smallbutt
-              "
+              class="smallbutt"
               class:selected={selected_sample.pitch === 'C2' ? 'selected' : ''}
               onclick={() => setSamplePitch('tonic')}>I</button
             >
             <button
-              class="smallbutt
-              "
+              class="smallbutt"
               class:selected={selected_sample.pitch === 'F2' ? 'selected' : ''}
               onclick={() => setSamplePitch('fourth')}>IV</button
             >
             <button
-              class="smallbutt
-              "
+              class="smallbutt"
               class:selected={selected_sample.pitch === 'G2' ? 'selected' : ''}
               onclick={() => setSamplePitch('fifth')}>V</button
             >
@@ -511,27 +505,23 @@
         >
 
         <button
-          class="smallbutt
-          "
+          class="smallbutt"
           onclick={toggleHighPass}
           class:selected={main_highpassed ? 'selected' : ''}>🫴</button
         >
         <button
-          class="smallbutt
-          "
+          class="smallbutt"
           class:selected={main_lowpassed ? 'selected' : ''}
           onclick={toggleLowPass}>🫳</button
         >
         <button
-          class="smallbutt
-          "
+          class="smallbutt"
           class:selected={main_distorted ? 'selected' : ''}
           onclick={toggleDistortion}>💥</button
         >
         <!-- here temporarily, not sure where preview button should go -->
         <button
-          class="smallbutt
-          "
+          class="smallbutt"
           onclick={() => {
             preview_samples_active = !preview_samples_active
           }}
