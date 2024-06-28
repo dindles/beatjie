@@ -11,10 +11,6 @@
   import { Sample, type Packs } from '$lib/models.svelte'
 
   // === VARIABLES ==============================
-  // CSS
-  let app_width: number | undefined = $state()
-  let big_button_size = $derived((app_width: number) => app_width / 4)
-  let small_button_size = $derived((app_width: number) => app_width / 8)
 
   // Tone
   const main_init = {
@@ -397,7 +393,7 @@
 </div>
 <div class="spacer"></div>
 <main>
-  <div class="app" bind:clientWidth={app_width}>
+  <div class="app">
     <!-- DISPLAY -->
     <div class="display">
       <canvas></canvas>
@@ -408,15 +404,9 @@
     <!-- PACKS -->
     <div class="packs">
       <div class="pack-select">
-        <button
-          style="width: {small_button_size}px"
-          onclick={() => selectPack('prev')}>👈</button
-        >
+        <button onclick={() => selectPack('prev')}>👈</button>
         <p>{packs[selected_pack_index].name}</p>
-        <button
-          style="width: {small_button_size}px"
-          onclick={() => selectPack('next')}>👉</button
-        >
+        <button onclick={() => selectPack('next')}>👉</button>
       </div>
       {#key selected_pack_index}
         <div class="pack">
@@ -440,7 +430,7 @@
     {:else}
       <div class="selected-sample-and-settings">
         <!-- SELECTED SAMPLE -->
-        <p style="width: {app_width / 4}px" class="button selected_sample">
+        <p class="button selected_sample">
           {selected_sample?.emoji}
         </p>
         <!-- SELECTED SAMPLE SETTINGS -->
@@ -503,9 +493,7 @@
       </div>
       <!-- MAIN SETTINGS -->
       <div class="main-settings">
-        <button style="width: {small_button_size}px" onclick={toggleSeqPlayback}
-          >{is_playing ? '⏹' : '▶'}</button
-        >
+        <button onclick={toggleSeqPlayback}>{is_playing ? '⏹' : '▶'}</button>
 
         <button
           onclick={toggleHighPass}

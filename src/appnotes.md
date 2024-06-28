@@ -5,10 +5,9 @@ future: threlte visualiser?
 
 <!-- todo -->
 
-- try make seq divs buttons
+- styels bois - new approach: it's grids all the way down
 - add touch indicator style
 - add bpm
-- styels bois
 - add delay
 - try short decay reverb?
 - randomise pack on mount
