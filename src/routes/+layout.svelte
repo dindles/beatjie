@@ -10,9 +10,7 @@
   :global(:root) {
     --bg-color: #ffffff;
     --user-color: #000000;
-    --max-width: 320px;
-    --button-size: 4rem;
-    --moji-size: 2rem;
+    --max-width: 480px;
     /* --bg-color: rgb(189, 107, 189); */
   }
 </style>
