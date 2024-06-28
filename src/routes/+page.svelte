@@ -44,6 +44,7 @@
   let main_lowpassed: boolean = $state(false)
   let main_highpassed: boolean = $state(false)
   let main_distorted: boolean = $state(false)
+  let settings_visible: boolean = $state(false)
 
   // Display
   let animation_frame_id: number
@@ -389,31 +390,40 @@
 </script>
 
 <div class="header">
-  <h1>mojibeat🔊</h1>
+  {#if !settings_visible}
+    <h1>mojibeat🔊</h1>
+    <button onclick={() => (settings_visible = !settings_visible)}>⚙</button>
+  {:else}
+    <div class="app-settings">
+      <!-- color sliders -->
+      <button onclick={() => (settings_visible = !settings_visible)}>❌</button>
+    </div>
+  {/if}
 </div>
-<div class="spacer"></div>
+
 <main>
   <div class="app">
-    <!-- DISPLAY -->
     <div class="display">
       <canvas></canvas>
     </div>
 
-    <!-- PACK SELECT -->
-
-    <!-- PACKS -->
     <div class="packs">
       <div class="pack-select">
-        <button onclick={() => selectPack('prev')}>👈</button>
-        <p>{packs[selected_pack_index].name}</p>
-        <button onclick={() => selectPack('next')}>👉</button>
+        <button class="pack-select-prev" onclick={() => selectPack('prev')}
+          >👈</button
+        >
+        <p class="selected-pack">{packs[selected_pack_index].name}</p>
+        <button class="pack-select-next" onclick={() => selectPack('next')}
+          >👉</button
+        >
       </div>
+
       {#key selected_pack_index}
         <div class="pack">
           {#each SAMPLES as sample}
             {#if sample && sample.pack === packs[selected_pack_index].name}
               <button
-                class="moji sample"
+                class="sample"
                 class:playing={sample.playing}
                 onclick={() => handleSampleClick(getSampleByID(sample.id))}
                 >{sample.emoji}</button
@@ -424,16 +434,14 @@
       {/key}
     </div>
 
-    <!-- SELECT A SAMPLE -->
     {#if !selected_sample}
       <p class="sample-select-message">select a sample</p>
     {:else}
       <div class="selected-sample-and-settings">
-        <!-- SELECTED SAMPLE -->
         <p class="button selected_sample">
           {selected_sample?.emoji}
         </p>
-        <!-- SELECTED SAMPLE SETTINGS -->
+
         <div class="selected-sample-settings">
           <div class="active-sample-gain">
             <button
@@ -472,13 +480,12 @@
         </div>
       </div>
 
-      <!-- SEQUENCER -->
       <div class="sequencer">
         {#each SAMPLES as sample}
           {#if sample.id === selected_sample?.id}
             {#each selected_sample.sequence as _, index}
               <button
-                class="moji step"
+                class="step"
                 class:active={index === active_step_index}
                 onclick={() => handleSeqClick(sample, index)}
                 onkeydown={() => handleSeqClick(sample, index)}
@@ -491,7 +498,7 @@
           {/if}
         {/each}
       </div>
-      <!-- MAIN SETTINGS -->
+
       <div class="main-settings">
         <button onclick={toggleSeqPlayback}>{is_playing ? '⏹' : '▶'}</button>
 
@@ -535,10 +542,6 @@
     display: grid;
     place-items: center;
     border: 4px solid rebeccapurple;
-  }
-
-  .spacer {
-    height: 1.5rem;
   }
 
   h1 {
@@ -647,7 +650,6 @@
     place-items: center;
     text-align: center;
     font-family: 'Noto Emoji Variable';
-    font-size: clamp(0.5rem, 2vw, 1rem);
     border-radius: calc(100% / 6);
     border: solid 3px;
     padding: 0;
@@ -655,17 +657,11 @@
 
   button.small {
     width: 12.5%;
-    font-size: clamp(0.25rem, 1vw, 0.5rem);
   }
 
   button:active {
     background-color: var(--bg-color);
     color: black;
-  }
-
-  .moji {
-    font-family: 'Noto Emoji Variable';
-    font-size: var(--moji-size);
   }
 
   .selected {

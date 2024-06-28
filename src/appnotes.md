@@ -6,6 +6,8 @@ future: threlte visualiser?
 <!-- todo -->
 
 - styels bois - new approach: it's grids all the way down
+  - grid approach in vanilla
+  - grid approach in tailwind
 - add touch indicator style
 - add bpm
 - add delay
