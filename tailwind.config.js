@@ -6,6 +6,15 @@ export default {
       gridTemplateRows: {
         20: 'repeat(20, 1fr) ',
       },
+      gridRowStart: {
+        13: '13',
+        14: '14',
+        15: '15',
+        16: '16',
+        17: '17',
+        18: '18',
+        20: '20',
+      },
     },
   },
   plugins: [],
