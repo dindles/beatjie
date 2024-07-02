@@ -445,34 +445,34 @@
         <div class="selected-sample-settings">
           <div class="active-sample-gain">
             <button
-              class="smallbutt"
+              class="square"
               class:selected={selected_sample.volume === -108 ? 'selected' : ''}
               onclick={() => setSampleGain('mute')}>🔇</button
             >
             <button
-              class="smallbutt"
+              class="square"
               class:selected={selected_sample.volume === -12 ? 'selected' : ''}
               onclick={() => setSampleGain('-12')}>🔈</button
             >
             <button
-              class="smallbutt"
+              class="square"
               class:selected={selected_sample.volume === -3 ? 'selected' : ''}
               onclick={() => setSampleGain('-3')}>🔊</button
             >
           </div>
           <div class="active-sample-pitch">
             <button
-              class="smallbutt"
+              class="square"
               class:selected={selected_sample.pitch === 'C2' ? 'selected' : ''}
               onclick={() => setSamplePitch('tonic')}>I</button
             >
             <button
-              class="smallbutt"
+              class="square"
               class:selected={selected_sample.pitch === 'F2' ? 'selected' : ''}
               onclick={() => setSamplePitch('fourth')}>IV</button
             >
             <button
-              class="smallbutt"
+              class="square"
               class:selected={selected_sample.pitch === 'G2' ? 'selected' : ''}
               onclick={() => setSamplePitch('fifth')}>V</button
             >
@@ -500,28 +500,28 @@
       </div>
 
       <div class="main-settings">
-        <button class="bigbutt" onclick={toggleSeqPlayback}
+        <button class="square" onclick={toggleSeqPlayback}
           >{is_playing ? '⏹' : '▶'}</button
         >
 
         <button
-          class="smallbutt"
+          class="square"
           onclick={toggleHighPass}
           class:selected={main_highpassed ? 'selected' : ''}>🫴</button
         >
         <button
-          class="smallbutt"
+          class="square"
           class:selected={main_lowpassed ? 'selected' : ''}
           onclick={toggleLowPass}>🫳</button
         >
         <button
-          class="smallbutt"
+          class="square"
           class:selected={main_distorted ? 'selected' : ''}
           onclick={toggleDistortion}>💥</button
         >
         <!-- here temporarily, not sure where preview button should go -->
         <button
-          class="smallbutt"
+          class="square"
           onclick={() => {
             preview_samples_active = !preview_samples_active
           }}
@@ -541,8 +541,6 @@
     width: 100%;
     max-width: var(--max-width);
     margin: 0 auto;
-    display: grid;
-    place-items: center;
     border: 4px solid rebeccapurple;
   }
 
@@ -552,47 +550,29 @@
   }
 
   .display {
-    width: 100%;
-    height: calc(var(--max-width) / 2);
     border: solid 3px;
   }
 
   canvas {
-    width: 100%;
-    height: 100%;
     background-color: var(--bg-color);
   }
 
   .packs {
-    width: 100%;
-    display: grid;
-    place-items: center;
   }
 
   .pack-select {
-    display: flex;
   }
 
   .pack {
-    width: 100%;
-    display: grid;
-    grid-template-rows: repeat(2, 1fr);
-    grid-template-columns: repeat(4, 1fr);
   }
 
   .selected-sample-and-settings {
-    width: 100%;
-    display: flex;
   }
 
   .selected_sample {
-    display: grid;
-    place-items: center;
   }
 
   .selected-sample-settings {
-    width: 100%;
-    display: flex;
   }
 
   .sample.playing {
@@ -600,13 +580,9 @@
   }
 
   .active-sample-gain {
-    width: 100%;
-    display: flex;
   }
 
   .active-sample-pitch {
-    width: 100%;
-    display: flex;
   }
 
   .sample-select-message {
@@ -614,19 +590,10 @@
   }
 
   .sequencer {
-    width: 100%;
-    aspect-ratio: 1;
-    display: grid;
-    grid-template-rows: repeat(4, 1fr);
-    grid-template-columns: repeat(4, 1fr);
   }
 
   .step,
   .sample {
-    width: 100%;
-    aspect-ratio: 1;
-    display: grid;
-    place-items: center;
     background-color: white;
     border: solid 3px;
     border-radius: 6px;
@@ -644,16 +611,12 @@
     display: flex;
   }
 
-  .bigbutt,
-  .smallbutt {
-    aspect-ratio: 1;
-    display: grid;
-    place-items: center;
-    text-align: center;
+  .noto {
     font-family: 'Noto Emoji Variable';
-    border-radius: calc(100% / 6);
-    border: solid 3px;
-    padding: 0;
+  }
+
+  .square {
+    aspect-ratio: 1;
   }
 
   button:active {
