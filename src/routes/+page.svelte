@@ -389,7 +389,7 @@
   })
 </script>
 
-<div class="header">
+<div class="header noto">
   {#if !settings_visible}
     <h1>mojibeat🔊</h1>
     <button onclick={() => (settings_visible = !settings_visible)}>⚙</button>
@@ -402,19 +402,21 @@
 </div>
 
 <main>
-  <div class="app">
+  <div class="app noto">
     <div class="display">
-      <canvas></canvas>
+      <canvas class="w-full"></canvas>
     </div>
 
-    <div class="packs">
+    <div class="packs border-yellow-500">
       <div class="pack-select">
-        <button class="pack-select-prev" onclick={() => selectPack('prev')}
-          >👈</button
+        <button
+          class="pack-select-prev square"
+          onclick={() => selectPack('prev')}>👈</button
         >
         <p class="selected-pack">{packs[selected_pack_index].name}</p>
-        <button class="pack-select-next" onclick={() => selectPack('next')}
-          >👉</button
+        <button
+          class="pack-select-next square"
+          onclick={() => selectPack('next')}>👉</button
         >
       </div>
 
@@ -423,7 +425,7 @@
           {#each SAMPLES as sample}
             {#if sample && sample.pack === packs[selected_pack_index].name}
               <button
-                class="sample"
+                class="sample square"
                 class:playing={sample.playing}
                 onclick={() => handleSampleClick(getSampleByID(sample.id))}
                 >{sample.emoji}</button
@@ -438,7 +440,7 @@
       <p class="sample-select-message">select a sample</p>
     {:else}
       <div class="selected-sample-and-settings">
-        <p class="button selected_sample">
+        <p class="button selected_sample square">
           {selected_sample?.emoji}
         </p>
 
@@ -480,12 +482,12 @@
         </div>
       </div>
 
-      <div class="sequencer">
+      <div class="sequencer grid grid-cols-4 grid-rows-4">
         {#each SAMPLES as sample}
           {#if sample.id === selected_sample?.id}
             {#each selected_sample.sequence as _, index}
               <button
-                class="step"
+                class="step square"
                 class:active={index === active_step_index}
                 onclick={() => handleSeqClick(sample, index)}
                 onkeydown={() => handleSeqClick(sample, index)}
@@ -541,7 +543,7 @@
     width: 100%;
     max-width: var(--max-width);
     margin: 0 auto;
-    border: 4px solid rebeccapurple;
+    border: 4px solid magenta;
   }
 
   h1 {
@@ -558,21 +560,27 @@
   }
 
   .packs {
+    border: solid 3px teal;
   }
 
   .pack-select {
+    border: solid 3px;
   }
 
   .pack {
+    border: solid 3px;
   }
 
   .selected-sample-and-settings {
+    border: solid 3px;
   }
 
   .selected_sample {
+    border: solid 3px;
   }
 
   .selected-sample-settings {
+    border: solid 3px;
   }
 
   .sample.playing {
@@ -580,26 +588,24 @@
   }
 
   .active-sample-gain {
+    border: solid 3px;
   }
 
   .active-sample-pitch {
+    border: solid 3px;
   }
 
   .sample-select-message {
-    font-size: 2rem;
+    border: solid 3px;
   }
 
   .sequencer {
+    border: solid 3px burlywood;
   }
 
   .step,
   .sample {
-    background-color: white;
     border: solid 3px;
-    border-radius: 6px;
-    padding: 0;
-    font-size: clamp(0.5rem, 2vw, 1rem);
-    border-radius: calc(100% / 6);
   }
 
   .step.active {
@@ -607,8 +613,7 @@
   }
 
   .main-settings {
-    width: 100%;
-    display: flex;
+    border: solid 3px;
   }
 
   .noto {
