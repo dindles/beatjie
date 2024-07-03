@@ -402,28 +402,28 @@
 </div>
 
 <main>
-  <div class="app noto grid grid-cols-8 grid-rows-app">
-    <div class="display col-span-8">
+  <div class="app noto">
+    <div class="display">
       <canvas class="w-full"></canvas>
     </div>
 
-    <div class="packs col-span-8 grid grid-cols-1 grid-rows-5">
-      <div class="pack-select col-span-8 grid grid-cols-8 grid-rows-1">
+    <div class="packs">
+      <div class="pack-select">
         <button
-          class="pack-select-prev square col-span-1"
+          class="pack-select-prev square"
           onclick={() => selectPack('prev')}>👈</button
         >
-        <p class="selected-pack col-start-2 col-span-6">
+        <p class="selected-pack">
           {packs[selected_pack_index].name}
         </p>
         <button
-          class="pack-select-next square col-start-8"
+          class="pack-select-next square"
           onclick={() => selectPack('next')}>👉</button
         >
       </div>
 
       {#key selected_pack_index}
-        <div class="pack col-span-8 grid grid-cols-4 grid-rows-2">
+        <div class="pack">
           {#each SAMPLES as sample}
             {#if sample && sample.pack === packs[selected_pack_index].name}
               <button
@@ -439,9 +439,9 @@
     </div>
 
     {#if !selected_sample}
-      <p class="sample-select-message col-span-8">select a sample</p>
+      <p class="sample-select-message">select a sample</p>
     {:else}
-      <div class="selected-sample-and-settings col-span-8">
+      <div class="selected-sample-and-settings">
         <p class="button selected_sample square">
           {selected_sample?.emoji}
         </p>
@@ -484,7 +484,7 @@
         </div>
       </div>
 
-      <div class="sequencer col-span-8">
+      <div class="sequencer">
         {#each SAMPLES as sample}
           {#if sample.id === selected_sample?.id}
             {#each selected_sample.sequence as _, index}
@@ -503,7 +503,7 @@
         {/each}
       </div>
 
-      <div class="main-settings col-span-8">
+      <div class="main-settings">
         <button class="square" onclick={toggleSeqPlayback}
           >{is_playing ? '⏹' : '▶'}</button
         >
@@ -536,22 +536,23 @@
         <!-- <button onclick={() => savePreset(SAMPLES)}>save preset</button> -->
         <!-- <button onclick={() => loadPreset()}>load preset</button> -->
       </div>
-      <div class="egg col-span-8">egg</div>
+      <div class="egg">egg</div>
     {/if}
   </div>
 </main>
 
 <style>
-  .app {
-    width: 100%;
-    max-width: var(--max-width);
-    margin: 0 auto;
-    border: 4px solid magenta;
-  }
-
   h1 {
     font-size: 3rem;
     font-weight: 800;
+  }
+
+  .app {
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
+    display: grid;
+    border: 4px solid magenta;
   }
 
   .display {
@@ -567,10 +568,14 @@
   }
 
   .pack-select {
+    display: grid;
+    grid-template-columns: 1fr 6fr 1fr;
     border: solid 3px;
   }
 
   .pack {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
     border: solid 3px;
   }
 
