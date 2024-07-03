@@ -5,6 +5,7 @@ export default {
     extend: {
       gridTemplateRows: {
         20: 'repeat(20, 1fr) ',
+        app: '1fr 5fr 2fr 8fr 2fr 1fr',
       },
       gridRowStart: {
         13: '13',

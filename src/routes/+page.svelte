@@ -402,40 +402,32 @@
 </div>
 
 <main>
-  <div class="app noto grid grid-cols-8 grid-rows-20">
-    <div
-      class="display col-span-8 row-span-2 grid grid-cols-subgrid grid-rows-subgrid"
-    >
-      <canvas class="w-full col-span-8 row-span-2"></canvas>
+  <div class="app noto grid grid-cols-8 grid-rows-app">
+    <div class="display col-span-8">
+      <canvas class="w-full"></canvas>
     </div>
 
-    <div
-      class="packs col-span-8 row-span-5 grid grid-cols-subgrid grid-rows-subgrid"
-    >
-      <div
-        class="pack-select col-span-8 row-span-1 grid grid-cols-subgrid grid-rows-subgrid"
-      >
+    <div class="packs col-span-8 grid grid-cols-1 grid-rows-5">
+      <div class="pack-select col-span-8 grid grid-cols-8 grid-rows-1">
         <button
-          class="pack-select-prev aspect-square col-span-1 row-span-1"
+          class="pack-select-prev square col-span-1"
           onclick={() => selectPack('prev')}>👈</button
         >
-        <p class="selected-pack col-start-2 col-span-6 row-span-1">
+        <p class="selected-pack col-start-2 col-span-6">
           {packs[selected_pack_index].name}
         </p>
         <button
-          class="pack-select-next square col-start-8 col-span-1 row-span-1"
+          class="pack-select-next square col-start-8"
           onclick={() => selectPack('next')}>👉</button
         >
       </div>
 
       {#key selected_pack_index}
-        <div
-          class="pack col-span-8 row-span-4 grid grid-cols-subgrid grid-rows-subgrid"
-        >
+        <div class="pack col-span-8 grid grid-cols-4 grid-rows-2">
           {#each SAMPLES as sample}
             {#if sample && sample.pack === packs[selected_pack_index].name}
               <button
-                class="sample square col-span-2 row-span-2"
+                class="sample square"
                 class:playing={sample.playing}
                 onclick={() => handleSampleClick(getSampleByID(sample.id))}
                 >{sample.emoji}</button
@@ -447,9 +439,9 @@
     </div>
 
     {#if !selected_sample}
-      <p class="sample-select-message col-span-8 row-span-1">select a sample</p>
+      <p class="sample-select-message col-span-8">select a sample</p>
     {:else}
-      <div class="selected-sample-and-settings col-span-8 row-span-2">
+      <div class="selected-sample-and-settings col-span-8">
         <p class="button selected_sample square">
           {selected_sample?.emoji}
         </p>
@@ -492,7 +484,7 @@
         </div>
       </div>
 
-      <div class="sequencer col-span-8 row-span-8">
+      <div class="sequencer col-span-8">
         {#each SAMPLES as sample}
           {#if sample.id === selected_sample?.id}
             {#each selected_sample.sequence as _, index}
@@ -511,7 +503,7 @@
         {/each}
       </div>
 
-      <div class="main-settings col-span-8 row-span-2">
+      <div class="main-settings col-span-8">
         <button class="square" onclick={toggleSeqPlayback}
           >{is_playing ? '⏹' : '▶'}</button
         >
@@ -544,7 +536,7 @@
         <!-- <button onclick={() => savePreset(SAMPLES)}>save preset</button> -->
         <!-- <button onclick={() => loadPreset()}>load preset</button> -->
       </div>
-      <div class="egg col-span-8 row-span-1">egg</div>
+      <div class="egg col-span-8">egg</div>
     {/if}
   </div>
 </main>
