@@ -446,7 +446,7 @@
           {selected_sample?.emoji}
         </p>
 
-        <div class="selected-sample-settings">
+        <div class="selected-sample-settings-1">
           <div class="active-sample-gain">
             <button
               class="square"
@@ -464,6 +464,8 @@
               onclick={() => setSampleGain('-3')}>🔊</button
             >
           </div>
+        </div>
+        <div class="selected-sample-settings-2">
           <div class="active-sample-pitch">
             <button
               class="square"
@@ -482,6 +484,7 @@
             >
           </div>
         </div>
+        <div class="selected-sample-settings-3"></div>
       </div>
 
       <div class="sequencer">
@@ -549,7 +552,7 @@
 
   .app {
     width: 100%;
-    max-width: 480px;
+    max-width: 444px;
     margin: 0 auto;
     display: grid;
     border: 4px solid magenta;
@@ -557,10 +560,6 @@
 
   .display {
     border: solid 3px;
-  }
-
-  canvas {
-    background-color: var(--bg-color);
   }
 
   .packs {
@@ -573,6 +572,11 @@
     border: solid 3px;
   }
 
+  .selected-pack {
+    display: grid;
+    place-items: center;
+  }
+
   .pack {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -580,14 +584,32 @@
   }
 
   .selected-sample-and-settings {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(2, 1fr);
     border: solid 3px;
   }
 
   .selected_sample {
+    grid-row: span 2 / span 2;
     border: solid 3px;
   }
 
-  .selected-sample-settings {
+  .selected-sample-settings-1 {
+    grid-row: span 2 / span 2;
+    grid-column-start: 2;
+    border: solid 3px;
+  }
+
+  .selected-sample-settings-2 {
+    grid-row: span 2 / span 2;
+    grid-column-start: 3;
+    border: solid 3px;
+  }
+
+  .selected-sample-settings-3 {
+    grid-row: span 2 / span 2;
+    grid-column-start: 4;
     border: solid 3px;
   }
 
@@ -608,6 +630,8 @@
   }
 
   .sequencer {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
     border: solid 3px burlywood;
   }
 
