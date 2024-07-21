@@ -447,42 +447,38 @@
         </p>
 
         <div class="selected-sample-settings-1">
-          <div class="active-sample-gain">
-            <button
-              class="square"
-              class:selected={selected_sample.volume === -108 ? 'selected' : ''}
-              onclick={() => setSampleGain('mute')}>🔇</button
-            >
-            <button
-              class="square"
-              class:selected={selected_sample.volume === -12 ? 'selected' : ''}
-              onclick={() => setSampleGain('-12')}>🔈</button
-            >
-            <button
-              class="square"
-              class:selected={selected_sample.volume === -3 ? 'selected' : ''}
-              onclick={() => setSampleGain('-3')}>🔊</button
-            >
-          </div>
+          <button
+            class="square"
+            class:selected={selected_sample.volume === -108 ? 'selected' : ''}
+            onclick={() => setSampleGain('mute')}>🔇</button
+          >
+          <button
+            class="square"
+            class:selected={selected_sample.volume === -12 ? 'selected' : ''}
+            onclick={() => setSampleGain('-12')}>🔈</button
+          >
+          <button
+            class="square"
+            class:selected={selected_sample.volume === -3 ? 'selected' : ''}
+            onclick={() => setSampleGain('-3')}>🔊</button
+          >
         </div>
         <div class="selected-sample-settings-2">
-          <div class="active-sample-pitch">
-            <button
-              class="square"
-              class:selected={selected_sample.pitch === 'C2' ? 'selected' : ''}
-              onclick={() => setSamplePitch('tonic')}>I</button
-            >
-            <button
-              class="square"
-              class:selected={selected_sample.pitch === 'F2' ? 'selected' : ''}
-              onclick={() => setSamplePitch('fourth')}>IV</button
-            >
-            <button
-              class="square"
-              class:selected={selected_sample.pitch === 'G2' ? 'selected' : ''}
-              onclick={() => setSamplePitch('fifth')}>V</button
-            >
-          </div>
+          <button
+            class="square"
+            class:selected={selected_sample.pitch === 'C2' ? 'selected' : ''}
+            onclick={() => setSamplePitch('tonic')}>I</button
+          >
+          <button
+            class="square"
+            class:selected={selected_sample.pitch === 'F2' ? 'selected' : ''}
+            onclick={() => setSamplePitch('fourth')}>IV</button
+          >
+          <button
+            class="square"
+            class:selected={selected_sample.pitch === 'G2' ? 'selected' : ''}
+            onclick={() => setSamplePitch('fifth')}>V</button
+          >
         </div>
         <div class="selected-sample-settings-3"></div>
       </div>
@@ -592,18 +588,27 @@
 
   .selected_sample {
     grid-row: span 2 / span 2;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
     border: solid 3px;
   }
 
   .selected-sample-settings-1 {
     grid-row: span 2 / span 2;
     grid-column-start: 2;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
     border: solid 3px;
   }
 
   .selected-sample-settings-2 {
     grid-row: span 2 / span 2;
     grid-column-start: 3;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
     border: solid 3px;
   }
 
@@ -615,14 +620,6 @@
 
   .sample.playing {
     background-color: rgb(178, 26, 178);
-  }
-
-  .active-sample-gain {
-    border: solid 3px;
-  }
-
-  .active-sample-pitch {
-    border: solid 3px;
   }
 
   .sample-select-message {
