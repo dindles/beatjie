@@ -44,6 +44,7 @@
   let main_lowpassed: boolean = $state(false)
   let main_highpassed: boolean = $state(false)
   let main_distorted: boolean = $state(false)
+  // todo
   let settings_visible: boolean = $state(false)
 
   // Display
@@ -389,22 +390,10 @@
   })
 </script>
 
-<div class="header noto">
-  {#if !settings_visible}
-    <h1>mojibeat🔊</h1>
-    <button onclick={() => (settings_visible = !settings_visible)}>⚙</button>
-  {:else}
-    <div class="app-settings">
-      <!-- color sliders -->
-      <button onclick={() => (settings_visible = !settings_visible)}>❌</button>
-    </div>
-  {/if}
-</div>
-
 <main>
   <div class="app noto">
     <div class="display">
-      <canvas class="w-full"></canvas>
+      <canvas></canvas>
     </div>
 
     <div class="packs">
@@ -442,7 +431,7 @@
       <p class="sample-select-message">select a sample</p>
     {:else}
       <div class="selected-sample-and-settings">
-        <p class="button selected_sample square">
+        <p class="selected-sample square">
           {selected_sample?.emoji}
         </p>
 
@@ -488,7 +477,7 @@
           {#if sample.id === selected_sample?.id}
             {#each selected_sample.sequence as _, index}
               <button
-                class="step square"
+                class="step"
                 class:active={index === active_step_index}
                 onclick={() => handleSeqClick(sample, index)}
                 onkeydown={() => handleSeqClick(sample, index)}
@@ -541,13 +530,7 @@
 </main>
 
 <style>
-  h1 {
-    font-size: 3rem;
-    font-weight: 800;
-  }
-
   .app {
-    width: 100%;
     max-width: 444px;
     margin: 0 auto;
     display: grid;
@@ -555,7 +538,12 @@
   }
 
   .display {
-    border: solid 3px;
+    border: dotted 3px;
+  }
+
+  canvas {
+    width: 100%;
+    aspect-ratio: 4 / 1;
   }
 
   .packs {
@@ -582,15 +570,10 @@
   .selected-sample-and-settings {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(2, 1fr);
     border: solid 3px;
   }
 
-  .selected_sample {
-    grid-row: span 2 / span 2;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(2, 1fr);
+  .selected-sample {
     border: solid 3px;
   }
 
@@ -635,6 +618,10 @@
   .step,
   .sample {
     border: solid 3px;
+  }
+
+  .step {
+    aspect-ratio: 2 / 1;
   }
 
   .step.active {

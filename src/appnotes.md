@@ -6,6 +6,11 @@ future: threlte visualiser?
 <!-- todo -->
 
 third selected sample settings category is attack/decay time
+function displayMessage(message) {
+case (sample_prompt) {
+displayText = 'choose a sample'
+}
+}
 
 - styels bois - new approach: it's grids all the way down
   - grid approach in vanilla
