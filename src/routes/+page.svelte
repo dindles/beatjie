@@ -431,9 +431,9 @@
       <p class="sample-select-message">select a sample</p>
     {:else}
       <div class="selected-sample-and-settings">
-        <p class="selected-sample square">
+        <div class="selected-sample square">
           {selected_sample?.emoji}
-        </p>
+        </div>
 
         <div class="selected-sample-settings-1">
           <button
@@ -575,6 +575,8 @@
 
   .selected-sample {
     border: solid 3px;
+    display: grid;
+    place-items: center;
   }
 
   .selected-sample-settings-1 {

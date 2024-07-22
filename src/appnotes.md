@@ -6,6 +6,9 @@ future: threlte visualiser?
 <!-- todo -->
 
 third selected sample settings category is attack/decay time
+add settings button
+add colour
+add messages to display
 function displayMessage(message) {
 case (sample_prompt) {
 displayText = 'choose a sample'
