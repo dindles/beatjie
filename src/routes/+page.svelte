@@ -10,6 +10,9 @@
   // Classes and types
   import { Sample, type Packs } from '$lib/models.svelte'
 
+  // Svelte components
+  import THX from '$lib/components/thx.svelte'
+
   // === VARIABLES ==============================
 
   // Tone
@@ -376,9 +379,9 @@
   // === LIFECYCLE ==============================
 
   async function processSamples(packs: Packs) {
-    const buffers: Tone.ToneAudioBuffers = await makeBuffers(packs)
+    const buffers: Tone.ToneAudioBuffers = makeBuffers(packs)
     const tone_samples: Sample[] = makeSamples(packs)
-    const samples: Sample[] = await loadBuffers(tone_samples, buffers)
+    const samples: Sample[] = loadBuffers(tone_samples, buffers)
     setChains(samples)
 
     return samples
@@ -392,9 +395,13 @@
 
 <main>
   <div class="app noto">
-    <div class="display">
-      <canvas></canvas>
-    </div>
+    {#if !selected_sample}
+      <p class="sample-select-message">select a sample</p>
+    {:else}
+      <div class="display">
+        <canvas></canvas>
+      </div>
+    {/if}
 
     <div class="packs">
       <div class="pack-select">
@@ -427,9 +434,7 @@
       {/key}
     </div>
 
-    {#if !selected_sample}
-      <p class="sample-select-message">select a sample</p>
-    {:else}
+    {#if selected_sample}
       <div class="selected-sample-and-settings">
         <div class="selected-sample square">
           {selected_sample?.emoji}
@@ -491,26 +496,29 @@
         {/each}
       </div>
 
-      <div class="main-settings">
-        <button class="square" onclick={toggleSeqPlayback}
-          >{is_playing ? '⏹' : '▶'}</button
-        >
+      <div class="transport-and-main-settings">
+        <div class="transport square">
+          <button onclick={toggleSeqPlayback}>{is_playing ? '⏹' : '▶'}</button
+          >
+        </div>
 
-        <button
-          class="square"
-          onclick={toggleHighPass}
-          class:selected={main_highpassed ? 'selected' : ''}>🫴</button
-        >
-        <button
-          class="square"
-          class:selected={main_lowpassed ? 'selected' : ''}
-          onclick={toggleLowPass}>🫳</button
-        >
-        <button
-          class="square"
-          class:selected={main_distorted ? 'selected' : ''}
-          onclick={toggleDistortion}>💥</button
-        >
+        <div class="main-settings">
+          <button
+            class="square"
+            onclick={toggleHighPass}
+            class:selected={main_highpassed ? 'selected' : ''}>🫴</button
+          >
+          <button
+            class="square"
+            class:selected={main_lowpassed ? 'selected' : ''}
+            onclick={toggleLowPass}>🫳</button
+          >
+          <button
+            class="square"
+            class:selected={main_distorted ? 'selected' : ''}
+            onclick={toggleDistortion}>💥</button
+          >
+        </div>
         <!-- here temporarily, not sure where preview button should go -->
         <button
           class="square"
@@ -524,14 +532,18 @@
         <!-- <button onclick={() => savePreset(SAMPLES)}>save preset</button> -->
         <!-- <button onclick={() => loadPreset()}>load preset</button> -->
       </div>
-      <div class="egg">egg</div>
     {/if}
   </div>
 </main>
 
 <style>
+  main {
+    height: 100%;
+  }
+
   .app {
-    max-width: 444px;
+    height: 100vh;
+    max-width: 344px;
     margin: 0 auto;
     display: grid;
     border: 4px solid magenta;
@@ -630,7 +642,24 @@
     background-color: teal;
   }
 
+  .transport-and-main-settings {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border: solid 3px;
+  }
+
+  .transport {
+    border: solid 3px;
+    display: grid;
+    place-items: center;
+  }
+
   .main-settings {
+    grid-row: span 2 / span 2;
+    grid-column-start: 2;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
     border: solid 3px;
   }
 
