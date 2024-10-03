@@ -395,12 +395,12 @@
 
 <main>
   <div class="app noto">
+    <div class="display">
+      <canvas></canvas>
+    </div>
+
     {#if !selected_sample}
       <p class="sample-select-message">select a sample</p>
-    {:else}
-      <div class="display">
-        <canvas></canvas>
-      </div>
     {/if}
 
     <div class="packs">
@@ -538,34 +538,40 @@
 
 <style>
   main {
-    height: 100%;
+    display: grid;
+    place-items: center;
+    gap: 5px;
   }
 
   .app {
-    height: 100vh;
+    width: 100%;
     max-width: 344px;
-    margin: 0 auto;
+    height: 100vh;
+    max-height: 100vh;
     display: grid;
-    border: 4px solid magenta;
+    grid-template-rows: auto auto 1fr auto auto;
+    border: 4px solid var(--accent-color);
+    overflow: hidden;
   }
 
   .display {
-    border: dotted 3px;
+    border: dotted 3px var(--border-color);
   }
 
   canvas {
     width: 100%;
+    height: 100%;
     aspect-ratio: 4 / 1;
   }
 
   .packs {
-    border: solid 3px teal;
+    border: solid 3px var(--border-color);
   }
 
   .pack-select {
     display: grid;
-    grid-template-columns: 1fr 6fr 1fr;
-    border: solid 3px;
+    grid-template-columns: auto 1fr auto;
+    border: solid 3px var(--border-color);
   }
 
   .selected-pack {
@@ -575,100 +581,88 @@
 
   .pack {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    border: solid 3px;
+    grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+    gap: 5px;
+    padding: 5px;
+    border: solid 3px var(--border-color);
   }
 
   .selected-sample-and-settings {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    border: solid 3px;
+    grid-template-columns: auto repeat(3, 1fr);
+    gap: 5px;
+    padding: 5px;
+    border: solid 3px var(--border-color);
   }
 
   .selected-sample {
-    border: solid 3px;
+    border: solid 3px var(--border-color);
     display: grid;
     place-items: center;
   }
 
-  .selected-sample-settings-1 {
-    grid-row: span 2 / span 2;
-    grid-column-start: 2;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(2, 1fr);
-    border: solid 3px;
-  }
-
+  .selected-sample-settings-1,
   .selected-sample-settings-2 {
-    grid-row: span 2 / span 2;
-    grid-column-start: 3;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(2, 1fr);
-    border: solid 3px;
+    gap: 5px;
   }
 
   .selected-sample-settings-3 {
-    grid-row: span 2 / span 2;
-    grid-column-start: 4;
-    border: solid 3px;
+    border: solid 3px var(--border-color);
   }
 
   .sample.playing {
-    background-color: rgb(178, 26, 178);
+    background-color: var(--playing-color);
   }
 
   .sample-select-message {
-    border: solid 3px;
+    text-align: center;
+    padding: 10px;
+    border: solid 3px var(--border-color);
   }
 
   .sequencer {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    border: solid 3px burlywood;
+    grid-template-columns: repeat(8, minmax(20px, 1fr));
+    gap: 5px;
+    padding: 5px;
+    border: solid 3px var(--border-color);
   }
 
   .step,
-  .sample {
-    border: solid 3px;
-  }
-
-  .step {
-    aspect-ratio: 2 / 1;
+  .sample,
+  .square {
+    aspect-ratio: 1;
+    border: solid 3px var(--border-color);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
   }
 
   .step.active {
-    background-color: teal;
+    background-color: var(--active-color);
   }
 
   .transport-and-main-settings {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    border: solid 3px;
+    grid-template-columns: auto 1fr auto;
+    gap: 5px;
+    padding: 5px;
+    border: solid 3px var(--border-color);
   }
 
   .transport {
-    border: solid 3px;
+    border: solid 3px var(--border-color);
     display: grid;
     place-items: center;
   }
 
   .main-settings {
-    grid-row: span 2 / span 2;
-    grid-column-start: 2;
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(2, 1fr);
-    border: solid 3px;
-  }
-
-  .noto {
-    font-family: 'Noto Emoji Variable';
-  }
-
-  .square {
-    aspect-ratio: 1;
+    grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
+    gap: 5px;
   }
 
   button:active {
@@ -677,6 +671,12 @@
   }
 
   .selected {
-    color: rgb(0, 238, 255);
+    color: var(--selected-color);
+  }
+
+  @media (max-width: 400px) {
+    .app {
+      max-width: 100%;
+    }
   }
 </style>

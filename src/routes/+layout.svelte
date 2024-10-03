@@ -8,7 +8,10 @@
 
 <style>
   :global(:root) {
-    --bg-color: #ffffff;
-    --user-color: #000000;
+    --border-color: #333;
+    --accent-color: magenta;
+    --active-color: teal;
+    --playing-color: rgb(178, 26, 178);
+    --selected-color: rgb(0, 238, 255);
   }
 </style>
