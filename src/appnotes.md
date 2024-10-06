@@ -6,6 +6,7 @@ future: threlte visualiser?
 <!-- todo -->
 
 - selected sample and play button big square
+- responsiveness should be sizes of div and text, not number grid cols per div
 
 - bpm
 - space to start/stop transport
