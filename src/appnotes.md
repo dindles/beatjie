@@ -5,6 +5,11 @@ future: threlte visualiser?
 
 <!-- todo -->
 
+- selected sample and play button big square
+
+- bpm
+- space to start/stop transport
+
 third selected sample settings category is attack/decay time
 add settings button
 add colour

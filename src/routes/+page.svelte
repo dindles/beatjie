@@ -405,16 +405,14 @@
 
     <div class="packs">
       <div class="pack-select">
-        <button
-          class="pack-select-prev square"
-          onclick={() => selectPack('prev')}>👈</button
+        <button class="pack-select-prev" onclick={() => selectPack('prev')}
+          >👈</button
         >
         <p class="selected-pack">
           {packs[selected_pack_index].name}
         </p>
-        <button
-          class="pack-select-next square"
-          onclick={() => selectPack('next')}>👉</button
+        <button class="pack-select-next" onclick={() => selectPack('next')}
+          >👉</button
         >
       </div>
 
@@ -423,7 +421,7 @@
           {#each SAMPLES as sample}
             {#if sample && sample.pack === packs[selected_pack_index].name}
               <button
-                class="sample square"
+                class="sample"
                 class:playing={sample.playing}
                 onclick={() => handleSampleClick(getSampleByID(sample.id))}
                 >{sample.emoji}</button
@@ -436,40 +434,34 @@
 
     {#if selected_sample}
       <div class="selected-sample-and-settings">
-        <div class="selected-sample square">
+        <div class="selected-sample">
           {selected_sample?.emoji}
         </div>
 
         <div class="selected-sample-settings-1">
           <button
-            class="square"
             class:selected={selected_sample.volume === -108 ? 'selected' : ''}
             onclick={() => setSampleGain('mute')}>🔇</button
           >
           <button
-            class="square"
             class:selected={selected_sample.volume === -12 ? 'selected' : ''}
             onclick={() => setSampleGain('-12')}>🔈</button
           >
           <button
-            class="square"
             class:selected={selected_sample.volume === -3 ? 'selected' : ''}
             onclick={() => setSampleGain('-3')}>🔊</button
           >
         </div>
         <div class="selected-sample-settings-2">
           <button
-            class="square"
             class:selected={selected_sample.pitch === 'C2' ? 'selected' : ''}
             onclick={() => setSamplePitch('tonic')}>I</button
           >
           <button
-            class="square"
             class:selected={selected_sample.pitch === 'F2' ? 'selected' : ''}
             onclick={() => setSamplePitch('fourth')}>IV</button
           >
           <button
-            class="square"
             class:selected={selected_sample.pitch === 'G2' ? 'selected' : ''}
             onclick={() => setSamplePitch('fifth')}>V</button
           >
@@ -497,31 +489,28 @@
       </div>
 
       <div class="transport-and-main-settings">
-        <div class="transport square">
+        <div class="transport">
           <button onclick={toggleSeqPlayback}>{is_playing ? '⏹' : '▶'}</button
           >
         </div>
 
         <div class="main-settings">
           <button
-            class="square"
             onclick={toggleHighPass}
             class:selected={main_highpassed ? 'selected' : ''}>🫴</button
           >
           <button
-            class="square"
             class:selected={main_lowpassed ? 'selected' : ''}
             onclick={toggleLowPass}>🫳</button
           >
           <button
-            class="square"
             class:selected={main_distorted ? 'selected' : ''}
             onclick={toggleDistortion}>💥</button
           >
         </div>
         <!-- here temporarily, not sure where preview button should go -->
         <button
-          class="square"
+          class="preview_samples_setting"
           onclick={() => {
             preview_samples_active = !preview_samples_active
           }}
@@ -546,7 +535,6 @@
   .app {
     width: 100%;
     max-width: 344px;
-    height: 100vh;
     max-height: 100vh;
     display: grid;
     grid-template-rows: auto auto 1fr auto auto;
@@ -574,6 +562,11 @@
     border: solid 3px var(--border-color);
   }
 
+  .pack-select-prev,
+  .pack-select-next {
+    aspect-ratio: 1;
+  }
+
   .selected-pack {
     display: grid;
     place-items: center;
@@ -587,29 +580,52 @@
     border: solid 3px var(--border-color);
   }
 
+  .sample {
+    aspect-ratio: 1;
+    border: solid 3px var(--border-color);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
   .selected-sample-and-settings {
     display: grid;
-    grid-template-columns: auto repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: minmax(0, 1fr);
     gap: 5px;
     padding: 5px;
     border: solid 3px var(--border-color);
   }
 
   .selected-sample {
-    border: solid 3px var(--border-color);
+    aspect-ratio: 1;
+    grid-column: span 1;
+    grid-row: span 2;
     display: grid;
     place-items: center;
+    border: solid 3px var(--border-color);
   }
 
   .selected-sample-settings-1,
-  .selected-sample-settings-2 {
+  .selected-sample-settings-2,
+  .selected-sample-settings-3 {
+    grid-column: span 1;
+    grid-row: span 2;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
     gap: 5px;
+    border: solid 3px var(--border-color);
+    aspect-ratio: 1;
   }
 
-  .selected-sample-settings-3 {
-    border: solid 3px var(--border-color);
+  .selected-sample-settings-1 *,
+  .selected-sample-settings-2 *,
+  .selected-sample-settings-3 * {
+    aspect-ratio: 1;
+    grid-column: span 1;
+    grid-row: span 1;
   }
 
   .sample.playing {
@@ -630,9 +646,7 @@
     border: solid 3px var(--border-color);
   }
 
-  .step,
-  .sample,
-  .square {
+  .step {
     aspect-ratio: 1;
     border: solid 3px var(--border-color);
     display: grid;
@@ -647,22 +661,31 @@
 
   .transport-and-main-settings {
     display: grid;
-    grid-template-columns: auto 1fr auto;
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: minmax(0, 1fr);
     gap: 5px;
     padding: 5px;
     border: solid 3px var(--border-color);
   }
 
   .transport {
+    grid-column: span 1;
+    grid-row: span 2;
     border: solid 3px var(--border-color);
     display: grid;
     place-items: center;
   }
 
   .main-settings {
+    grid-column: span 3;
+    grid-row: span 2;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
     gap: 5px;
+  }
+
+  main-settings > * {
+    aspect-ratio: 1;
   }
 
   button:active {
