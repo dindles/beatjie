@@ -18,6 +18,7 @@
   // Tone
   const main_init = {
     volume: -3,
+    bpm: 120,
     lowpass_freq: 2000,
     highpass_freq: 200,
     distortion_init: 0.2,
@@ -47,6 +48,7 @@
   let main_lowpassed: boolean = $state(false)
   let main_highpassed: boolean = $state(false)
   let main_distorted: boolean = $state(false)
+  let bpm: number = $state(main_init.bpm)
   // todo
   let settings_visible: boolean = $state(false)
 
@@ -349,6 +351,11 @@
     }
   }
 
+  function updateBPM(newBPM: number) {
+    bpm = newBPM
+    Tone.getTransport().bpm.value = bpm
+  }
+
   function toggleHighPass() {
     main_highpassed = !main_highpassed
     if (!main_highpassed) {
@@ -507,6 +514,15 @@
             class:selected={main_distorted ? 'selected' : ''}
             onclick={toggleDistortion}>💥</button
           >
+          <div class="bpm-control">
+            <input
+              type="number"
+              min="60"
+              max="200"
+              bind:value={bpm}
+              onchange={() => updateBPM(bpm)}
+            />
+          </div>
         </div>
         <!-- here temporarily, not sure where preview button should go -->
         <button
@@ -529,7 +545,6 @@
   main {
     display: grid;
     place-items: center;
-    gap: 5px;
   }
 
   .app {
@@ -540,6 +555,10 @@
     grid-template-rows: auto auto 1fr auto auto;
     border: 4px solid var(--accent-color);
     overflow: hidden;
+  }
+
+  .app * {
+    border-radius: 8px;
   }
 
   .display {
@@ -575,8 +594,6 @@
   .pack {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
-    gap: 5px;
-    padding: 5px;
     border: solid 3px var(--border-color);
   }
 
@@ -593,8 +610,6 @@
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     grid-auto-rows: minmax(0, 1fr);
-    gap: 5px;
-    padding: 5px;
     border: solid 3px var(--border-color);
   }
 
@@ -615,7 +630,6 @@
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(2, 1fr);
-    gap: 5px;
     border: solid 3px var(--border-color);
     aspect-ratio: 1;
   }
@@ -641,8 +655,6 @@
   .sequencer {
     display: grid;
     grid-template-columns: repeat(8, minmax(20px, 1fr));
-    gap: 5px;
-    padding: 5px;
     border: solid 3px var(--border-color);
   }
 
@@ -663,8 +675,6 @@
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     grid-auto-rows: minmax(0, 1fr);
-    gap: 5px;
-    padding: 5px;
     border: solid 3px var(--border-color);
   }
 
@@ -681,7 +691,6 @@
     grid-row: span 2;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
-    gap: 5px;
   }
 
   main-settings > * {
