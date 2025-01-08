@@ -10,21 +10,18 @@
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
   },
   "devDependencies": {
-    "@sveltejs/adapter-auto": "^3.2.2",
-    "@sveltejs/kit": "^2.5.17",
-    "@sveltejs/vite-plugin-svelte": "^3.1.1",
-    "autoprefixer": "^10.4.19",
-    "postcss": "^8.4.38",
-    "svelte": "5.0.0-next.165",
-    "svelte-check": "^3.8.2",
-    "tailwindcss": "^3.4.4",
-    "tslib": "^2.6.3",
-    "typescript": "^5.5.2",
-    "vite": "^5.3.1"
+    "@sveltejs/adapter-auto": "^3.3.1",
+    "@sveltejs/kit": "^2.15.2",
+    "@sveltejs/vite-plugin-svelte": "^5.0.3",
+    "svelte": "5.17.0",
+    "svelte-check": "^4.1.1",
+    "tslib": "^2.8.1",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.7"
   },
   "type": "module",
   "dependencies": {
-    "@fontsource-variable/noto-emoji": "^5.0.20",
-    "tone": "^14.9.17"
+    "@fontsource-variable/noto-emoji": "^5.1.1",
+    "tone": "^15.0.4"
   }
 }
