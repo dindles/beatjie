@@ -11,7 +11,7 @@
   import { Sample, type Packs } from '$lib/models.svelte'
 
   // Svelte components
-  import THX from '$lib/components/thx.svelte'
+  import RangeInput from '$lib/components/range-input.svelte'
 
   // === VARIABLES ==============================
 
@@ -414,19 +414,11 @@
 </script>
 
 <main>
-  <div class="color-controls emoji-font">
-    <label>
-      🎨
-      <input type="range" min="0" max="333" bind:value={user_hue} />
-    </label>
-
-    <label>
-      🪩
-      <input type="range" min="33" max="100" bind:value={user_saturation} />
-    </label>
-  </div>
-
   <div class="app">
+    <div class="color-controls">
+      <RangeInput bind:value={user_hue} min={0} max={333} label="🎨" />
+      <RangeInput bind:value={user_saturation} min={33} max={100} label="🪩" />
+    </div>
     <div class="display">
       <canvas></canvas>
     </div>
@@ -579,6 +571,17 @@
 </main>
 
 <style>
+  button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+  }
+
+  /* === LAYOUT === */
   main {
     display: grid;
     place-items: center;
@@ -588,102 +591,41 @@
     font-family: 'Noto Emoji';
   }
 
-  /* INPUTS – to componentise 100%*/
-  input[type='range'] {
-    --g: 8px; /*  gap */
-    --l: 2px; /* line thickness */
-    --s: 10px; /* thumb size */
-    width: 100px; /* width */
-    height: var(--s);
-    appearance: none;
-    background: none;
-    cursor: pointer;
-  }
-
-  /* Track styling */
-  input[type='range']::-webkit-slider-runnable-track {
-    height: var(--l);
-    background: var(--user-colour);
-    border-radius: calc(var(--l) / 2);
-  }
-
-  input[type='range']::-moz-range-track {
-    height: var(--l);
-    background: var(--user-colour);
-    border-radius: calc(var(--l) / 2);
-  }
-
-  /* Thumb styling */
-  input[type='range']::-webkit-slider-thumb {
-    height: var(--s);
-    width: var(--s);
-    border-radius: 50%;
-    background: var(--bg-color);
-    border: var(--l) solid var(--user-colour);
-    appearance: none;
-    margin-top: calc((var(--l) - var(--s)) / 2);
-  }
-
-  input[type='range']::-moz-range-thumb {
-    height: var(--s);
-    width: var(--s);
-    border-radius: 50%;
-    background: var(--bg-color);
-    border: var(--l) solid var(--user-colour);
-    appearance: none;
-  }
-
-  /* Focus state */
-  input[type='range']:focus {
-    outline: none;
-  }
-
-  /* Optional: hover state */
-  input[type='range']:hover::-webkit-slider-thumb {
-    background: var(--user-colour);
-  }
-
-  input[type='range']:hover::-moz-range-thumb {
-    background: var(--user-colour);
-  }
-
   .app {
-    width: 100%;
-    max-width: 344px;
-    max-height: 100vh;
     display: grid;
+    gap: var(--spacing);
     grid-template-rows: auto auto 1fr auto auto;
-    border: 4px solid var(--accent-color);
-    overflow: hidden;
+    max-width: 344px;
+    width: 100%;
+    max-height: 100vh;
   }
 
-  .app * {
-    border-radius: 8px;
+  /* === COMPONENTS === */
+  .emoji-font {
+    font-family: 'Noto Emoji';
+  }
+
+  /* Color Controls */
+  .color-controls {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing);
   }
 
   .display {
     border: dotted 3px var(--border-color);
   }
 
+  /* Display */
   canvas {
     width: 100%;
-    height: 100%;
     aspect-ratio: 4 / 1;
   }
 
-  .packs {
-    border: solid 3px var(--border-color);
-  }
-
+  /* Pack Selection */
   .pack-select {
     display: grid;
     grid-template-columns: auto 1fr auto;
-    border: solid 3px var(--border-color);
-  }
-
-  .pack-select-prev,
-  .pack-select-next {
-    aspect-ratio: 1;
   }
 
   .selected-pack {
@@ -693,114 +635,64 @@
 
   .pack {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
-    border: solid 3px var(--border-color);
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--spacing);
   }
 
-  .sample {
-    aspect-ratio: 1;
-    border: solid 3px var(--border-color);
-    display: grid;
-    place-items: center;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+  /* Sample Selection */
+  .sample-select-message {
+    text-align: center;
+    padding: var(--spacing);
   }
 
   .selected-sample-and-settings {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    grid-auto-rows: minmax(0, 1fr);
-    border: solid 3px var(--border-color);
-  }
-
-  .selected-sample {
-    aspect-ratio: 1;
-    grid-column: span 1;
-    grid-row: span 2;
-    display: grid;
-    place-items: center;
-    border: solid 3px var(--border-color);
+    gap: var(--spacing);
   }
 
   .selected-sample-settings-1,
-  .selected-sample-settings-2,
-  .selected-sample-settings-3 {
-    grid-column: span 1;
-    grid-row: span 2;
+  .selected-sample-settings-2 {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(2, 1fr);
-    border: solid 3px var(--border-color);
-    aspect-ratio: 1;
+    gap: var(--spacing);
   }
 
-  .selected-sample-settings-1 *,
-  .selected-sample-settings-2 * {
-    aspect-ratio: 1;
-    grid-column: span 1;
-    grid-row: span 1;
-  }
-
-  .sample.playing {
-    background-color: var(--playing-color);
-  }
-
-  .sample-select-message {
-    text-align: center;
-    padding: 10px;
-    border: solid 3px var(--border-color);
-  }
-
+  /* Sequencer */
   .sequencer {
     display: grid;
-    grid-template-columns: repeat(8, minmax(20px, 1fr));
-    border: solid 3px var(--border-color);
+    grid-template-columns: repeat(8, 1fr);
+    gap: var(--spacing);
   }
 
-  .step {
-    aspect-ratio: 1;
-    border: solid 3px var(--border-color);
+  /* Transport and Settings */
+  .transport-and-main-settings {
     display: grid;
-    place-items: center;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--spacing);
+  }
+
+  .main-settings {
+    grid-column: span 3;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
+    gap: var(--spacing);
+  }
+
+  /* === STATES === */
+  .sample.playing {
+    background-color: var(--playing-color);
   }
 
   .step.active {
     background-color: var(--active-color);
   }
 
-  .transport-and-main-settings {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-auto-rows: minmax(0, 1fr);
-    border: solid 3px var(--border-color);
-  }
-
-  .transport {
-    grid-column: span 1;
-    grid-row: span 2;
-    border: solid 3px var(--border-color);
-    display: grid;
-    place-items: center;
-  }
-
-  .main-settings {
-    grid-column: span 3;
-    grid-row: span 2;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
-  }
-
-  button:active {
-    background-color: var(--bg-color);
-    color: black;
-  }
-
   .selected {
     color: var(--selected-color);
   }
 
+  /* === RESPONSIVE === */
   @media (max-width: 400px) {
     .app {
       max-width: 100%;
