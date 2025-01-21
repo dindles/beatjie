@@ -66,8 +66,11 @@
     `hsl(${user_hue}, ${user_saturation}%, ${lightness}%)`
   )
 
+  let other_colour = $state('hsl(0, 0%, 100%)')
+
   $effect(() => {
     document.documentElement.style.setProperty('--user-colour', user_colour)
+    document.documentElement.style.setProperty('--other-colour', other_colour)
   })
 
   // === FUNCTIONS ==============================
@@ -562,6 +565,18 @@
         >
           {preview_samples_active ? 'X' : '🎧'}
         </button>
+        <button
+          class="light-dark emoji-font"
+          onclick={() => {
+            if (other_colour === 'hsl(0, 0%, 100%)') {
+              other_colour = 'hsl(0, 0%, 0%)'
+            } else if (other_colour === 'hsl(0, 0%, 0%)') {
+              other_colour = 'hsl(0, 0%, 100%)'
+            }
+          }}
+        >
+          {other_colour === 'hsl(0, 0%, 100%)' ? '🌕' : '🌞'}
+        </button>
         <!-- TODO -->
         <!-- <button onclick={() => savePreset(SAMPLES)}>save preset</button> -->
         <!-- <button onclick={() => loadPreset()}>load preset</button> -->
@@ -673,10 +688,14 @@
     gap: var(--spacing);
   }
 
+  .transport {
+    grid-column: span 1;
+  }
+
   .main-settings {
     grid-column: span 3;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: var(--spacing);
   }
 

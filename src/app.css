@@ -3,13 +3,13 @@
   --spacing: 2px;
   --border-radius: 8px;
   --border-weight: 2px;
-  --user-colour: hsl(180, 100%, 50%);
-  --bg-color: #000000;
+  --user-colour: hsl(0, 0%, 0%);
+  --other-colour: hsl(0, 0%, 100%);
 }
 
 * {
   color: var(--user-colour);
-  background-color: black;
+  background-color: var(--other-colour);
 }
 
 /*
