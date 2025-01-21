@@ -1,5 +1,4 @@
 <script lang="ts">
-  // Define our props
   let {
     min = 0,
     max = 100,
@@ -8,7 +7,7 @@
     label = '',
   } = $props()
 
-  // CSS custom properties with defaults
+  // cool little CSS variable pattern:
   const vars = {
     '--g': '3px', // gap
     '--l': '2px', // line thickness
@@ -17,6 +16,7 @@
   }
 </script>
 
+<!-- And then: -->
 <label
   style={Object.entries(vars)
     .map(([k, v]) => `${k}:${v}`)
@@ -60,7 +60,7 @@
     height: var(--s);
     width: var(--s);
     border-radius: 50%;
-    background: var(--bg-color);
+    background: var(--other-color);
     border: var(--l) solid var(--user-colour);
     appearance: none;
     margin-top: calc((var(--l) - var(--s)) / 2);
@@ -70,7 +70,7 @@
     height: var(--s);
     width: var(--s);
     border-radius: 50%;
-    background: var(--bg-color);
+    background: var(--other-color);
     border: var(--l) solid var(--user-colour);
     appearance: none;
   }
