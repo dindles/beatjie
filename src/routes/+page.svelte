@@ -573,7 +573,8 @@
 <style>
   button {
     background: transparent;
-    border: none;
+    border: var(--border-weight) solid var(--user-colour);
+    border-radius: var(--border-radius);
     cursor: pointer;
     padding: 0;
     aspect-ratio: 1;
@@ -612,10 +613,6 @@
     gap: var(--spacing);
   }
 
-  .display {
-    border: dotted 3px var(--border-color);
-  }
-
   /* Display */
   canvas {
     width: 100%;
@@ -640,6 +637,10 @@
   }
 
   /* Sample Selection */
+  .selected-sample {
+    border: var(--border-weight) solid var(--user-colour);
+    border-radius: var(--border-radius);
+  }
   .sample-select-message {
     text-align: center;
     padding: var(--spacing);

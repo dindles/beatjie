@@ -1,7 +1,8 @@
 /* COLOUR */
 :root {
   --spacing: 2px;
-  --radius: 2px;
+  --border-radius: 8px;
+  --border-weight: 2px;
   --user-colour: hsl(180, 100%, 50%);
   --bg-color: #000000;
 }
