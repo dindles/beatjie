@@ -1,5 +1,18 @@
+/* COLOUR */
+:root {
+  --spacing: 8px;
+  --radius: 8px;
+  --user-colour: hsl(180, 100%, 50%);
+  --bg-color: #000000;
+}
+
+* {
+  color: var(--user-colour);
+  background-color: black;
+}
+
 /*
-  Josh's CSS Reset (more or less)
+  Based on Josh's CSS Reset
   https://www.joshwcomeau.com/css/custom-css-reset/
 */
 

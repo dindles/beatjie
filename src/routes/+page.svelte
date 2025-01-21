@@ -57,11 +57,18 @@
   let canvas: HTMLCanvasElement
   let analysis_values: Float32Array | Float32Array[] = $state([])
 
-  // Styles
-  let black = '#000000'
-  let colour_hue = $state()
-  let colour_saturation = $state()
-  let colour_lightness = $state()
+  // Colour
+  let user_hue = $state() //0-360
+  let user_saturation = $state() //0-100
+  let lightness = 50 //0-100
+
+  let user_colour = $derived(
+    `hsl(${user_hue}, ${user_saturation}%, ${lightness}%)`
+  )
+
+  $effect(() => {
+    document.documentElement.style.setProperty('--user-colour', user_colour)
+  })
 
   // === FUNCTIONS ==============================
 
@@ -270,7 +277,7 @@
       ctx.fillStyle = '#000000'
       ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-      ctx.strokeStyle = 'cyan'
+      ctx.strokeStyle = user_colour
       ctx.lineWidth = dim * 0.02 // set line thickness
 
       // Draw waveform
@@ -407,6 +414,18 @@
 </script>
 
 <main>
+  <div class="color-controls emoji-font">
+    <label>
+      🎨
+      <input type="range" min="0" max="333" bind:value={user_hue} />
+    </label>
+
+    <label>
+      🪩
+      <input type="range" min="33" max="100" bind:value={user_saturation} />
+    </label>
+  </div>
+
   <div class="app">
     <div class="display">
       <canvas></canvas>
@@ -567,6 +586,65 @@
 
   .emoji-font {
     font-family: 'Noto Emoji';
+  }
+
+  /* INPUTS – to componentise 100%*/
+  input[type='range'] {
+    --g: 8px; /*  gap */
+    --l: 2px; /* line thickness */
+    --s: 10px; /* thumb size */
+    width: 100px; /* width */
+    height: var(--s);
+    appearance: none;
+    background: none;
+    cursor: pointer;
+  }
+
+  /* Track styling */
+  input[type='range']::-webkit-slider-runnable-track {
+    height: var(--l);
+    background: var(--user-colour);
+    border-radius: calc(var(--l) / 2);
+  }
+
+  input[type='range']::-moz-range-track {
+    height: var(--l);
+    background: var(--user-colour);
+    border-radius: calc(var(--l) / 2);
+  }
+
+  /* Thumb styling */
+  input[type='range']::-webkit-slider-thumb {
+    height: var(--s);
+    width: var(--s);
+    border-radius: 50%;
+    background: var(--bg-color);
+    border: var(--l) solid var(--user-colour);
+    appearance: none;
+    margin-top: calc((var(--l) - var(--s)) / 2);
+  }
+
+  input[type='range']::-moz-range-thumb {
+    height: var(--s);
+    width: var(--s);
+    border-radius: 50%;
+    background: var(--bg-color);
+    border: var(--l) solid var(--user-colour);
+    appearance: none;
+  }
+
+  /* Focus state */
+  input[type='range']:focus {
+    outline: none;
+  }
+
+  /* Optional: hover state */
+  input[type='range']:hover::-webkit-slider-thumb {
+    background: var(--user-colour);
+  }
+
+  input[type='range']:hover::-moz-range-thumb {
+    background: var(--user-colour);
   }
 
   .app {
