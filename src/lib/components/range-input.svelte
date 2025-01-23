@@ -11,7 +11,7 @@
   const vars = {
     '--g': '3px', // gap
     '--l': '2px', // line thickness
-    '--s': '8px', // thumb size
+    '--s': '0.8rem', // thumb size
     '--w': '100px', // width
   }
 </script>
@@ -23,15 +23,16 @@
     .join(';')}
 >
   {#if label}
-    <span class="emoji-font">{label}</span>
+    <span class="emoji-small">{label}</span>
   {/if}
 
   <input type="range" {min} {max} {step} bind:value />
 </label>
 
 <style>
-  .emoji-font {
+  .emoji-small {
     font-family: 'Noto Emoji';
+    font-size: min(2vw, 1.5rem);
   }
 
   input[type='range'] {
@@ -59,7 +60,7 @@
   input[type='range']::-webkit-slider-thumb {
     height: var(--s);
     width: var(--s);
-    border-radius: 50%;
+    border-radius: 15%;
     background: var(--other-color);
     border: var(--l) solid var(--user-colour);
     appearance: none;
@@ -69,7 +70,7 @@
   input[type='range']::-moz-range-thumb {
     height: var(--s);
     width: var(--s);
-    border-radius: 50%;
+    border-radius: 15%;
     background: var(--other-color);
     border: var(--l) solid var(--user-colour);
     appearance: none;

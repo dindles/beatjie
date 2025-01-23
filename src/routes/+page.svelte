@@ -279,7 +279,7 @@
 
     if (ctx) {
       // Background and stroke color
-      ctx.fillStyle = '#000000'
+      ctx.fillStyle = other_colour
       ctx.fillRect(0, 0, canvas.width, canvas.height)
 
       ctx.strokeStyle = user_colour
@@ -335,37 +335,33 @@
     return SAMPLES.find((s) => s.id === sample_id)
   }
 
-  function setSampleGain(gain: 'mute' | '-3' | '-12') {
+  function switchSampleGain() {
     if (!selected_sample) console.log('No sample selected')
     else if (selected_sample) {
-      switch (gain) {
-        case 'mute':
-          selected_sample.volume = -108
-          break
-        case '-3':
-          selected_sample.volume = -3
-          break
-        case '-12':
-          selected_sample.volume = -12
-          break
-      }
+      selected_sample.volume === -108
+        ? (selected_sample.volume = 0)
+        : (selected_sample.volume = -108)
     }
   }
 
-  function setSamplePitch(pitch: 'tonic' | 'fourth' | 'fifth') {
-    if (!selected_sample) console.log('No sample selected')
-    else if (selected_sample) {
-      switch (pitch) {
-        case 'tonic':
-          selected_sample.pitch = 'C2'
-          break
-        case 'fourth':
-          selected_sample.pitch = 'F2'
-          break
-        case 'fifth':
-          selected_sample.pitch = 'G2'
-          break
-      }
+  function loopSamplePitch() {
+    if (!selected_sample) {
+      console.log('No sample selected')
+      return
+    }
+
+    switch (selected_sample.pitch) {
+      case 'C2':
+        selected_sample.pitch = 'F2'
+        break
+      case 'F2':
+        selected_sample.pitch = 'G2'
+        break
+      case 'G2':
+        selected_sample.pitch = 'C2'
+        break
+      default:
+        selected_sample.pitch = 'C2'
     }
   }
 
@@ -418,13 +414,15 @@
   })
 </script>
 
+<!-- todo: canvas bg white on light/dark toggle -->
+<!-- todo: selected sample settings - 1. mute 2. pitch 3. preview 4. bpm-->
 <main>
   <div class="app border">
     <div class="color-controls">
       <RangeInput bind:value={user_hue} min={0} max={333} label="🎨" />
       <RangeInput bind:value={user_saturation} min={33} max={100} label="🪩" />
       <button
-        class="light-dark emoji-font"
+        class="light-dark emoji-small"
         onclick={() => {
           if (other_colour === 'hsl(0, 0%, 100%)') {
             other_colour = 'hsl(0, 0%, 0%)'
@@ -449,14 +447,14 @@
     <div class="packs">
       <div class="pack-select">
         <button
-          class="pack-select-prev emoji-font"
+          class="pack-select-prev emoji-small"
           onclick={() => selectPack('prev')}>👈</button
         >
         <p class="selected-pack">
           {packs[selected_pack_index].name}
         </p>
         <button
-          class="pack-select-next emoji-font"
+          class="pack-select-next emoji-small"
           onclick={() => selectPack('next')}>👉</button
         >
       </div>
@@ -466,7 +464,7 @@
           {#each SAMPLES as sample}
             {#if sample && sample.pack === packs[selected_pack_index].name}
               <button
-                class="sample border emoji-font"
+                class="sample border emoji-large"
                 class:active={sample.id === selected_sample?.id}
                 onclick={() => handleSampleClick(getSampleByID(sample.id))}
                 >{sample.emoji}</button
@@ -479,41 +477,12 @@
 
     {#if selected_sample}
       <div class="selected-sample-settings">
-        <div class="selected-sample-settings-1">
-          <button
-            class="emoji-font"
-            class:active={selected_sample.volume === -108}
-            onclick={() => setSampleGain('mute')}>🔇</button
-          >
-          <button
-            class="emoji-font"
-            class:active={selected_sample.volume === -12}
-            onclick={() => setSampleGain('-12')}>🔈</button
-          >
-          <button
-            class="emoji-font"
-            class:active={selected_sample.volume === -3}
-            onclick={() => setSampleGain('-3')}>🔊</button
-          >
-        </div>
-        <div class="selected-sample-settings-2">
-          <button
-            class="emoji-font"
-            class:active={selected_sample.pitch === 'C2'}
-            onclick={() => setSamplePitch('tonic')}>I</button
-          >
-          <button
-            class="emoji-font"
-            class:active={selected_sample.pitch === 'F2'}
-            onclick={() => setSamplePitch('fourth')}>IV</button
-          >
-          <button
-            class="emoji-font"
-            class:active={selected_sample.pitch === 'G2'}
-            onclick={() => setSamplePitch('fifth')}>V</button
-          >
-        </div>
-        <div class="selected-sample-settings-3"></div>
+        <button class="emoji-large" onclick={() => switchSampleGain()}
+          >{selected_sample.volume === -108 ? '🔇' : '🔊'}</button
+        >
+        <button class="emoji-large" onclick={() => loopSamplePitch()}
+          >{selected_sample.pitch}</button
+        >
       </div>
 
       <div class="sequencer">
@@ -521,7 +490,7 @@
           {#if sample.id === selected_sample?.id}
             {#each selected_sample.sequence as _, index}
               <button
-                class="step border emoji-font"
+                class="step border emoji-small"
                 class:active={index === active_step_index}
                 onclick={() => handleSeqClick(sample, index)}
                 onkeydown={() => handleSeqClick(sample, index)}
@@ -537,25 +506,25 @@
 
       <div class="transport-and-main-settings">
         <div class="transport">
-          <button class="emoji-font" onclick={toggleSeqPlayback}
+          <button class="emoji-large" onclick={toggleSeqPlayback}
             >{is_playing ? '⏹' : '▶'}</button
           >
         </div>
 
         <div class="main-settings">
           <button
-            class="emoji-font"
+            class="emoji-large"
             onclick={toggleHighPass}
             class:active={main_highpassed}>🫴</button
           >
           <button
             class:active={main_lowpassed}
-            class="emoji-font"
+            class="emoji-large"
             onclick={toggleLowPass}>🫳</button
           >
           <button
             class:active={main_distorted}
-            class="emoji-font"
+            class="emoji-large"
             onclick={toggleDistortion}>💥</button
           >
           <div class="bpm-control">
@@ -593,10 +562,14 @@
     border-radius: var(--border-radius);
   }
 
-  .emoji-font {
+  .emoji-large {
     font-family: 'Noto Emoji';
-    /* set font size to be 80% of container height */
-    font-size: 2rem;
+    font-size: min(15vw, 10rem);
+  }
+
+  .emoji-small {
+    font-family: 'Noto Emoji';
+    font-size: min(6vw, 4.5rem);
   }
 
   .active {
@@ -613,6 +586,7 @@
     aspect-ratio: 1;
     display: grid;
     place-items: center;
+    min-width: 22px;
   }
 
   /* === layout === */
@@ -622,6 +596,8 @@
   }
 
   .app {
+    width: var(--app-width);
+    max-width: 1080px;
     display: grid;
     padding: 1%;
     gap: var(--spacing);
@@ -677,13 +653,6 @@
   .selected-sample-settings {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: var(--spacing);
-  }
-
-  .selected-sample-settings-1,
-  .selected-sample-settings-2 {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
     gap: var(--spacing);
   }
 

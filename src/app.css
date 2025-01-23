@@ -1,8 +1,9 @@
 /* COLOUR */
 :root {
+  --app-width: 100vw;
   --spacing: 2px;
   --border-radius: 8px;
-  --border-weight: 2px;
+  --border-weight: 2.5px;
   --user-colour: hsl(0, 0%, 0%);
   --other-colour: hsl(0, 0%, 0%);
 }
