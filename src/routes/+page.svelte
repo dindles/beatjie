@@ -12,6 +12,7 @@
 
   // Svelte components
   import RangeInput from '$lib/components/range-input.svelte'
+  import BpmSelector from '$lib/components/bpm-selector.svelte'
 
   // === VARIABLES ==============================
 
@@ -414,8 +415,6 @@
   })
 </script>
 
-<!-- todo: canvas bg white on light/dark toggle -->
-<!-- todo: selected sample settings - 1. mute 2. pitch 3. preview 4. bpm-->
 <main>
   <div class="app border">
     <div class="color-controls">
@@ -440,7 +439,7 @@
         <canvas></canvas>
       </div>
       {#if !selected_sample}
-        <p class="sample-select-message">select a sample</p>
+        <p class="sample-select-message text-small">select a sample</p>
       {/if}
     </div>
 
@@ -450,7 +449,7 @@
           class="pack-select-prev emoji-small"
           onclick={() => selectPack('prev')}>👈</button
         >
-        <p class="selected-pack">
+        <p class="selected-pack text-small">
           {packs[selected_pack_index].name}
         </p>
         <button
@@ -466,6 +465,7 @@
               <button
                 class="sample border emoji-large"
                 class:active={sample.id === selected_sample?.id}
+                class:playing={sample.playing}
                 onclick={() => handleSampleClick(getSampleByID(sample.id))}
                 >{sample.emoji}</button
               >
@@ -480,8 +480,10 @@
         <button class="emoji-large" onclick={() => switchSampleGain()}
           >{selected_sample.volume === -108 ? '🔇' : '🔊'}</button
         >
-        <button class="emoji-large" onclick={() => loopSamplePitch()}
-          >{selected_sample.pitch}</button
+        <!-- todo: have note emoji spin 90 degrees each time it's clicked -->
+        <button
+          class="selected-sample-pitch emoji-large"
+          onclick={() => loopSamplePitch()}>🎵</button
         >
       </div>
 
@@ -572,7 +574,24 @@
     font-size: min(6vw, 4.5rem);
   }
 
+  .text-large {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: min(15vw, 10rem);
+  }
+
+  .text-small {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: min(6vw, 4.5rem);
+  }
+
+  /* === state === */
+
   .active {
+    color: var(--other-colour);
+    background-color: var(--user-colour);
+  }
+
+  .playing {
     color: var(--other-colour);
     background-color: var(--user-colour);
   }
@@ -620,6 +639,7 @@
   }
 
   .sample-select-message {
+    width: 100%;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -654,6 +674,13 @@
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: var(--spacing);
+  }
+
+  /* todo: spin this emoji 90 degrees each time it's clicked */
+  .selected-sample-pitch {
+    transform: rotate(90deg);
+    display: grid;
+    place-items: center;
   }
 
   /* sequencer */

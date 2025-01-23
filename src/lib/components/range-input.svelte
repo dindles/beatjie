@@ -32,7 +32,7 @@
 <style>
   .emoji-small {
     font-family: 'Noto Emoji';
-    font-size: min(2vw, 1.5rem);
+    font-size: min(6vw, 4.5rem);
   }
 
   input[type='range'] {
