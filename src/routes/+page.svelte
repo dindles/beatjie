@@ -66,8 +66,9 @@
     `hsl(${user_hue}, ${user_saturation}%, ${lightness}%)`
   )
 
-  let other_colour = $state('hsl(0, 0%, 100%)')
+  let other_colour = $state('hsl(0, 0%, 0%)')
 
+  // sets css variables (defined in app.css)
   $effect(() => {
     document.documentElement.style.setProperty('--user-colour', user_colour)
     document.documentElement.style.setProperty('--other-colour', other_colour)
@@ -76,6 +77,7 @@
   // === FUNCTIONS ==============================
 
   // CALLED IMMEDIATELY
+  // Audio
   // Creates an audio buffer for each sample, pack by pack
   function makeBuffers(packs: Packs): Tone.ToneAudioBuffers {
     const urlsObject: { [key: string]: string } = {}
@@ -417,10 +419,22 @@
 </script>
 
 <main>
-  <div class="app">
+  <div class="app border">
     <div class="color-controls">
       <RangeInput bind:value={user_hue} min={0} max={333} label="🎨" />
       <RangeInput bind:value={user_saturation} min={33} max={100} label="🪩" />
+      <button
+        class="light-dark emoji-font"
+        onclick={() => {
+          if (other_colour === 'hsl(0, 0%, 100%)') {
+            other_colour = 'hsl(0, 0%, 0%)'
+          } else if (other_colour === 'hsl(0, 0%, 0%)') {
+            other_colour = 'hsl(0, 0%, 100%)'
+          }
+        }}
+      >
+        {other_colour === 'hsl(0, 0%, 100%)' ? '🌛' : '🌞'}
+      </button>
     </div>
     <div class="display">
       <canvas></canvas>
@@ -450,8 +464,8 @@
           {#each SAMPLES as sample}
             {#if sample && sample.pack === packs[selected_pack_index].name}
               <button
-                class="sample emoji-font"
-                class:playing={sample.playing}
+                class="sample border emoji-font"
+                class:active={sample.id === selected_sample?.id}
                 onclick={() => handleSampleClick(getSampleByID(sample.id))}
                 >{sample.emoji}</button
               >
@@ -470,34 +484,34 @@
         <div class="selected-sample-settings-1">
           <button
             class="emoji-font"
-            class:selected={selected_sample.volume === -108 ? 'selected' : ''}
+            class:active={selected_sample.volume === -108}
             onclick={() => setSampleGain('mute')}>🔇</button
           >
           <button
             class="emoji-font"
-            class:selected={selected_sample.volume === -12 ? 'selected' : ''}
+            class:active={selected_sample.volume === -12}
             onclick={() => setSampleGain('-12')}>🔈</button
           >
           <button
             class="emoji-font"
-            class:selected={selected_sample.volume === -3 ? 'selected' : ''}
+            class:active={selected_sample.volume === -3}
             onclick={() => setSampleGain('-3')}>🔊</button
           >
         </div>
         <div class="selected-sample-settings-2">
           <button
             class="emoji-font"
-            class:selected={selected_sample.pitch === 'C2' ? 'selected' : ''}
+            class:active={selected_sample.pitch === 'C2'}
             onclick={() => setSamplePitch('tonic')}>I</button
           >
           <button
             class="emoji-font"
-            class:selected={selected_sample.pitch === 'F2' ? 'selected' : ''}
+            class:active={selected_sample.pitch === 'F2'}
             onclick={() => setSamplePitch('fourth')}>IV</button
           >
           <button
             class="emoji-font"
-            class:selected={selected_sample.pitch === 'G2' ? 'selected' : ''}
+            class:active={selected_sample.pitch === 'G2'}
             onclick={() => setSamplePitch('fifth')}>V</button
           >
         </div>
@@ -534,15 +548,15 @@
           <button
             class="emoji-font"
             onclick={toggleHighPass}
-            class:selected={main_highpassed ? 'selected' : ''}>🫴</button
+            class:active={main_highpassed}>🫴</button
           >
           <button
-            class:selected={main_lowpassed ? 'selected' : ''}
+            class:active={main_lowpassed}
             class="emoji-font"
             onclick={toggleLowPass}>🫳</button
           >
           <button
-            class:selected={main_distorted ? 'selected' : ''}
+            class:active={main_distorted}
             class="emoji-font"
             onclick={toggleDistortion}>💥</button
           >
@@ -565,18 +579,6 @@
         >
           {preview_samples_active ? 'X' : '🎧'}
         </button>
-        <button
-          class="light-dark emoji-font"
-          onclick={() => {
-            if (other_colour === 'hsl(0, 0%, 100%)') {
-              other_colour = 'hsl(0, 0%, 0%)'
-            } else if (other_colour === 'hsl(0, 0%, 0%)') {
-              other_colour = 'hsl(0, 0%, 100%)'
-            }
-          }}
-        >
-          {other_colour === 'hsl(0, 0%, 100%)' ? '🌕' : '🌞'}
-        </button>
 
         <!-- TODO -->
         <!-- <button onclick={() => savePreset(SAMPLES)}>save preset</button> -->
@@ -587,10 +589,25 @@
 </main>
 
 <style>
-  button {
-    background: transparent;
+  /* === utilities === */
+  .border {
     border: var(--border-weight) solid var(--user-colour);
     border-radius: var(--border-radius);
+  }
+
+  .emoji-font {
+    font-family: 'Noto Emoji';
+  }
+
+  .active {
+    color: var(--other-colour);
+    background-color: var(--user-colour);
+  }
+
+  /* === elements === */
+  button {
+    background: transparent;
+    border: none;
     cursor: pointer;
     padding: 0;
     aspect-ratio: 1;
@@ -598,18 +615,15 @@
     place-items: center;
   }
 
-  /* === LAYOUT === */
+  /* === layout === */
   main {
     display: grid;
     place-items: center;
   }
 
-  .emoji-font {
-    font-family: 'Noto Emoji';
-  }
-
   .app {
     display: grid;
+    padding: 1%;
     gap: var(--spacing);
     grid-template-rows: auto auto 1fr auto auto;
     max-width: 344px;
@@ -617,25 +631,18 @@
     max-height: 100vh;
   }
 
-  /* === COMPONENTS === */
-  .emoji-font {
-    font-family: 'Noto Emoji';
-  }
-
-  /* Color Controls */
   .color-controls {
     display: flex;
     justify-content: center;
     gap: var(--spacing);
   }
 
-  /* Display */
   canvas {
     width: 100%;
     aspect-ratio: 4 / 1;
   }
 
-  /* Pack Selection */
+  /* pack selection */
   .pack-select {
     display: grid;
     grid-template-columns: auto 1fr auto;
@@ -652,11 +659,7 @@
     gap: var(--spacing);
   }
 
-  /* Sample Selection */
-  .selected-sample {
-    border: var(--border-weight) solid var(--user-colour);
-    border-radius: var(--border-radius);
-  }
+  /* sample selection */
   .sample-select-message {
     text-align: center;
     padding: var(--spacing);
@@ -675,14 +678,14 @@
     gap: var(--spacing);
   }
 
-  /* Sequencer */
+  /* sequencer */
   .sequencer {
     display: grid;
     grid-template-columns: repeat(8, 1fr);
     gap: var(--spacing);
   }
 
-  /* Transport and Settings */
+  /* transport and settings */
   .transport-and-main-settings {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -700,20 +703,7 @@
     gap: var(--spacing);
   }
 
-  /* === STATES === */
-  .sample.playing {
-    background-color: var(--playing-color);
-  }
-
-  .step.active {
-    background-color: var(--active-color);
-  }
-
-  .selected {
-    color: var(--selected-color);
-  }
-
-  /* === RESPONSIVE === */
+  /* === responsiveness === */
   @media (max-width: 400px) {
     .app {
       max-width: 100%;

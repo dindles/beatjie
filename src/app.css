@@ -4,7 +4,7 @@
   --border-radius: 8px;
   --border-weight: 2px;
   --user-colour: hsl(0, 0%, 0%);
-  --other-colour: hsl(0, 0%, 100%);
+  --other-colour: hsl(0, 0%, 0%);
 }
 
 * {
@@ -12,10 +12,7 @@
   background-color: var(--other-colour);
 }
 
-/*
-  Based on Josh's CSS Reset
-  https://www.joshwcomeau.com/css/custom-css-reset/
-*/
+/* RESET */
 
 *,
 *::before,
@@ -26,7 +23,6 @@
 * {
   margin: 0;
   padding: 0;
-  line-height: calc(1em + 0.5rem);
   /* disables double tap to zoom */
   touch-action: manipulation;
 }
