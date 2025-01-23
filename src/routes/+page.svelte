@@ -436,13 +436,15 @@
         {other_colour === 'hsl(0, 0%, 100%)' ? '🌛' : '🌞'}
       </button>
     </div>
-    <div class="display">
-      <canvas></canvas>
-    </div>
 
-    {#if !selected_sample}
-      <p class="sample-select-message">select a sample</p>
-    {/if}
+    <div class="display">
+      <div>
+        <canvas></canvas>
+      </div>
+      {#if !selected_sample}
+        <p class="sample-select-message">select a sample</p>
+      {/if}
+    </div>
 
     <div class="packs">
       <div class="pack-select">
@@ -476,11 +478,7 @@
     </div>
 
     {#if selected_sample}
-      <div class="selected-sample-and-settings">
-        <div class="selected-sample emoji-font">
-          {selected_sample?.emoji}
-        </div>
-
+      <div class="selected-sample-settings">
         <div class="selected-sample-settings-1">
           <button
             class="emoji-font"
@@ -523,7 +521,7 @@
           {#if sample.id === selected_sample?.id}
             {#each selected_sample.sequence as _, index}
               <button
-                class="step emoji-font"
+                class="step border emoji-font"
                 class:active={index === active_step_index}
                 onclick={() => handleSeqClick(sample, index)}
                 onkeydown={() => handleSeqClick(sample, index)}
@@ -597,6 +595,8 @@
 
   .emoji-font {
     font-family: 'Noto Emoji';
+    /* set font size to be 80% of container height */
+    font-size: 2rem;
   }
 
   .active {
@@ -604,7 +604,7 @@
     background-color: var(--user-colour);
   }
 
-  /* === elements === */
+  /* === html elements === */
   button {
     background: transparent;
     border: none;
@@ -626,9 +626,6 @@
     padding: 1%;
     gap: var(--spacing);
     grid-template-rows: auto auto 1fr auto auto;
-    max-width: 344px;
-    width: 100%;
-    max-height: 100vh;
   }
 
   .color-controls {
@@ -637,9 +634,21 @@
     gap: var(--spacing);
   }
 
+  .display {
+    position: relative;
+  }
+
   canvas {
     width: 100%;
     aspect-ratio: 4 / 1;
+  }
+
+  .sample-select-message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
   }
 
   /* pack selection */
@@ -665,7 +674,7 @@
     padding: var(--spacing);
   }
 
-  .selected-sample-and-settings {
+  .selected-sample-settings {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: var(--spacing);
@@ -693,20 +702,13 @@
   }
 
   .transport {
-    grid-column: span 1;
+    display: grid;
+    grid-template-columns: 1fr;
   }
-
   .main-settings {
     grid-column: span 3;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: var(--spacing);
-  }
-
-  /* === responsiveness === */
-  @media (max-width: 400px) {
-    .app {
-      max-width: 100%;
-    }
   }
 </style>
