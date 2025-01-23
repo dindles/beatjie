@@ -12,7 +12,7 @@
 
   // Svelte components
   import RangeInput from '$lib/components/range-input.svelte'
-  import BpmSelector from '$lib/components/bpm-selector.svelte'
+  import BPMSelector from '$lib/components/bpm-selector.svelte'
 
   // === VARIABLES ==============================
 
@@ -485,6 +485,17 @@
           class="selected-sample-pitch emoji-large"
           onclick={() => loopSamplePitch()}>🎵</button
         >
+        <div class="bpm-control">
+          <BPMSelector bind:bpm {updateBPM} />
+        </div>
+        <button
+          class="preview_samples_setting emoji-font"
+          onclick={() => {
+            preview_samples_active = !preview_samples_active
+          }}
+        >
+          {preview_samples_active ? 'X' : '🎧'}
+        </button>
       </div>
 
       <div class="sequencer">
@@ -529,29 +540,7 @@
             class="emoji-large"
             onclick={toggleDistortion}>💥</button
           >
-          <div class="bpm-control">
-            <input
-              type="number"
-              min="60"
-              max="200"
-              bind:value={bpm}
-              onchange={() => updateBPM(bpm)}
-            />
-          </div>
         </div>
-        <!-- here temporarily, not sure where preview button should go -->
-        <button
-          class="preview_samples_setting emoji-font"
-          onclick={() => {
-            preview_samples_active = !preview_samples_active
-          }}
-        >
-          {preview_samples_active ? 'X' : '🎧'}
-        </button>
-
-        <!-- TODO -->
-        <!-- <button onclick={() => savePreset(SAMPLES)}>save preset</button> -->
-        <!-- <button onclick={() => loadPreset()}>load preset</button> -->
       </div>
     {/if}
   </div>
@@ -572,11 +561,6 @@
   .emoji-small {
     font-family: 'Noto Emoji';
     font-size: min(6vw, 4.5rem);
-  }
-
-  .text-large {
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
-    font-size: min(15vw, 10rem);
   }
 
   .text-small {
@@ -605,7 +589,6 @@
     aspect-ratio: 1;
     display: grid;
     place-items: center;
-    min-width: 22px;
   }
 
   /* === layout === */
