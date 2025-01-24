@@ -2,16 +2,16 @@
 
 ## v1.0
 
-### responsiveness
-
 ### pitch button barrel roll
+
+### better mute?
+
+- this one causes glitching
 
 ### samples
 
 - create samples
 - load samples
-
-### responsive width, stroke weight of colour sliders
 
 ### change colour system? okch or whatever?
 

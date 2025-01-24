@@ -434,7 +434,7 @@
           }
         }}
       >
-        {other_colour === 'hsl(0, 0%, 100%)' ? '🌛' : '🌞'}
+        {other_colour === 'hsl(0, 0%, 100%)' ? '🌞' : '🌛'}
       </button>
     </div>
 
@@ -489,17 +489,17 @@
           class="selected-sample-pitch emoji-large"
           onclick={() => loopSamplePitch()}>🎵</button
         >
-        <div class="bpm-control">
-          <BPMSelector bind:bpm {updateBPM} />
-        </div>
-        <button
-          class="preview_samples_setting emoji-font"
+
+        <!-- *not sure how to make this comprehensible visually -->
+        <!-- <button
+          class="preview_samples_setting emoji-small"
+          class:active={preview_samples_active}
           onclick={() => {
             preview_samples_active = !preview_samples_active
           }}
         >
-          {preview_samples_active ? 'X' : '🎧'}
-        </button>
+          🎧
+        </button> -->
       </div>
 
       <div class="sequencer">
@@ -535,15 +535,13 @@
             class:active={main_highpassed}>🫴</button
           >
           <button
-            class:active={main_lowpassed}
-            class="emoji-large"
-            onclick={toggleLowPass}>🫳</button
-          >
-          <button
             class:active={main_distorted}
             class="emoji-large"
             onclick={toggleDistortion}>💥</button
           >
+          <div class="bpm-control">
+            <BPMSelector bind:bpm {updateBPM} />
+          </div>
         </div>
       </div>
     {/if}
@@ -564,7 +562,7 @@
 
   .emoji-small {
     font-family: 'Noto Emoji';
-    font-size: clamp(1.5rem, 6vmin, 4rem);
+    font-size: clamp(1.8rem, 3.8vmin, 4rem);
   }
 
   .text-small {
@@ -602,6 +600,7 @@
 
   /* === layout === */
   main {
+    min-height: 100vh;
     display: grid;
     place-items: center;
   }
@@ -611,7 +610,7 @@
     height: min(95vh, 1080px);
     overflow: hidden;
     padding: 1%;
-    /* gap: var(--spacing); */
+    gap: var(--spacing);
     grid-template-rows: auto auto 1fr auto auto;
   }
 
