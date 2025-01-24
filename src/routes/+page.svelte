@@ -564,7 +564,7 @@
   }
 
   .text-small {
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-family: 'Zen Dots', sans-serif;
     font-size: min(6vw, 4.5rem);
   }
 

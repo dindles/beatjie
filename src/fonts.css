@@ -2,5 +2,12 @@
   font-family: 'Noto Emoji';
   font-style: normal;
   font-weight: 500;
-  src: url('/fonts/NotoEmoji-VariableFont_wght.ttf'); /* IE9 Compat Modes */
+  src: url('/fonts/NotoEmoji-VariableFont_wght.ttf');
+}
+
+@font-face {
+  font-family: 'Zen Dots';
+  font-style: normal;
+  font-weight: 500;
+  src: url('/fonts/ZenDots-Regular.ttf');
 }

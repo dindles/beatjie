@@ -21,7 +21,6 @@
   },
   "type": "module",
   "dependencies": {
-    "@fontsource-variable/noto-emoji": "^5.1.1",
     "tone": "^15.0.4"
   }
 }

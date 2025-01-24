@@ -65,8 +65,8 @@
 
 <style>
   .bpm-display {
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
-    font-size: min(15vw, 10rem);
+    font-family: 'Zen Dots', sans-serif;
+    font-size: min(15vw, 5.5rem);
     border: none;
     background: none;
     padding: 0;
