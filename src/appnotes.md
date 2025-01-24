@@ -2,7 +2,9 @@
 
 ## v1.0
 
-### pitch button barrel roll
+### decide on descriptive vs desirous label naming
+
+### tap mojis to change colours instead of sliders? (layls poked them)
 
 ### better mute?
 

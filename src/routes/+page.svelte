@@ -554,12 +554,12 @@
 
   .emoji-large {
     font-family: 'Noto Emoji';
-    font-size: clamp(2rem, 8vmin, 6rem);
+    font-size: clamp(2.4rem, 8vmin, 6rem);
   }
 
   .emoji-small {
     font-family: 'Noto Emoji';
-    font-size: clamp(1.8rem, 3.8vmin, 4rem);
+    font-size: clamp(1.4rem, 3.8vmin, 4rem);
   }
 
   .text-small {
