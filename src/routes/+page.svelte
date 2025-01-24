@@ -262,6 +262,10 @@
     }
 
     startDrawingLoop()
+
+    return () => {
+      stopDrawingLoop()
+    }
   })
 
   // CALLED FOR DISPLAY
@@ -284,7 +288,7 @@
       ctx.fillRect(0, 0, canvas.width, canvas.height)
 
       ctx.strokeStyle = user_colour
-      ctx.lineWidth = dim * 0.02 // set line thickness
+      ctx.lineWidth = dim * 0.03 // set line thickness
 
       // Draw waveform
       analysis_values = main_analyser.getValue()
@@ -598,8 +602,6 @@
   }
 
   .app {
-    width: var(--app-width);
-    max-width: 1080px;
     display: grid;
     padding: 1%;
     gap: var(--spacing);
