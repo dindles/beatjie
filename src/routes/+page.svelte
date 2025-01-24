@@ -288,7 +288,7 @@
       ctx.fillRect(0, 0, canvas.width, canvas.height)
 
       ctx.strokeStyle = user_colour
-      ctx.lineWidth = dim * 0.03 // set line thickness
+      ctx.lineWidth = dim * 0.04 // set line thickness
 
       // Draw waveform
       analysis_values = main_analyser.getValue()
@@ -443,7 +443,7 @@
         <canvas></canvas>
       </div>
       {#if !selected_sample}
-        <p class="sample-select-message text-small">select a sample</p>
+        <p class="sample-select-message text-xsmall">select a sample</p>
       {/if}
     </div>
 
@@ -559,17 +559,22 @@
 
   .emoji-large {
     font-family: 'Noto Emoji';
-    font-size: min(15vw, 10rem);
+    font-size: clamp(2rem, 8vmin, 6rem);
   }
 
   .emoji-small {
     font-family: 'Noto Emoji';
-    font-size: min(6vw, 4.5rem);
+    font-size: clamp(1.5rem, 6vmin, 4rem);
   }
 
   .text-small {
     font-family: 'Zen Dots', sans-serif;
-    font-size: min(6vw, 4.5rem);
+    font-size: clamp(1.5rem, 6vmin, 4rem);
+  }
+
+  .text-xsmall {
+    font-family: 'Zen Dots', sans-serif;
+    font-size: clamp(0.8rem, 4vmin, 2.4rem);
   }
 
   /* === state === */
@@ -602,9 +607,11 @@
   }
 
   .app {
-    display: grid;
+    aspect-ratio: 4/7;
+    height: min(95vh, 1080px);
+    overflow: hidden;
     padding: 1%;
-    gap: var(--spacing);
+    /* gap: var(--spacing); */
     grid-template-rows: auto auto 1fr auto auto;
   }
 
@@ -620,7 +627,7 @@
 
   canvas {
     width: 100%;
-    aspect-ratio: 4 / 1;
+    aspect-ratio: 4/1;
   }
 
   .sample-select-message {
