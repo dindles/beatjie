@@ -21,7 +21,7 @@
     volume: -3,
     bpm: 120,
     lowpass_freq: 2000,
-    highpass_freq: 200,
+    highpass_freq: 400,
     distortion_init: 0.2,
     distortion_amount: 0.8,
     analyser_resolution: 256,
@@ -57,6 +57,8 @@
   let animation_frame_id: number
   let canvas: HTMLCanvasElement
   let analysis_values: Float32Array | Float32Array[] = $state([])
+
+  let pitch_emoji_rotation = $state(0)
 
   // Colour
   let user_hue = $state() //0-360
@@ -349,25 +351,18 @@
     }
   }
 
+  const PITCHES = ['C2', 'F2', 'A2', 'C1']
+
   function loopSamplePitch() {
     if (!selected_sample) {
       console.log('No sample selected')
       return
     }
 
-    switch (selected_sample.pitch) {
-      case 'C2':
-        selected_sample.pitch = 'F2'
-        break
-      case 'F2':
-        selected_sample.pitch = 'G2'
-        break
-      case 'G2':
-        selected_sample.pitch = 'C2'
-        break
-      default:
-        selected_sample.pitch = 'C2'
-    }
+    const currentIndex = PITCHES.indexOf(selected_sample.pitch)
+    const nextIndex = (currentIndex + 1) % PITCHES.length
+    // hacky type stuff
+    selected_sample.pitch = PITCHES[nextIndex] as typeof selected_sample.pitch
   }
 
   function updateBPM(newBPM: number) {
@@ -484,12 +479,14 @@
         <button class="emoji-large" onclick={() => switchSampleGain()}
           >{selected_sample.volume === -108 ? '🔇' : '🔊'}</button
         >
-        <!-- todo: have note emoji spin 90 degrees each time it's clicked -->
         <button
           class="selected-sample-pitch emoji-large"
-          onclick={() => loopSamplePitch()}>🎵</button
+          style="transform: rotate({pitch_emoji_rotation}deg)"
+          onclick={() => {
+            pitch_emoji_rotation += 90
+            loopSamplePitch()
+          }}>🎵</button
         >
-
         <!-- *not sure how to make this comprehensible visually -->
         <!-- <button
           class="preview_samples_setting emoji-small"
@@ -669,9 +666,9 @@
 
   /* todo: spin this emoji 90 degrees each time it's clicked */
   .selected-sample-pitch {
-    transform: rotate(90deg);
     display: grid;
     place-items: center;
+    transition: transform 0.3s ease;
   }
 
   /* sequencer */
