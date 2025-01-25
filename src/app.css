@@ -1,6 +1,6 @@
 /* COLOUR */
 :root {
-  --spacing: 2px;
+  --spacing: 3px;
   --border-radius: 8px;
   --border-weight: 5px;
 
@@ -10,9 +10,9 @@
   --font-emoji: 'Noto Emoji';
   --font-text: 'Zen Dots', sans-serif;
 
-  --size-emoji-large: clamp(2.4rem, 8vmin, 6rem);
+  --size-emoji-large: clamp(2.8rem, 8vmin, 6rem);
   --size-emoji-small: clamp(1.8rem, 3.8vmin, 4rem);
-  --size-emoji-sequencer: clamp(1.2rem, 3.3vmin, 4rem);
+  --size-emoji-sequencer: clamp(1.1rem, 3.3vmin, 4rem);
   --size-text-small: clamp(1.8rem, 6vmin, 4rem);
   --size-text-xsmall: clamp(1.2rem, 4vmin, 2.4rem);
 }

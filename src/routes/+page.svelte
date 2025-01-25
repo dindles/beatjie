@@ -11,7 +11,6 @@
   import { Sample, type Packs } from '$lib/models.svelte'
 
   // Svelte components
-  import RangeInput from '$lib/components/range-input.svelte'
   import BPMSelector from '$lib/components/bpm-selector.svelte'
 
   // === VARIABLES ==============================
@@ -367,7 +366,7 @@
     }
   }
 
-  const PITCHES = ['C2', 'F2', 'A2', 'C1']
+  const PITCHES = ['C2', 'C3', 'C4', 'C1']
 
   function loopSamplePitch() {
     if (!selected_sample) {
@@ -558,7 +557,6 @@
         </div>
       </div>
     {/if}
-    <p class="logo text-small">mojibeat</p>
   </div>
 </main>
 
@@ -626,7 +624,6 @@
 
   .app {
     aspect-ratio: 4/7;
-    height: min(95vh, 1080px);
     overflow: hidden;
     padding: 1%;
     gap: var(--spacing);
@@ -635,8 +632,8 @@
 
   .color-controls {
     display: flex;
-    justify-content: space-between;
-    gap: var(--spacing);
+    justify-content: center;
+    gap: min(10rem, 20vmin);
   }
 
   .display {
@@ -718,9 +715,5 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: var(--spacing);
-  }
-
-  .logo {
-    text-align: center;
   }
 </style>

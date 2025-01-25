@@ -4,9 +4,9 @@
 
 ### decide on descriptive vs desirous label naming
 
-### link note emoji rotation to selected_sample_pitch
+### ramp high pass filter (and mute (if there's not another way of muting))
 
-### fix sequencer sizing when triggers added at very small screen sizes
+### link note emoji rotation to selected_sample_pitch
 
 ### better mute?
 
@@ -35,6 +35,8 @@
 
 ## 2.0
 
+### sign in, save sequences
+
 ### config
 
 - allow user to set:
@@ -42,3 +44,7 @@
   - lp freq
   - bpm options
   - other fx?
+
+## 3.0
+
+update with new packs
