@@ -58,6 +58,7 @@
   let analysis_values: Float32Array | Float32Array[] = $state([])
 
   let pitch_emoji_rotation = $state(0)
+  let hue_emoji_rotation = $state(0)
 
   // Colour
   let user_hue = $state(60) //0-360
@@ -334,6 +335,14 @@
     }
   }
 
+  function changeLightDark() {
+    if (other_colour === 'hsl(0, 0%, 100%)') {
+      other_colour = 'hsl(0, 0%, 0%)'
+    } else if (other_colour === 'hsl(0, 0%, 0%)') {
+      other_colour = 'hsl(0, 0%, 100%)'
+    }
+  }
+
   // Utility - Vertical waveform scaling factor
   function calculateScalingFactor(analysis_values: Float32Array) {
     const maxAmplitude = Math.max(...analysis_values.map(Math.abs)) // Find the maximum absolute amplitude
@@ -432,20 +441,20 @@
 <main>
   <div class="app border">
     <div class="color-controls">
-      <button class="emoji-small" onclick={() => changeSaturation()}>🪩</button>
-      <button class="emoji-small" onclick={() => changeHue()}>🎨</button>
       <button
-        class="light-dark emoji-small"
+        class="hue-control emoji-small"
+        style="transform: rotate({hue_emoji_rotation}deg)"
         onclick={() => {
-          if (other_colour === 'hsl(0, 0%, 100%)') {
-            other_colour = 'hsl(0, 0%, 0%)'
-          } else if (other_colour === 'hsl(0, 0%, 0%)') {
-            other_colour = 'hsl(0, 0%, 100%)'
-          }
-        }}
+          hue_emoji_rotation += 90
+          changeHue()
+        }}>🎨</button
       >
+      <button class="light-dark emoji-small" onclick={() => changeLightDark()}>
         {other_colour === 'hsl(0, 0%, 100%)' ? '🌞' : '🌛'}
       </button>
+      <button class="emoji-small" onclick={() => changeSaturation()}
+        >{user_saturation === 100 ? '🤩' : '😎'}</button
+      >
     </div>
 
     <div class="display">
@@ -633,7 +642,11 @@
   .color-controls {
     display: flex;
     justify-content: center;
-    gap: min(10rem, 20vmin);
+    gap: 10vmin;
+  }
+
+  .hue-control {
+    transition: transform 0.3s ease;
   }
 
   .display {

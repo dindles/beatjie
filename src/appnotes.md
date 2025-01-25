@@ -4,13 +4,13 @@
 
 ### decide on descriptive vs desirous label naming
 
+### better mute?
+
+### reduce gain when activating distortion, and revert it when deactivating
+
 ### ramp high pass filter (and mute (if there's not another way of muting))
 
 ### link note emoji rotation to selected_sample_pitch
-
-### better mute?
-
-- this one causes glitching
 
 ### samples
 
