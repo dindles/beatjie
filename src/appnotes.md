@@ -4,7 +4,9 @@
 
 ### decide on descriptive vs desirous label naming
 
-### tap mojis to change colours instead of sliders? (layls poked them)
+### link note emoji rotation to selected_sample_pitch
+
+### fix sequencer sizing when triggers added at very small screen sizes
 
 ### better mute?
 

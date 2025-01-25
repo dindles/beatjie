@@ -61,8 +61,8 @@
   let pitch_emoji_rotation = $state(0)
 
   // Colour
-  let user_hue = $state() //0-360
-  let user_saturation = $state() //0-100
+  let user_hue = $state(60) //0-360
+  let user_saturation = $state(33) //0-100
   let lightness = 50 //0-100
 
   let user_colour = $derived(
@@ -319,6 +319,22 @@
     requestAnimationFrame(draw)
   }
 
+  // changing colours
+  function changeHue() {
+    user_hue += 35
+    if (user_hue >= 360) {
+      user_hue = 0
+    }
+  }
+
+  function changeSaturation() {
+    if (user_saturation === 100) {
+      user_saturation = 33
+    } else {
+      user_saturation = 100
+    }
+  }
+
   // Utility - Vertical waveform scaling factor
   function calculateScalingFactor(analysis_values: Float32Array) {
     const maxAmplitude = Math.max(...analysis_values.map(Math.abs)) // Find the maximum absolute amplitude
@@ -417,8 +433,10 @@
 <main>
   <div class="app border">
     <div class="color-controls">
-      <RangeInput bind:value={user_hue} min={0} max={333} label="🎨" />
-      <RangeInput bind:value={user_saturation} min={33} max={100} label="🪩" />
+      <button class="emoji-small" onclick={() => changeHue()}>🎨</button>
+      <button class="emoji-small" onclick={() => changeSaturation()}>🪩</button>
+      <!-- <RangeInput bind:value={user_hue} min={0} max={333} label="🎨" /> -->
+      <!-- <RangeInput bind:value={user_saturation} min={33} max={100} label="🪩" /> -->
       <button
         class="light-dark emoji-small"
         onclick={() => {
@@ -559,7 +577,7 @@
 
   .emoji-small {
     font-family: 'Noto Emoji';
-    font-size: clamp(1.4rem, 3.8vmin, 4rem);
+    font-size: clamp(1.8rem, 3.8vmin, 4rem);
   }
 
   .text-small {
@@ -639,6 +657,7 @@
   .pack-select {
     display: grid;
     grid-template-columns: auto 1fr auto;
+    place-items: center;
   }
 
   .selected-pack {

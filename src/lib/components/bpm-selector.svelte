@@ -6,7 +6,6 @@
   const MAX_BPM = 200
   const DRAG_SENSITIVITY = 0.5
 
-  // drag state
   let isDragging = $state(false)
   let dragStartY = $state(0)
   let startBPM = $state(0)
