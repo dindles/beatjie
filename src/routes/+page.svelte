@@ -433,10 +433,8 @@
 <main>
   <div class="app border">
     <div class="color-controls">
-      <button class="emoji-small" onclick={() => changeHue()}>🎨</button>
       <button class="emoji-small" onclick={() => changeSaturation()}>🪩</button>
-      <!-- <RangeInput bind:value={user_hue} min={0} max={333} label="🎨" /> -->
-      <!-- <RangeInput bind:value={user_saturation} min={33} max={100} label="🪩" /> -->
+      <button class="emoji-small" onclick={() => changeHue()}>🎨</button>
       <button
         class="light-dark emoji-small"
         onclick={() => {
@@ -522,7 +520,7 @@
           {#if sample.id === selected_sample?.id}
             {#each selected_sample.sequence as _, index}
               <button
-                class="step border emoji-small"
+                class="step border emoji-sequencer"
                 class:active={index === active_step_index}
                 onclick={() => handleSeqClick(sample, index)}
                 onkeydown={() => handleSeqClick(sample, index)}
@@ -560,6 +558,7 @@
         </div>
       </div>
     {/if}
+    <p class="logo text-small">mojibeat</p>
   </div>
 </main>
 
@@ -571,23 +570,28 @@
   }
 
   .emoji-large {
-    font-family: 'Noto Emoji';
-    font-size: clamp(2.4rem, 8vmin, 6rem);
+    font-family: var(--font-emoji);
+    font-size: var(--size-emoji-large);
   }
 
   .emoji-small {
-    font-family: 'Noto Emoji';
-    font-size: clamp(1.8rem, 3.8vmin, 4rem);
+    font-family: var(--font-emoji);
+    font-size: var(--size-emoji-small);
+  }
+
+  .emoji-sequencer {
+    font-family: var(--font-emoji);
+    font-size: var(--size-emoji-sequencer);
   }
 
   .text-small {
-    font-family: 'Zen Dots', sans-serif;
-    font-size: clamp(1.5rem, 6vmin, 4rem);
+    font-family: var(--font-text);
+    font-size: var(--size-text-small);
   }
 
   .text-xsmall {
-    font-family: 'Zen Dots', sans-serif;
-    font-size: clamp(0.8rem, 4vmin, 2.4rem);
+    font-family: var(--font-text);
+    font-size: var(--size-text-xsmall);
   }
 
   /* === state === */
@@ -631,7 +635,7 @@
 
   .color-controls {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     gap: var(--spacing);
   }
 
@@ -708,10 +712,15 @@
     display: grid;
     grid-template-columns: 1fr;
   }
+
   .main-settings {
     grid-column: span 3;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: var(--spacing);
+  }
+
+  .logo {
+    text-align: center;
   }
 </style>

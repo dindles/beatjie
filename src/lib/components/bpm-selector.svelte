@@ -64,8 +64,8 @@
 
 <style>
   .bpm-display {
-    font-family: 'Zen Dots', sans-serif;
-    font-size: clamp(1.5rem, 6vmin, 4rem);
+    font-family: var(--font-text);
+    font-size: var(--size-text-xsmall);
     border: none;
     background: none;
     padding: 0;
