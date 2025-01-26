@@ -71,7 +71,10 @@
 
   // changing colours
   function changeHue() {
-    user_hue = (user_hue + 50) % 360
+    user_hue = user_hue + 50
+    if (user_hue > 330) {
+      user_hue = 0
+    }
   }
 
   function changeLightness() {
@@ -577,6 +580,7 @@
   .emoji-small {
     font-family: var(--font-emoji);
     font-size: var(--size-emoji-small);
+    font-weight: 900;
   }
 
   .emoji-sequencer {
