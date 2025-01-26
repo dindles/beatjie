@@ -61,20 +61,35 @@
   let hue_emoji_rotation = $state(0)
 
   // Colour
+  let user_lightness = $state(80) //0-100%
+  const chroma = 0.2 //0-0.4
   let user_hue = $state(60) //0-360
-  let user_saturation = $state(33) //0-100
-  let lightness = 50 //0-100
 
-  let user_colour = $derived(
-    `hsl(${user_hue}, ${user_saturation}%, ${lightness}%)`
-  )
+  let user_colour = $derived(`oklch(${user_lightness}% ${chroma} ${user_hue})`)
 
-  let other_colour = $state('hsl(0, 0%, 0%)')
+  let black_or_white = $state('oklch(0% 0 0)') // black
+
+  // changing colours
+  function changeHue() {
+    user_hue = (user_hue + 50) % 360
+  }
+
+  function changeLightness() {
+    user_lightness = user_lightness === 80 ? 40 : 80
+  }
+
+  function switchLightDark() {
+    black_or_white =
+      black_or_white === 'oklch(100% 0 0)' ? 'oklch(0% 0 0)' : 'oklch(100% 0 0)'
+  }
 
   // sets css variables (defined in app.css)
   $effect(() => {
     document.documentElement.style.setProperty('--user-colour', user_colour)
-    document.documentElement.style.setProperty('--other-colour', other_colour)
+    document.documentElement.style.setProperty(
+      '--black-or-white',
+      black_or_white
+    )
   })
 
   // === FUNCTIONS ==============================
@@ -286,7 +301,7 @@
 
     if (ctx) {
       // Background and stroke color
-      ctx.fillStyle = other_colour
+      ctx.fillStyle = black_or_white
       ctx.fillRect(0, 0, canvas.width, canvas.height)
 
       ctx.strokeStyle = user_colour
@@ -317,30 +332,6 @@
     }
 
     requestAnimationFrame(draw)
-  }
-
-  // changing colours
-  function changeHue() {
-    user_hue += 35
-    if (user_hue >= 360) {
-      user_hue = 0
-    }
-  }
-
-  function changeSaturation() {
-    if (user_saturation === 100) {
-      user_saturation = 33
-    } else {
-      user_saturation = 100
-    }
-  }
-
-  function changeLightDark() {
-    if (other_colour === 'hsl(0, 0%, 100%)') {
-      other_colour = 'hsl(0, 0%, 0%)'
-    } else if (other_colour === 'hsl(0, 0%, 0%)') {
-      other_colour = 'hsl(0, 0%, 100%)'
-    }
   }
 
   // Utility - Vertical waveform scaling factor
@@ -449,11 +440,11 @@
           changeHue()
         }}>🎨</button
       >
-      <button class="light-dark emoji-small" onclick={() => changeLightDark()}>
-        {other_colour === 'hsl(0, 0%, 100%)' ? '🌞' : '🌛'}
+      <button class="light-dark emoji-small" onclick={() => switchLightDark()}>
+        {black_or_white === 'oklch(100% 0 0)' ? '🌞' : '🌛'}
       </button>
-      <button class="emoji-small" onclick={() => changeSaturation()}
-        >{user_saturation === 100 ? '🤩' : '😎'}</button
+      <button class="emoji-small" onclick={() => changeLightness()}
+        >{user_lightness === 80 ? '🤩' : '😎'}</button
       >
     </div>
 
@@ -574,6 +565,8 @@
   .border {
     border: var(--border-weight) solid var(--user-colour);
     border-radius: var(--border-radius);
+    color: var(--user-colour);
+    background-color: var(--black-or-white);
   }
 
   .emoji-large {
@@ -603,14 +596,10 @@
 
   /* === state === */
 
-  .active {
-    color: var(--other-colour);
-    background-color: var(--user-colour);
-  }
-
+  .active,
   .playing {
-    color: var(--other-colour);
-    background-color: var(--user-colour);
+    color: var(--user-colour);
+    background-color: var(--black-or-white);
   }
 
   /* === html elements === */
@@ -622,6 +611,8 @@
     aspect-ratio: 1;
     display: grid;
     place-items: center;
+    color: var(--user-colour);
+    background-color: var(--black-or-white);
   }
 
   /* === layout === */
@@ -656,6 +647,8 @@
   canvas {
     width: 100%;
     aspect-ratio: 4/1;
+    color: var(--user-colour);
+    background-color: var(--black-or-white);
   }
 
   .sample-select-message {

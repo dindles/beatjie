@@ -4,8 +4,8 @@
   --border-radius: 8px;
   --border-weight: 5px;
 
-  --user-colour: hsl(0, 0%, 0%);
-  --other-colour: hsl(0, 0%, 0%);
+  --user-colour: oklch(40% 0.2 120);
+  --black-or-white: oklch(100% 0 0);
 
   --font-emoji: 'Noto Emoji';
   --font-text: 'Zen Dots', sans-serif;
@@ -19,7 +19,7 @@
 
 * {
   color: var(--user-colour);
-  background-color: var(--other-colour);
+  background-color: var(--black-or-white);
 }
 
 /* RESET */
