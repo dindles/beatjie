@@ -65,7 +65,7 @@
 <style>
   .bpm-display {
     font-family: var(--font-text);
-    font-size: var(--size-text-xsmall);
+    font-size: var(--text-small);
     border: none;
     background: none;
     padding: 0;

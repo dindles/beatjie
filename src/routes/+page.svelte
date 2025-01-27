@@ -61,29 +61,29 @@
   let hue_emoji_rotation = $state(0)
 
   // Colour
-  let user_lightness = $state(80) //0-100%
-  const chroma = 0.2 //0-0.4
-  let user_hue = $state(60) //0-360
+  let user_lightness = $state(0.8) //0-100%
+  const chroma = 0.3 //0-0.4
+  let user_hue = $state(270) //0-360
 
-  let user_colour = $derived(`oklch(${user_lightness}% ${chroma} ${user_hue})`)
+  let user_colour = $derived(`oklch(${user_lightness} ${chroma} ${user_hue})`)
 
-  let black_or_white = $state('oklch(0% 0 0)') // black
+  let black_or_white = $state('oklch(0 0 0)') // black
 
   // changing colours
   function changeHue() {
-    user_hue = user_hue + 50
-    if (user_hue > 330) {
+    user_hue = user_hue + 45
+    if (user_hue > 300) {
       user_hue = 0
     }
   }
 
   function changeLightness() {
-    user_lightness = user_lightness === 80 ? 40 : 80
+    user_lightness = user_lightness === 0.8 ? 0.4 : 0.8
   }
 
   function switchLightDark() {
     black_or_white =
-      black_or_white === 'oklch(100% 0 0)' ? 'oklch(0% 0 0)' : 'oklch(100% 0 0)'
+      black_or_white === 'oklch(1 0 0)' ? 'oklch(0 0 0)' : 'oklch(1 0 0)'
   }
 
   // sets css variables (defined in app.css)
@@ -444,10 +444,10 @@
         }}>🎨</button
       >
       <button class="light-dark emoji-small" onclick={() => switchLightDark()}>
-        {black_or_white === 'oklch(100% 0 0)' ? '🌞' : '🌛'}
+        {black_or_white === 'oklch(1 0 0)' ? '🌞' : '🌛'}
       </button>
       <button class="emoji-small" onclick={() => changeLightness()}
-        >{user_lightness === 80 ? '🤩' : '😎'}</button
+        >{user_lightness === 0.8 ? '🤩' : '😎'}</button
       >
     </div>
 
@@ -574,36 +574,36 @@
 
   .emoji-large {
     font-family: var(--font-emoji);
-    font-size: var(--size-emoji-large);
+    font-size: var(--emoji-large);
   }
 
   .emoji-small {
     font-family: var(--font-emoji);
-    font-size: var(--size-emoji-small);
+    font-size: var(--emoji-small);
     font-weight: 900;
   }
 
   .emoji-sequencer {
     font-family: var(--font-emoji);
-    font-size: var(--size-emoji-sequencer);
+    font-size: var(--emoji-sequencer);
   }
 
   .text-small {
     font-family: var(--font-text);
-    font-size: var(--size-text-small);
+    font-size: var(--text-small);
   }
 
   .text-xsmall {
     font-family: var(--font-text);
-    font-size: var(--size-text-xsmall);
+    font-size: var(--text-xsmall);
   }
 
   /* === state === */
 
   .active,
   .playing {
-    color: var(--user-colour);
-    background-color: var(--black-or-white);
+    color: var(--black-or-white);
+    background-color: var(--user-colour);
   }
 
   /* === html elements === */
@@ -656,6 +656,7 @@
   }
 
   .sample-select-message {
+    font-size: var(--text-display);
     width: 100%;
     position: absolute;
     top: 50%;
