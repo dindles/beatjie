@@ -2,21 +2,13 @@
 
 ## v1.0
 
-### change colour system to oklch
-
-https://developer.mozilla.org/en-US/docs/Web/CSS/color_value/oklch
-
-### decide on descriptive vs desirous label naming
-
-prefer descriptive unless users bug out
+### link note emoji rotation to selected_sample_pitch
 
 ### better mute?
 
 ### ramp high pass filter (and mute (if there's not another way of muting))
 
 ### reduce gain when activating distortion, and revert it when deactivating
-
-### link note emoji rotation to selected_sample_pitch
 
 ### samples
 

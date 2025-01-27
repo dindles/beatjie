@@ -62,8 +62,8 @@
 
   // Colour
   let user_lightness = $state(0.8) //0-100%
-  const chroma = 0.3 //0-0.4
-  let user_hue = $state(270) //0-360
+  const chroma = 0.4 //0-0.4
+  let user_hue = $state(250) //0-360
 
   let user_colour = $derived(`oklch(${user_lightness} ${chroma} ${user_hue})`)
 
@@ -71,9 +71,9 @@
 
   // changing colours
   function changeHue() {
-    user_hue = user_hue + 45
+    user_hue = user_hue + 50
     if (user_hue > 300) {
-      user_hue = 0
+      user_hue = 50
     }
   }
 
