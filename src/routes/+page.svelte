@@ -62,7 +62,7 @@
 
   // Colour
   let user_lightness = $state(0.8) //0-100%
-  const chroma = 0.4 //0-0.4
+  const chroma = 0.2 //0-0.4
   let user_hue = $state(250) //0-360
 
   let user_colour = $derived(`oklch(${user_lightness} ${chroma} ${user_hue})`)
