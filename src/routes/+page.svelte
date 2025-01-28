@@ -627,7 +627,7 @@
   }
 
   .app {
-    aspect-ratio: 4/7;
+    aspect-ratio: 4/6.5;
     overflow: hidden;
     padding: 1%;
     gap: var(--spacing);
