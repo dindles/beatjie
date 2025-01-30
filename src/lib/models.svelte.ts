@@ -2,7 +2,7 @@ import * as Tone from 'tone'
 import type { Note } from 'tone/build/esm/core/type/NoteUnits'
 import type { Time } from 'tone/build/esm/core/type/Units'
 
-export type SampleHeader = {
+type SampleHeader = {
   id: number
   name: string
   emoji: string
@@ -10,7 +10,7 @@ export type SampleHeader = {
   url: string
 }
 
-export type Pack = {
+type Pack = {
   name: string
   samples: SampleHeader[]
 }
@@ -28,7 +28,6 @@ export class Sample {
   pitch: Note = $state('C2')
   attack: number = $state(0.01)
   channel: Tone.Channel
-  filter: Tone.Filter
   sequence: Sequence = $state([])
   playing: boolean = $state(false)
 
@@ -47,7 +46,6 @@ export class Sample {
     this.pitch = pitch
     this.url = url
     this.sampler = new Tone.Sampler()
-    this.filter = new Tone.Filter()
     this.channel = new Tone.Channel()
     this.channel.volume.value = this.volume
     // creates an empty sample-specific sequence accessed by the sequencer

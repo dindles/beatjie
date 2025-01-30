@@ -4,9 +4,13 @@
 
 ### link note emoji rotation to selected_sample_pitch
 
-### better mute?
+### better mute? sample.channel.muted / sample.channel.mute
 
-### ramp high pass filter (and mute (if there's not another way of muting))
+### ramp high pass filter (and mute, if there's not another way of muting)
+
+### in fact add easy easing specifying ramp time in ms
+
+### delay per sample
 
 ### reduce gain when activating distortion, and revert it when deactivating
 

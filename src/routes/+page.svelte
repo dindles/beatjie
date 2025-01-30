@@ -13,18 +13,17 @@
   // Svelte components
   import BPMSelector from '$lib/components/bpm-selector.svelte'
 
-  // === VARIABLES ==============================
-
-  // Tone
+  // AUDIO ===============================
   const main_init = {
     volume: -3,
     bpm: 120,
     lowpass_freq: 2000,
-    highpass_freq: 400,
+    highpass_freq: 500,
     distortion_init: 0.2,
     distortion_amount: 0.8,
     analyser_resolution: 256,
   }
+  const PITCHES = ['C2', 'G2', 'C3', 'C1']
   const main_channel = new Tone.Channel(main_init.volume)
   const main_filter_lp = new Tone.Filter(20000, 'lowpass')
   const main_filter_hp = new Tone.Filter(0, 'highpass')
@@ -39,7 +38,6 @@
   let SEQUENCES: Tone.Sequence[] = []
   let SAMPLES: Sample[] = $state([])
 
-  // State
   let selected_pack_index: number = $state(0)
   let selected_sample: Sample | undefined = $state(undefined)
   let is_playing = $state(false)
@@ -52,54 +50,10 @@
   // todo
   let settings_visible: boolean = $state(false)
 
-  // Display
-  let animation_frame_id: number
-  let canvas: HTMLCanvasElement
-  let analysis_values: Float32Array | Float32Array[] = $state([])
-
-  let pitch_emoji_rotation = $state(0)
-  let hue_emoji_rotation = $state(0)
-
-  // Colour
-  let user_lightness = $state(0.8) //0-100%
-  const chroma = 0.2 //0-0.4
-  let user_hue = $state(250) //0-360
-
-  let user_colour = $derived(`oklch(${user_lightness} ${chroma} ${user_hue})`)
-
-  let black_or_white = $state('oklch(0 0 0)') // black
-
-  // changing colours
-  function changeHue() {
-    user_hue = user_hue + 50
-    if (user_hue > 300) {
-      user_hue = 50
-    }
-  }
-
-  function changeLightness() {
-    user_lightness = user_lightness === 0.8 ? 0.4 : 0.8
-  }
-
-  function switchLightDark() {
-    black_or_white =
-      black_or_white === 'oklch(1 0 0)' ? 'oklch(0 0 0)' : 'oklch(1 0 0)'
-  }
-
-  // sets css variables (defined in app.css)
-  $effect(() => {
-    document.documentElement.style.setProperty('--user-colour', user_colour)
-    document.documentElement.style.setProperty(
-      '--black-or-white',
-      black_or_white
-    )
-  })
-
-  // === FUNCTIONS ==============================
+  // === AUDIO FUNCTIONS ==============================
 
   // CALLED IMMEDIATELY
-  // Audio
-  // Creates an audio buffer for each sample, pack by pack
+  // Creates a buffer for each sample, pack by pack
   function makeBuffers(packs: Packs): Tone.ToneAudioBuffers {
     const urlsObject: { [key: string]: string } = {}
     packs.forEach((pack) => {
@@ -270,92 +224,7 @@
     is_playing = !is_playing
   }
 
-  // CALLED ON MOUNT
-  $effect(() => {
-    selectPack('random')
-
-    const canvasElement = document.querySelector('canvas')
-    if (canvasElement) {
-      canvas = canvasElement
-    } else {
-      console.error('Canvas element not found')
-    }
-
-    startDrawingLoop()
-
-    return () => {
-      stopDrawingLoop()
-    }
-  })
-
-  // CALLED FOR DISPLAY
-  function startDrawingLoop() {
-    animation_frame_id = requestAnimationFrame(draw)
-  }
-
-  // todo: need this?
-  function stopDrawingLoop() {
-    cancelAnimationFrame(animation_frame_id)
-  }
-
-  function draw() {
-    const dim = Math.min(canvas.width, canvas.height)
-    const ctx = canvas.getContext('2d', { alpha: false })
-
-    if (ctx) {
-      // Background and stroke color
-      ctx.fillStyle = black_or_white
-      ctx.fillRect(0, 0, canvas.width, canvas.height)
-
-      ctx.strokeStyle = user_colour
-      ctx.lineWidth = dim * 0.04 // set line thickness
-
-      // Draw waveform
-      analysis_values = main_analyser.getValue()
-      const scalingFactor = calculateScalingFactor(
-        analysis_values instanceof Float32Array
-          ? analysis_values
-          : analysis_values[0]
-      ) // Check analysis_values is of type Float32Array
-
-      ctx.beginPath()
-      for (let i = 0; i < analysis_values.length; i++) {
-        const amplitude = (analysis_values[i] as number) * scalingFactor // Apply scaling factor to amplitude
-        const x = myMap(i, 0, analysis_values.length - 1, 0, canvas.width)
-        const y = canvas.height / 2 + amplitude * canvas.height
-
-        // Place vertex
-        if (i === 0) {
-          ctx.moveTo(x, y)
-        } else {
-          ctx.lineTo(x, y)
-        }
-      }
-      ctx.stroke()
-    }
-
-    requestAnimationFrame(draw)
-  }
-
-  // Utility - Vertical waveform scaling factor
-  function calculateScalingFactor(analysis_values: Float32Array) {
-    const maxAmplitude = Math.max(...analysis_values.map(Math.abs)) // Find the maximum absolute amplitude
-    const scalingFactor = 0.2 / maxAmplitude // Calculate scaling factor based on max amplitude (0.9 to leave some padding)
-    return scalingFactor
-  }
-
-  // Utility - Map one range to another
-  function myMap(
-    value: number,
-    start1: number,
-    stop1: number,
-    start2: number,
-    stop2: number
-  ) {
-    return ((value - start1) / (stop1 - start1)) * (stop2 - start2) + start2
-  }
-
-  // Utility functions
+  // Utility
   function getSampleByID(sample_id: number) {
     return SAMPLES.find((s) => s.id === sample_id)
   }
@@ -368,8 +237,6 @@
         : (selected_sample.volume = -108)
     }
   }
-
-  const PITCHES = ['C2', 'C3', 'C4', 'C1']
 
   function loopSamplePitch() {
     if (!selected_sample) {
@@ -430,6 +297,134 @@
   processSamples(packs).then((resolvedSamples) => {
     SAMPLES = resolvedSamples
   })
+
+  // VISUALS ================================
+  // Display
+  let animation_frame_id: number
+  let canvas: HTMLCanvasElement
+  let analysis_values: Float32Array | Float32Array[] = $state([])
+
+  let pitch_emoji_rotation = $state(0)
+  let hue_emoji_rotation = $state(0)
+
+  // Colour
+  let user_lightness = $state(0.8) //0-100%
+  const chroma = 0.2 //0-0.4
+  let user_hue = $state(250) //0-360
+
+  let user_colour = $derived(`oklch(${user_lightness} ${chroma} ${user_hue})`)
+
+  let black_or_white = $state('oklch(0 0 0)') // black
+
+  function changeHue() {
+    user_hue = user_hue + 50
+    if (user_hue > 300) {
+      user_hue = 50
+    }
+  }
+
+  function changeLightness() {
+    user_lightness = user_lightness === 0.8 ? 0.4 : 0.8
+  }
+
+  function switchLightDark() {
+    black_or_white =
+      black_or_white === 'oklch(1 0 0)' ? 'oklch(0 0 0)' : 'oklch(1 0 0)'
+  }
+
+  // sets css variables (defined in app.css)
+  $effect(() => {
+    document.documentElement.style.setProperty('--user-colour', user_colour)
+    document.documentElement.style.setProperty(
+      '--black-or-white',
+      black_or_white
+    )
+  })
+
+  // CALLED FOR DISPLAY
+  function startDrawingLoop() {
+    animation_frame_id = requestAnimationFrame(draw)
+  }
+
+  // todo: need this?
+  function stopDrawingLoop() {
+    cancelAnimationFrame(animation_frame_id)
+  }
+
+  function draw() {
+    const dim = Math.min(canvas.width, canvas.height)
+    const ctx = canvas.getContext('2d', { alpha: false })
+
+    if (ctx) {
+      // Background and stroke color
+      ctx.fillStyle = black_or_white
+      ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+      ctx.strokeStyle = user_colour
+      ctx.lineWidth = dim * 0.04 // set line thickness
+
+      // Draw waveform
+      analysis_values = main_analyser.getValue()
+      const scalingFactor = calculateScalingFactor(
+        analysis_values instanceof Float32Array
+          ? analysis_values
+          : analysis_values[0]
+      ) // Check analysis_values is of type Float32Array
+
+      ctx.beginPath()
+      for (let i = 0; i < analysis_values.length; i++) {
+        const amplitude = (analysis_values[i] as number) * scalingFactor // Apply scaling factor to amplitude
+        const x = myMap(i, 0, analysis_values.length - 1, 0, canvas.width)
+        const y = canvas.height / 2 + amplitude * canvas.height
+
+        // Place vertex
+        if (i === 0) {
+          ctx.moveTo(x, y)
+        } else {
+          ctx.lineTo(x, y)
+        }
+      }
+      ctx.stroke()
+    }
+
+    requestAnimationFrame(draw)
+  }
+
+  // CALLED ON MOUNT
+  $effect(() => {
+    selectPack('random')
+
+    const canvasElement = document.querySelector('canvas')
+    if (canvasElement) {
+      canvas = canvasElement
+    } else {
+      console.error('Canvas element not found')
+    }
+
+    startDrawingLoop()
+
+    return () => {
+      stopDrawingLoop()
+    }
+  })
+
+  // Utility - Vertical waveform scaling factor
+  function calculateScalingFactor(analysis_values: Float32Array) {
+    const maxAmplitude = Math.max(...analysis_values.map(Math.abs)) // Find the maximum absolute amplitude
+    const scalingFactor = 0.2 / maxAmplitude // Calculate scaling factor based on max amplitude (0.9 to leave some padding)
+    return scalingFactor
+  }
+
+  // Utility - Map one range to another
+  function myMap(
+    value: number,
+    start1: number,
+    stop1: number,
+    start2: number,
+    stop2: number
+  ) {
+    return ((value - start1) / (stop1 - start1)) * (stop2 - start2) + start2
+  }
 </script>
 
 <main>
@@ -629,7 +624,7 @@
   .app {
     aspect-ratio: 4/6.7;
     overflow: hidden;
-    padding: 1%;
+    padding: 0.4%;
     gap: var(--spacing);
     grid-template-rows: auto auto 1fr auto auto;
   }
@@ -713,6 +708,7 @@
   .transport-and-main-settings {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
+    margin-top: 0.8em;
     gap: var(--spacing);
   }
 
