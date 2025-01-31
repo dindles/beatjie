@@ -2,46 +2,39 @@
 
 ## v1.0
 
-### analyser delay issue
+- analyser delay issue
 
-### compressor on main channel
+- compressor on main channel
 
-### try bitcrusher on main channel
+- try bitcrusher on main channel
 
-### samples
+- samples
 
-### easter egg? 909?
+- easter egg? 909?
 
-### todos and console.logs
+- todos and console.logs
 
 ## 1.1
 
-### default pattern, and save patterns (to local storage)
+- default pattern, and save patterns (to local storage)
 
-### share patterns
+- share patterns
 
-### keyboard control
+- componentisation
 
-- space to start/stop transport
-- asdf, jkl; to play samples
+- keyboard control
 
-### visualiser
+  - space to start/stop transport
+  - asdf, jkl; to play samples
 
-- add const main_analyser_fft = new Tone.Analyser('fft', main_init.analyser_resolution) and add toggles between waveform and fft
-- threlte visualiser
+- visualiser
+  - add const main_analyser_fft = new Tone.Analyser('fft', main_init.analyser_resolution) and add toggles between waveform and fft
+  - threlte visualiser
 
 ## 2.0
 
-### sign in, save sequences
-
-### config
-
-- allow user to set:
-  - hp freq
-  - lp freq
-  - bpm options
-  - other fx?
+- sign in, save sequences
 
 ## 3.0
 
-update with new packs
+- update with new packs
