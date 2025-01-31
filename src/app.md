@@ -12,6 +12,8 @@
 
 ### easter egg? 909?
 
+### todos and console.logs
+
 ## 1.1
 
 ### default pattern, and save patterns (to local storage)

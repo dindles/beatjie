@@ -21,13 +21,15 @@
     distortion_init: 0.2,
     distortion_amount: 0.9,
     analyser_resolution: 256,
-    selected_sample_delay: 0.5,
+    selected_sample_delay_amount: 0.5,
   }
   const PITCHES = ['C2', 'G2', 'C3', 'C1']
+
   const main_channel = new Tone.Channel(main_init.volume)
   const main_filter_hp = new Tone.Filter(0, 'highpass')
   const main_distortion = new Tone.Distortion()
   // this is set here because the init distortion parameter is amount, not wet.
+  // todo: find a better way to do this
   main_distortion.wet.value = main_init.distortion_init
   const main_analyser = new Tone.Analyser(
     'waveform',
@@ -42,7 +44,6 @@
   let is_playing = $state(false)
   let active_step_index: number = $state(0)
   let preview_samples_active: boolean = $state(true)
-  let main_lowpassed: boolean = $state(false)
   let main_highpassed: boolean = $state(false)
   let main_distorted: boolean = $state(false)
   let bpm: number = $state(main_init.bpm)
@@ -256,7 +257,10 @@
 
     if (selected_sample.delay_active) {
       selected_sample.delay.feedback.rampTo(0.4, 0.1)
-      selected_sample.delay.wet.rampTo(main_init.selected_sample_delay, 0.1)
+      selected_sample.delay.wet.rampTo(
+        main_init.selected_sample_delay_amount,
+        0.1
+      )
     } else {
       selected_sample.delay.feedback.rampTo(0, 0.1)
       selected_sample.delay.wet.rampTo(0, 0.1)
