@@ -522,7 +522,7 @@
           class:active={selected_sample.delay_active}
           onclick={toggleDelay}
         >
-          🌊
+          🪞
         </button>
         <!-- *not sure how to make this comprehensible visually -->
         <!-- <button
@@ -646,10 +646,9 @@
   }
 
   .app {
-    aspect-ratio: 4/6.7;
+    aspect-ratio: 4/6.9;
     overflow: hidden;
     padding: 0.4%;
-    gap: var(--spacing);
     grid-template-rows: auto auto 1fr auto auto;
   }
 
@@ -712,6 +711,8 @@
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: var(--spacing);
+    margin-top: 0.4em;
+    margin-bottom: 0.4em;
   }
 
   /* todo: spin this emoji 90 degrees each time it's clicked */
@@ -732,8 +733,9 @@
   .transport-and-main-settings {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    margin-top: 0.8em;
     gap: var(--spacing);
+    margin-top: 0.4em;
+    margin-bottom: 0.4em;
   }
 
   .transport {

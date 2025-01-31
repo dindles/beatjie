@@ -14,6 +14,10 @@
 
 ## 1.1
 
+### default pattern, and save patterns (to local storage)
+
+### share patterns
+
 ### keyboard control
 
 - space to start/stop transport
