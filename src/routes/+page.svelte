@@ -1,6 +1,8 @@
 <script lang="ts">
   // === IMPORTS ================================
 
+  import { AudioController, type AudioConfig } from '$lib/audio.svelte'
+
   // Tone
   import * as Tone from 'tone'
 
@@ -14,29 +16,20 @@
   import BPMSelector from '$lib/components/bpm-selector.svelte'
 
   // AUDIO ===============================
-  const main_init = {
+  const config: AudioConfig = {
     volume: 0,
     bpm: 120,
-    highpass_freq: 500,
-    distortion_init: 0.2,
-    distortion_amount: 0.9,
-    analyser_resolution: 256,
-    selected_sample_delay_amount: 0.5,
+    highpassFreq: 500,
+    distortionInit: 0.2,
+    distortionAmount: 0.9,
+    analyserResolution: 256,
+    sampleDelayAmount: 0.5,
   }
+
+  let audio_controller = $state(new AudioController(config))
+
   const PITCHES = ['C2', 'G2', 'C3', 'C1']
 
-  const main_channel = new Tone.Channel(main_init.volume)
-  const main_filter_hp = new Tone.Filter(0, 'highpass')
-  const main_distortion = new Tone.Distortion()
-  // this is set here because the init distortion parameter is amount, not wet.
-  // todo: find a better way to do this
-  main_distortion.wet.value = main_init.distortion_init
-  const main_analyser = new Tone.Analyser(
-    'waveform',
-    main_init.analyser_resolution
-  )
-
-  let SEQUENCES: Tone.Sequence[] = []
   let SAMPLES: Sample[] = $state([])
 
   let selected_pack_index: number = $state(0)
@@ -46,112 +39,12 @@
   let preview_samples_active: boolean = $state(true)
   let main_highpassed: boolean = $state(false)
   let main_distorted: boolean = $state(false)
-  let bpm: number = $state(main_init.bpm)
-  // todo
-  let settings_visible: boolean = $state(false)
+  let bpm: number = $state(config.bpm)
 
-  // === AUDIO FUNCTIONS ==============================
-
-  // CALLED IMMEDIATELY
-  // Creates a buffer for each sample, pack by pack
-  function makeBuffers(packs: Packs): Tone.ToneAudioBuffers {
-    const urlsObject: { [key: string]: string } = {}
-    packs.forEach((pack) => {
-      pack.samples.forEach((sample) => {
-        urlsObject[sample.id.toString()] = sample.url
-      })
-    })
-    // todo: why do i not get the log?
-    return new Tone.ToneAudioBuffers(urlsObject, () =>
-      console.log('buffers loaded')
-    )
+  async function processSamples(packs: Packs) {
+    SAMPLES = await audio_controller.initialiseAudio(packs)
   }
-
-  // Creates a new Sample object from each SampleHeader
-  // Each Sample also contains a Tone.js sampler and channel strip (see models.svelte.ts)
-  function makeSamples(packs: Packs) {
-    const samples = packs.flatMap((pack) =>
-      pack.samples.map(
-        (sample) =>
-          new Sample(
-            sample.id,
-            pack.name,
-            sample.name,
-            sample.emoji,
-            sample.url,
-            sample.pitch
-          )
-      )
-    )
-    return samples
-  }
-
-  // Loads each sampler with its buffer
-  function loadBuffers(
-    toned_samples: Sample[],
-    buffers: Tone.ToneAudioBuffers
-  ) {
-    for (let i = 0; i < toned_samples.length; i++) {
-      const sample = toned_samples[i]
-      sample.setSamplerBuffers(sample.pitch, buffers.get(sample.id.toString()))
-    }
-    return toned_samples
-  }
-
-  // Chains each sampler to its channel strip, then
-  // to main channel, effects, analyser and Tone.Destination
-  function setChains(SAMPLES: Sample[]) {
-    SAMPLES.forEach((sample) => {
-      sample.sampler.chain(
-        sample.channel,
-        sample.delay,
-        main_channel,
-        main_filter_hp,
-        main_distortion,
-        main_analyser,
-        Tone.getDestination()
-      )
-    })
-  }
-
-  // Sets sampler, filter parameters per sample
-  // todo: do i need this?
-  function setSampleParams(sample: Sample) {
-    sample.sampler.attack = sample.attack
-  }
-
-  // Creates a Tone.Sequence for each sample, and specifies what happens on each step
-  // I tried making a single sequence instead, which looped through all samples each step,
-  // but that led to delays and flamming when adjusting filter frequency during playback?
-  function makeSequences(SAMPLES: Sample[]) {
-    const sequences = SAMPLES.map((sample) => {
-      return new Tone.Sequence(
-        (time, sequencer_step) => {
-          active_step_index = sequencer_step
-          if (sample.sequence[sequencer_step]) {
-            sample.playing = true
-            setSampleParams(sample)
-            sample.play(time)
-          } else {
-            sample.playing = false
-          }
-        },
-        [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
-        '16n'
-      )
-    })
-
-    return sequences
-  }
-
   // CALLED ON EVENT
-  // When we click on a sequencer (seq) step,
-  // the sequence array of the selected sample is updated
-  function handleSeqClick(sample: Sample, step_index: number) {
-    sample.sequence[step_index] === false
-      ? (sample.sequence[step_index] = true)
-      : (sample.sequence[step_index] = false)
-  }
 
   // When we click on a sample in the sample library,
   // that sample is set as the selected_sample, and we trigger sample playback
@@ -176,12 +69,17 @@
       }
       if (sample) {
         // go team go
-        if (selected_sample) {
-          setSampleParams(selected_sample)
-        }
         sample.play(Tone.now())
       }
     }
+  }
+
+  // When we click on a sequencer (seq) step,
+  // the sequence array of the selected sample is updated
+  function handleSeqClick(sample: Sample, step_index: number) {
+    sample.sequence[step_index] === false
+      ? (sample.sequence[step_index] = true)
+      : (sample.sequence[step_index] = false)
   }
 
   function selectPack(direction: 'prev' | 'next' | 'random') {
@@ -204,24 +102,14 @@
   // PLAYBACK START/STOP – makes all sequences and toggles the transport
   async function toggleSeqPlayback() {
     active_step_index = 0
-    // The audio context needs to be launched by a user action
-    if (Tone.getContext().state !== 'running') {
-      await Tone.start()
-    }
 
     if (!is_playing) {
-      SEQUENCES = makeSequences(SAMPLES)
-      for (const sequence of SEQUENCES) {
-        sequence.start()
-      }
-      Tone.getTransport().start('+0.1') // delay transport start 100ms to help avoid scheduling errors.
-      console.log('Tone.Transport started')
+      audio_controller.makeSequences(SAMPLES, (step) => {
+        active_step_index = step
+      })
+      await audio_controller.startPlayback()
     } else {
-      Tone.getTransport().stop()
-      for (const sequence of SEQUENCES) {
-        sequence.stop()
-        sequence.dispose()
-      }
+      audio_controller.stopPlayback()
     }
 
     is_playing = !is_playing
@@ -257,10 +145,7 @@
 
     if (selected_sample.delay_active) {
       selected_sample.delay.feedback.rampTo(0.4, 0.1)
-      selected_sample.delay.wet.rampTo(
-        main_init.selected_sample_delay_amount,
-        0.1
-      )
+      selected_sample.delay.wet.rampTo(0.5, 0.1)
     } else {
       selected_sample.delay.feedback.rampTo(0, 0.1)
       selected_sample.delay.wet.rampTo(0, 0.1)
@@ -269,28 +154,17 @@
 
   function updateBPM(newBPM: number) {
     bpm = newBPM
-    Tone.getTransport().bpm.value = bpm
+    audio_controller.setBPM(bpm)
   }
 
   function toggleHighPass() {
     main_highpassed = !main_highpassed
-    if (!main_highpassed) {
-      main_filter_hp.frequency.value = 0
-    } else {
-      main_filter_hp.frequency.value = main_init.highpass_freq
-    }
+    audio_controller.toggleHighPass(main_highpassed)
   }
 
   function toggleDistortion() {
     main_distorted = !main_distorted
-    if (!main_distorted) {
-      main_distortion.wet.value = 0.2
-      main_channel.volume.value = 0
-    } else {
-      main_distortion.wet.value = main_init.distortion_amount
-      console.log(main_channel.volume.value)
-      main_channel.volume.value = -6
-    }
+    audio_controller.toggleDistortion(main_distorted)
   }
 
   // Utility
@@ -298,20 +172,11 @@
     return SAMPLES.find((s) => s.id === sample_id)
   }
 
-  // === LIFECYCLE ==============================
-
-  async function processSamples(packs: Packs) {
-    const buffers: Tone.ToneAudioBuffers = makeBuffers(packs)
-    const tone_samples: Sample[] = makeSamples(packs)
-    const samples: Sample[] = loadBuffers(tone_samples, buffers)
-    setChains(samples)
-
-    return samples
-  }
-
-  // Ensuring each setup step resolves properly before we use SAMPLES
-  processSamples(packs).then((resolvedSamples) => {
-    SAMPLES = resolvedSamples
+  $effect(() => {
+    processSamples(packs)
+    return () => {
+      audio_controller.dispose()
+    }
   })
 
   // VISUALS ================================
@@ -384,7 +249,7 @@
       ctx.lineWidth = dim * 0.04 // set line thickness
 
       // Draw waveform
-      analysis_values = main_analyser.getValue()
+      analysis_values = audio_controller.getAnalyserValues()
       const scalingFactor = calculateScalingFactor(
         analysis_values instanceof Float32Array
           ? analysis_values
