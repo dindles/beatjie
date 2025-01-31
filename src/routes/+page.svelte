@@ -15,17 +15,16 @@
 
   // AUDIO ===============================
   const main_init = {
-    volume: -3,
+    volume: 0,
     bpm: 120,
-    lowpass_freq: 2000,
     highpass_freq: 500,
     distortion_init: 0.2,
-    distortion_amount: 0.8,
+    distortion_amount: 0.9,
     analyser_resolution: 256,
+    selected_sample_delay: 0.5,
   }
   const PITCHES = ['C2', 'G2', 'C3', 'C1']
   const main_channel = new Tone.Channel(main_init.volume)
-  const main_filter_lp = new Tone.Filter(20000, 'lowpass')
   const main_filter_hp = new Tone.Filter(0, 'highpass')
   const main_distortion = new Tone.Distortion()
   // this is set here because the init distortion parameter is amount, not wet.
@@ -61,7 +60,10 @@
         urlsObject[sample.id.toString()] = sample.url
       })
     })
-    return new Tone.ToneAudioBuffers(urlsObject, () => {})
+    // todo: why do i not get the log?
+    return new Tone.ToneAudioBuffers(urlsObject, () =>
+      console.log('buffers loaded')
+    )
   }
 
   // Creates a new Sample object from each SampleHeader
@@ -101,8 +103,8 @@
     SAMPLES.forEach((sample) => {
       sample.sampler.chain(
         sample.channel,
+        sample.delay,
         main_channel,
-        main_filter_lp,
         main_filter_hp,
         main_distortion,
         main_analyser,
@@ -112,9 +114,9 @@
   }
 
   // Sets sampler, filter parameters per sample
+  // todo: do i need this?
   function setSampleParams(sample: Sample) {
     sample.sampler.attack = sample.attack
-    sample.channel.volume.value = sample.volume
   }
 
   // Creates a Tone.Sequence for each sample, and specifies what happens on each step
@@ -224,17 +226,14 @@
     is_playing = !is_playing
   }
 
-  // Utility
-  function getSampleByID(sample_id: number) {
-    return SAMPLES.find((s) => s.id === sample_id)
-  }
+  function toggleSampleMute() {
+    console.log(selected_sample?.channel.muted)
+    console.log(selected_sample?.channel.volume.value)
 
-  function switchSampleGain() {
     if (!selected_sample) console.log('No sample selected')
-    else if (selected_sample) {
-      selected_sample.volume === -108
-        ? (selected_sample.volume = 0)
-        : (selected_sample.volume = -108)
+    else {
+      selected_sample.channel.mute = !selected_sample.channel.mute
+      selected_sample.muted = !selected_sample.muted
     }
   }
 
@@ -246,8 +245,22 @@
 
     const currentIndex = PITCHES.indexOf(selected_sample.pitch)
     const nextIndex = (currentIndex + 1) % PITCHES.length
-    // hacky type stuff
+    // hacky typescript business
     selected_sample.pitch = PITCHES[nextIndex] as typeof selected_sample.pitch
+  }
+
+  function toggleDelay() {
+    if (!selected_sample) return
+
+    selected_sample.delay_active = !selected_sample.delay_active
+
+    if (selected_sample.delay_active) {
+      selected_sample.delay.feedback.rampTo(0.4, 0.1)
+      selected_sample.delay.wet.rampTo(main_init.selected_sample_delay, 0.1)
+    } else {
+      selected_sample.delay.feedback.rampTo(0, 0.1)
+      selected_sample.delay.wet.rampTo(0, 0.1)
+    }
   }
 
   function updateBPM(newBPM: number) {
@@ -264,22 +277,21 @@
     }
   }
 
-  function toggleLowPass() {
-    main_lowpassed = !main_lowpassed
-    if (!main_lowpassed) {
-      main_filter_lp.frequency.value = 20000
-    } else {
-      main_filter_lp.frequency.value = main_init.lowpass_freq
-    }
-  }
-
   function toggleDistortion() {
     main_distorted = !main_distorted
     if (!main_distorted) {
       main_distortion.wet.value = 0.2
+      main_channel.volume.value = 0
     } else {
       main_distortion.wet.value = main_init.distortion_amount
+      console.log(main_channel.volume.value)
+      main_channel.volume.value = -6
     }
+  }
+
+  // Utility
+  function getSampleByID(sample_id: number) {
+    return SAMPLES.find((s) => s.id === sample_id)
   }
 
   // === LIFECYCLE ==============================
@@ -304,7 +316,11 @@
   let canvas: HTMLCanvasElement
   let analysis_values: Float32Array | Float32Array[] = $state([])
 
-  let pitch_emoji_rotation = $state(0)
+  let pitch_emoji_rotation = $derived.by(() => {
+    if (!selected_sample) return 0
+    const pitchIndex = PITCHES.indexOf(selected_sample.pitch)
+    return pitchIndex * 90 // 90 degrees per pitch
+  })
   let hue_emoji_rotation = $state(0)
 
   // Colour
@@ -489,17 +505,25 @@
 
     {#if selected_sample}
       <div class="selected-sample-settings">
-        <button class="emoji-large" onclick={() => switchSampleGain()}
-          >{selected_sample.volume === -108 ? '🔇' : '🔊'}</button
+        <button class="emoji-large" onclick={() => toggleSampleMute()}
+          >{selected_sample.muted ? '🔇' : '🔊'}</button
         >
         <button
           class="selected-sample-pitch emoji-large"
           style="transform: rotate({pitch_emoji_rotation}deg)"
           onclick={() => {
-            pitch_emoji_rotation += 90
             loopSamplePitch()
-          }}>🎵</button
+          }}
         >
+          🎵
+        </button>
+        <button
+          class="emoji-large"
+          class:active={selected_sample.delay_active}
+          onclick={toggleDelay}
+        >
+          🌊
+        </button>
         <!-- *not sure how to make this comprehensible visually -->
         <!-- <button
           class="preview_samples_setting emoji-small"

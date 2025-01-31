@@ -28,6 +28,9 @@ export class Sample {
   pitch: Note = $state('C2')
   attack: number = $state(0.01)
   channel: Tone.Channel
+  delay: Tone.FeedbackDelay
+  delay_active: boolean = $state(false)
+  muted: boolean = $state(false)
   sequence: Sequence = $state([])
   playing: boolean = $state(false)
 
@@ -48,6 +51,11 @@ export class Sample {
     this.sampler = new Tone.Sampler()
     this.channel = new Tone.Channel()
     this.channel.volume.value = this.volume
+    this.delay = new Tone.FeedbackDelay({
+      delayTime: '16n',
+      feedback: 0,
+      wet: 0,
+    })
     // creates an empty sample-specific sequence accessed by the sequencer
     this.sequence = new Array(16).fill(false)
   }

@@ -2,24 +2,15 @@
 
 ## v1.0
 
-### link note emoji rotation to selected_sample_pitch
+### analyser delay issue
 
-### better mute? sample.channel.muted / sample.channel.mute
+### compressor on main channel
 
-### ramp high pass filter (and mute, if there's not another way of muting)
-
-### in fact add easy easing specifying ramp time in ms
-
-### delay per sample
-
-### reduce gain when activating distortion, and revert it when deactivating
+### try bitcrusher on main channel
 
 ### samples
 
-- create samples
-- load samples
-
-### easter egg?
+### easter egg? 909?
 
 ## 1.1
 
