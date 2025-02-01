@@ -10,29 +10,52 @@
   // Classes and types
   import { Sample, type Packs } from '$lib/models.svelte'
 
-  // Audio
-  import { AudioController, type AudioConfig } from '$lib/audio.svelte'
+  // Audio modules
+  import {
+    AudioEngine,
+    type AudioEngineConfig,
+  } from '$lib/audio/audio-engine.svelte'
+  import { AudioDataToCode } from '$lib/audio/audio-data-to-code.svelte'
+  import {
+    RoutingAndFX,
+    type RoutingAndFXConfig,
+  } from '$lib/audio/audio-routing-and-fx.svelte'
+  import {
+    AudioSequencer,
+    type SequencerConfig,
+  } from '$lib/audio/audio-sequencer.svelte'
 
   // Svelte components
   import BPMSelector from '$lib/components/bpm-selector.svelte'
 
-  // AUDIO ===============================
-  const config: AudioConfig = {
+  // === AUDIO ================================
+
+  // Initialize our audio modules with their configs
+  const audioEngineConfig: AudioEngineConfig = {
     volume: 0,
-    bpm: 120,
+  }
+
+  const routingConfig: RoutingAndFXConfig = {
     highpassFreq: 500,
     distortionInit: 0.2,
     distortionAmount: 0.9,
     analyserResolution: 256,
-    sampleDelayAmount: 0.5,
   }
 
-  let audio_controller = $state(new AudioController(config))
+  const sequencerConfig: SequencerConfig = {
+    bpm: 120,
+  }
 
   const pitches = ['C2', 'G2', 'C3', 'C1']
 
-  let SAMPLES: Sample[] = $state([])
+  // Instantiate audio classes
+  let audio_engine = $state(new AudioEngine(audioEngineConfig))
+  let audio_data_to_code = $state(new AudioDataToCode())
+  let audio_routing = $state(new RoutingAndFX(routingConfig))
+  let audio_sequencer = $state(new AudioSequencer(sequencerConfig))
 
+  // === STATE ================================
+  let SAMPLES: Sample[] = $state([])
   let selected_pack_index: number = $state(0)
   let selected_sample: Sample | undefined = $state(undefined)
   let preview_samples_active: boolean = $state(true)
@@ -42,12 +65,7 @@
 
   let main_highpassed: boolean = $state(false)
   let main_distorted: boolean = $state(false)
-  let bpm: number = $state(config.bpm)
-
-  async function processSamples(packs: Packs) {
-    SAMPLES = await audio_controller.initialiseAudio(packs)
-  }
-  // CALLED ON EVENT
+  let bpm: number = $state(sequencerConfig.bpm)
 
   function selectPack(direction: 'prev' | 'next' | 'random') {
     switch (direction) {
@@ -66,11 +84,22 @@
     }
   }
 
-  // When we click on a sample in the sample library,
-  // that sample is set as the selected_sample, and we trigger sample playback
+  // === INITIALIZATION ================================
+  async function initAudio() {
+    // First initialize audio context (requires user interaction)
+    await audio_engine.initAudioContext()
+    console.log('audio context initialised')
+
+    // Then process our sample packs
+    SAMPLES = await audio_data_to_code.processPacks(packs)
+
+    // Set up audio routing once samples are loaded
+    audio_routing.setChains(SAMPLES)
+  }
+
+  // Sample playback
   function handleSampleClick(sample: Sample | undefined) {
     if (!sample) return
-
     selectSample(sample.id)
 
     if (preview_samples_active) {
@@ -81,54 +110,34 @@
       selected_sample = getSampleByID(sample_id)
     }
 
-    // Set the sample and effect params then trigger the sampler attack
     function triggerSample(sample: Sample | undefined) {
-      // The audio context needs to be launched by a user action
-      if (Tone.getContext().state !== 'running') {
-        Tone.start()
-      }
-      if (sample) {
-        // go team go
+      if (audio_engine.isInitialized() && sample) {
         sample.play(Tone.now())
       }
     }
   }
 
-  // When we click on a sequencer (seq) step,
-  // the sequence array of the selected sample is updated
+  // Sequencer
   function handleSeqClick(sample: Sample, step_index: number) {
-    sample.sequence[step_index] === false
-      ? (sample.sequence[step_index] = true)
-      : (sample.sequence[step_index] = false)
+    sample.sequence[step_index] = !sample.sequence[step_index]
   }
 
-  // PLAYBACK START/STOP – makes all sequences and toggles the transport
   async function toggleSeqPlayback() {
     active_step_index = 0
 
     if (!seq_is_playing) {
-      audio_controller.makeSequences(SAMPLES, (step) => {
+      audio_sequencer.makeSequences(SAMPLES, (step) => {
         active_step_index = step
       })
-      await audio_controller.startPlayback()
+      await audio_sequencer.togglePlayback()
     } else {
-      audio_controller.stopPlayback()
+      await audio_sequencer.togglePlayback()
     }
 
     seq_is_playing = !seq_is_playing
   }
 
-  function toggleSampleMute() {
-    console.log(selected_sample?.channel.muted)
-    console.log(selected_sample?.channel.volume.value)
-
-    if (!selected_sample) console.log('No sample selected')
-    else {
-      selected_sample.channel.mute = !selected_sample.channel.mute
-      selected_sample.muted = !selected_sample.muted
-    }
-  }
-
+  // Effects controls
   function loopSamplePitch() {
     if (!selected_sample) {
       console.log('No sample selected')
@@ -141,33 +150,29 @@
     selected_sample.pitch = pitches[nextIndex] as typeof selected_sample.pitch
   }
 
+  function toggleSampleMute() {
+    if (!selected_sample) return
+    selected_sample.muted = !selected_sample.muted
+  }
+
   function toggleDelay() {
     if (!selected_sample) return
-
     selected_sample.delay_active = !selected_sample.delay_active
-
-    if (selected_sample.delay_active) {
-      selected_sample.delay.feedback.rampTo(0.4, 0.1)
-      selected_sample.delay.wet.rampTo(0.5, 0.1)
-    } else {
-      selected_sample.delay.feedback.rampTo(0, 0.1)
-      selected_sample.delay.wet.rampTo(0, 0.1)
-    }
   }
 
   function updateBPM(newBPM: number) {
     bpm = newBPM
-    audio_controller.setBPM(bpm)
+    audio_sequencer.setBPM(bpm)
   }
 
   function toggleHighPass() {
     main_highpassed = !main_highpassed
-    audio_controller.toggleHighPass(main_highpassed)
+    audio_routing.toggleHighPass(main_highpassed)
   }
 
   function toggleDistortion() {
     main_distorted = !main_distorted
-    audio_controller.toggleDistortion(main_distorted)
+    audio_routing.toggleDistortion(main_distorted)
   }
 
   // Utility
@@ -176,9 +181,13 @@
   }
 
   $effect(() => {
-    processSamples(packs)
+    initAudio()
+
+    // Cleanup when component is destroyed
     return () => {
-      audio_controller.dispose()
+      audio_sequencer.dispose()
+      audio_routing.dispose()
+      audio_engine.dispose()
     }
   })
 
@@ -252,7 +261,7 @@
       ctx.lineWidth = dim * 0.04 // set line thickness
 
       // Draw waveform
-      analysis_values = audio_controller.getAnalyserValues()
+      analysis_values = audio_routing.getAnalyserValues()
       const scalingFactor = calculateScalingFactor(
         analysis_values instanceof Float32Array
           ? analysis_values
