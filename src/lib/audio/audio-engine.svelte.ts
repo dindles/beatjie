@@ -1,38 +1,29 @@
 // audio-engine.svelte.ts
 import * as Tone from 'tone'
 
-export interface AudioEngineConfig {
-  volume: number // Main output volume
-}
-
 export class AudioEngine {
-  private initialized: boolean = $state(false)
+  private initialised: boolean = $state(false)
 
-  constructor(private config: AudioEngineConfig) {}
-
-  // Initialize audio context - must be called from a user interaction
+  // Initialise audio context - must be called from a user interaction
   async initAudioContext() {
-    if (this.initialized) return
+    if (this.initialised) return
 
     try {
       await Tone.start()
-      // Set initial master volume
-      Tone.getDestination().volume.value = this.config.volume
-      this.initialized = true
-      console.log('Audio context initialized')
+      this.initialised = true
+      console.log('Audio context initialised')
     } catch (error) {
-      console.error('Failed to initialize audio context:', error)
+      console.error('Failed to initialise audio context:', error)
     }
   }
 
   // Clean shutdown of Tone.js
   dispose() {
-    if (!this.initialized) return
+    if (!this.initialised) return
 
     try {
-      // Close the audio context
       Tone.getContext().dispose()
-      this.initialized = false
+      this.initialised = false
       console.log('Audio context disposed')
     } catch (error) {
       console.error('Error disposing audio context:', error)
@@ -40,7 +31,7 @@ export class AudioEngine {
   }
 
   // Check if audio context is running
-  isInitialized(): boolean {
-    return this.initialized && Tone.getContext().state === 'running'
+  isInitialised(): boolean {
+    return this.initialised && Tone.getContext().state === 'running'
   }
 }

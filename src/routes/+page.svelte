@@ -11,10 +11,7 @@
   import { Sample, type Packs } from '$lib/models.svelte'
 
   // Audio modules
-  import {
-    AudioEngine,
-    type AudioEngineConfig,
-  } from '$lib/audio/audio-engine.svelte'
+  import { AudioEngine } from '$lib/audio/audio-engine.svelte'
   import { AudioDataToCode } from '$lib/audio/audio-data-to-code.svelte'
   import {
     RoutingAndFX,
@@ -30,11 +27,6 @@
 
   // === AUDIO ================================
 
-  // Initialize our audio modules with their configs
-  const audioEngineConfig: AudioEngineConfig = {
-    volume: 0,
-  }
-
   const routingConfig: RoutingAndFXConfig = {
     highpassFreq: 500,
     distortionInit: 0.2,
@@ -49,7 +41,7 @@
   const pitches = ['C2', 'G2', 'C3', 'C1']
 
   // Instantiate audio classes
-  let audio_engine = $state(new AudioEngine(audioEngineConfig))
+  let audio_engine = $state(new AudioEngine())
   let audio_data_to_code = $state(new AudioDataToCode())
   let audio_routing = $state(new RoutingAndFX(routingConfig))
   let audio_sequencer = $state(new AudioSequencer(sequencerConfig))
@@ -86,10 +78,6 @@
 
   // === INITIALIZATION ================================
   async function initAudio() {
-    // First initialize audio context (requires user interaction)
-    await audio_engine.initAudioContext()
-    console.log('audio context initialised')
-
     // Then process our sample packs
     SAMPLES = await audio_data_to_code.processPacks(packs)
 
@@ -111,7 +99,7 @@
     }
 
     function triggerSample(sample: Sample | undefined) {
-      if (audio_engine.isInitialized() && sample) {
+      if (audio_engine.isInitialised() && sample) {
         sample.play(Tone.now())
       }
     }
@@ -326,87 +314,104 @@
 
 <main>
   <div class="app border">
-    <div class="color-controls">
-      <button
-        class="hue-control emoji-small"
-        style="transform: rotate({hue_emoji_rotation}deg)"
-        onclick={() => {
-          hue_emoji_rotation += 90
-          changeHue()
-        }}>🎨</button
-      >
-      <button class="light-dark emoji-small" onclick={() => switchLightDark()}>
-        {black_or_white === 'oklch(1 0 0)' ? '🌞' : '🌛'}
-      </button>
-      <button class="emoji-small" onclick={() => changeLightness()}
-        >{user_lightness === 0.8 ? '🤩' : '😎'}</button
-      >
-    </div>
-
-    <div class="display">
-      <div>
-        <canvas></canvas>
-      </div>
-      {#if !selected_sample}
-        <p class="sample-select-message text-xsmall">select a sample</p>
-      {/if}
-    </div>
-
-    <div class="packs">
-      <div class="pack-select">
+    {#if !audio_engine.isInitialised()}
+      <div class="audio-context-prompt">
+        <p class="text-small">this page uses audio. that cool?</p>
         <button
-          class="pack-select-prev emoji-small"
-          onclick={() => selectPack('prev')}>👈</button
-        >
-        <p class="selected-pack text-small">
-          {packs[selected_pack_index].name}
-        </p>
-        <button
-          class="pack-select-next emoji-small"
-          onclick={() => selectPack('next')}>👉</button
-        >
-      </div>
-
-      {#key selected_pack_index}
-        <div class="pack">
-          {#each SAMPLES as sample}
-            {#if sample && sample.pack === packs[selected_pack_index].name}
-              <button
-                class="sample border emoji-large"
-                class:active={sample.id === selected_sample?.id}
-                class:playing={sample.playing}
-                onclick={() => handleSampleClick(getSampleByID(sample.id))}
-                >{sample.emoji}</button
-              >
-            {/if}
-          {/each}
-        </div>
-      {/key}
-    </div>
-
-    {#if selected_sample}
-      <div class="selected-sample-settings">
-        <button class="emoji-large" onclick={() => toggleSampleMute()}
-          >{selected_sample.muted ? '🔇' : '🔊'}</button
-        >
-        <button
-          class="selected-sample-pitch emoji-large"
-          style="transform: rotate({pitch_emoji_rotation}deg)"
+          class="emoji-small"
           onclick={() => {
-            loopSamplePitch()
-          }}
+            // Audio context initialisation requires user interaction
+            audio_engine.initAudioContext()
+            console.log('audio context initialised')
+          }}>let's make beats</button
         >
-          🎵
-        </button>
+      </div>
+    {/if}
+    {#if audio_engine.isInitialised()}
+      <div class="color-controls">
         <button
-          class="emoji-large"
-          class:active={selected_sample.delay_active}
-          onclick={toggleDelay}
+          class="hue-control emoji-small"
+          style="transform: rotate({hue_emoji_rotation}deg)"
+          onclick={() => {
+            hue_emoji_rotation += 90
+            changeHue()
+          }}>🎨</button
         >
-          🪞
+        <button
+          class="light-dark emoji-small"
+          onclick={() => switchLightDark()}
+        >
+          {black_or_white === 'oklch(1 0 0)' ? '🌞' : '🌛'}
         </button>
-        <!-- *not sure how to make this comprehensible visually -->
-        <!-- <button
+        <button class="emoji-small" onclick={() => changeLightness()}
+          >{user_lightness === 0.8 ? '🤩' : '😎'}</button
+        >
+      </div>
+
+      <div class="display">
+        <div>
+          <canvas></canvas>
+        </div>
+        {#if !selected_sample}
+          <p class="sample-select-message text-xsmall">select a sample</p>
+        {/if}
+      </div>
+
+      <div class="packs">
+        <div class="pack-select">
+          <button
+            class="pack-select-prev emoji-small"
+            onclick={() => selectPack('prev')}>👈</button
+          >
+          <p class="selected-pack text-small">
+            {packs[selected_pack_index].name}
+          </p>
+          <button
+            class="pack-select-next emoji-small"
+            onclick={() => selectPack('next')}>👉</button
+          >
+        </div>
+
+        {#key selected_pack_index}
+          <div class="pack">
+            {#each SAMPLES as sample}
+              {#if sample && sample.pack === packs[selected_pack_index].name}
+                <button
+                  class="sample border emoji-large"
+                  class:active={sample.id === selected_sample?.id}
+                  class:playing={sample.playing}
+                  onclick={() => handleSampleClick(getSampleByID(sample.id))}
+                  >{sample.emoji}</button
+                >
+              {/if}
+            {/each}
+          </div>
+        {/key}
+      </div>
+
+      {#if selected_sample}
+        <div class="selected-sample-settings">
+          <button class="emoji-large" onclick={() => toggleSampleMute()}
+            >{selected_sample.muted ? '🔇' : '🔊'}</button
+          >
+          <button
+            class="selected-sample-pitch emoji-large"
+            style="transform: rotate({pitch_emoji_rotation}deg)"
+            onclick={() => {
+              loopSamplePitch()
+            }}
+          >
+            🎵
+          </button>
+          <button
+            class="emoji-large"
+            class:active={selected_sample.delay_active}
+            onclick={toggleDelay}
+          >
+            🪞
+          </button>
+          <!-- *not sure how to make this comprehensible visually -->
+          <!-- <button
           class="preview_samples_setting emoji-small"
           class:active={preview_samples_active}
           onclick={() => {
@@ -415,50 +420,51 @@
         >
           🎧
         </button> -->
-      </div>
-
-      <div class="sequencer">
-        {#each SAMPLES as sample}
-          {#if sample.id === selected_sample?.id}
-            {#each selected_sample.sequence as _, index}
-              <button
-                class="step border emoji-sequencer"
-                class:active={index === active_step_index}
-                onclick={() => handleSeqClick(sample, index)}
-                onkeydown={() => handleSeqClick(sample, index)}
-              >
-                {#if selected_sample.sequence[index]}
-                  {selected_sample.emoji}
-                {/if}
-              </button>
-            {/each}
-          {/if}
-        {/each}
-      </div>
-
-      <div class="transport-and-main-settings">
-        <div class="transport">
-          <button class="emoji-large" onclick={toggleSeqPlayback}
-            >{seq_is_playing ? '⏹' : '▶'}</button
-          >
         </div>
 
-        <div class="main-settings">
-          <button
-            class="emoji-large"
-            onclick={toggleHighPass}
-            class:active={main_highpassed}>🫴</button
-          >
-          <button
-            class:active={main_distorted}
-            class="emoji-large"
-            onclick={toggleDistortion}>💥</button
-          >
-          <div class="bpm-control">
-            <BPMSelector bind:bpm {updateBPM} />
+        <div class="sequencer">
+          {#each SAMPLES as sample}
+            {#if sample.id === selected_sample?.id}
+              {#each selected_sample.sequence as _, index}
+                <button
+                  class="step border emoji-sequencer"
+                  class:active={index === active_step_index}
+                  onclick={() => handleSeqClick(sample, index)}
+                  onkeydown={() => handleSeqClick(sample, index)}
+                >
+                  {#if selected_sample.sequence[index]}
+                    {selected_sample.emoji}
+                  {/if}
+                </button>
+              {/each}
+            {/if}
+          {/each}
+        </div>
+
+        <div class="transport-and-main-settings">
+          <div class="transport">
+            <button class="emoji-large" onclick={toggleSeqPlayback}
+              >{seq_is_playing ? '⏹' : '▶'}</button
+            >
+          </div>
+
+          <div class="main-settings">
+            <button
+              class="emoji-large"
+              onclick={toggleHighPass}
+              class:active={main_highpassed}>🫴</button
+            >
+            <button
+              class:active={main_distorted}
+              class="emoji-large"
+              onclick={toggleDistortion}>💥</button
+            >
+            <div class="bpm-control">
+              <BPMSelector bind:bpm {updateBPM} />
+            </div>
           </div>
         </div>
-      </div>
+      {/if}
     {/if}
   </div>
 </main>
