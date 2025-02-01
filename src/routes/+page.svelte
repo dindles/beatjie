@@ -1,8 +1,6 @@
 <script lang="ts">
   // === IMPORTS ================================
 
-  import { AudioController, type AudioConfig } from '$lib/audio.svelte'
-
   // Tone
   import * as Tone from 'tone'
 
@@ -11,6 +9,9 @@
 
   // Classes and types
   import { Sample, type Packs } from '$lib/models.svelte'
+
+  // Audio
+  import { AudioController, type AudioConfig } from '$lib/audio.svelte'
 
   // Svelte components
   import BPMSelector from '$lib/components/bpm-selector.svelte'
@@ -28,15 +29,17 @@
 
   let audio_controller = $state(new AudioController(config))
 
-  const PITCHES = ['C2', 'G2', 'C3', 'C1']
+  const pitches = ['C2', 'G2', 'C3', 'C1']
 
   let SAMPLES: Sample[] = $state([])
 
   let selected_pack_index: number = $state(0)
   let selected_sample: Sample | undefined = $state(undefined)
-  let is_playing = $state(false)
-  let active_step_index: number = $state(0)
   let preview_samples_active: boolean = $state(true)
+
+  let seq_is_playing = $state(false)
+  let active_step_index: number = $state(0)
+
   let main_highpassed: boolean = $state(false)
   let main_distorted: boolean = $state(false)
   let bpm: number = $state(config.bpm)
@@ -45,6 +48,23 @@
     SAMPLES = await audio_controller.initialiseAudio(packs)
   }
   // CALLED ON EVENT
+
+  function selectPack(direction: 'prev' | 'next' | 'random') {
+    switch (direction) {
+      case 'prev':
+        selected_pack_index =
+          (selected_pack_index - 1 + packs.length) % packs.length
+        break
+      case 'next':
+        selected_pack_index = (selected_pack_index + 1) % packs.length
+        break
+      case 'random':
+        selected_pack_index = Math.floor(Math.random() * packs.length)
+        break
+      default:
+        console.error('Invalid direction for selectPack')
+    }
+  }
 
   // When we click on a sample in the sample library,
   // that sample is set as the selected_sample, and we trigger sample playback
@@ -82,28 +102,11 @@
       : (sample.sequence[step_index] = false)
   }
 
-  function selectPack(direction: 'prev' | 'next' | 'random') {
-    switch (direction) {
-      case 'prev':
-        selected_pack_index =
-          (selected_pack_index - 1 + packs.length) % packs.length
-        break
-      case 'next':
-        selected_pack_index = (selected_pack_index + 1) % packs.length
-        break
-      case 'random':
-        selected_pack_index = Math.floor(Math.random() * packs.length)
-        break
-      default:
-        console.error('Invalid direction for selectPack')
-    }
-  }
-
   // PLAYBACK START/STOP – makes all sequences and toggles the transport
   async function toggleSeqPlayback() {
     active_step_index = 0
 
-    if (!is_playing) {
+    if (!seq_is_playing) {
       audio_controller.makeSequences(SAMPLES, (step) => {
         active_step_index = step
       })
@@ -112,7 +115,7 @@
       audio_controller.stopPlayback()
     }
 
-    is_playing = !is_playing
+    seq_is_playing = !seq_is_playing
   }
 
   function toggleSampleMute() {
@@ -132,10 +135,10 @@
       return
     }
 
-    const currentIndex = PITCHES.indexOf(selected_sample.pitch)
-    const nextIndex = (currentIndex + 1) % PITCHES.length
+    const currentIndex = pitches.indexOf(selected_sample.pitch)
+    const nextIndex = (currentIndex + 1) % pitches.length
     // hacky typescript business
-    selected_sample.pitch = PITCHES[nextIndex] as typeof selected_sample.pitch
+    selected_sample.pitch = pitches[nextIndex] as typeof selected_sample.pitch
   }
 
   function toggleDelay() {
@@ -187,7 +190,7 @@
 
   let pitch_emoji_rotation = $derived.by(() => {
     if (!selected_sample) return 0
-    const pitchIndex = PITCHES.indexOf(selected_sample.pitch)
+    const pitchIndex = pitches.indexOf(selected_sample.pitch)
     return pitchIndex * 90 // 90 degrees per pitch
   })
   let hue_emoji_rotation = $state(0)
@@ -427,7 +430,7 @@
       <div class="transport-and-main-settings">
         <div class="transport">
           <button class="emoji-large" onclick={toggleSeqPlayback}
-            >{is_playing ? '⏹' : '▶'}</button
+            >{seq_is_playing ? '⏹' : '▶'}</button
           >
         </div>
 

@@ -4,6 +4,8 @@
 
 - analyser delay issue
 
+- how about a complete refactor of the audio code 😅
+
 - compressor on main channel
 
 - try bitcrusher on main channel
