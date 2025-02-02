@@ -2,17 +2,21 @@
 
 ## v1.0
 
-- analyser delay issue
+- get everything working
 
-- how about a complete refactor of the audio code 😅
+  - display not working
+
+- split audioRouting and audioChainSettings
+- font loading screen
+- audio init screen
+- bye bye screen
+- audio (buffers) loading signal and screen
 
 - compressor on main channel
 
-- try bitcrusher on main channel
+- try bitcrusher on main channel instead of/alongside distortion
 
-- samples
-
-- easter egg? 909?
+- samples (they don't need names)
 
 - todos and console.logs
 

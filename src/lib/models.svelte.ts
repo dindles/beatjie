@@ -54,7 +54,7 @@ export class Sample {
     this.channel.volume.value = this.volume
     this.delay = new Tone.FeedbackDelay({
       delayTime: '16n',
-      feedback: 0,
+      feedback: 0.4,
       wet: 0,
     })
     // creates an empty sample-specific sequence accessed by the sequencer

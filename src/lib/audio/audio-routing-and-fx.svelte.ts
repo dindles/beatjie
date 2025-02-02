@@ -39,15 +39,23 @@ export class RoutingAndFX {
     })
   }
 
-  toggleHighPass(enabled: boolean) {
+  toggleMainHighPass(enabled: boolean) {
     this.mainFilterHP.frequency.value = enabled ? this.config.highpassFreq : 0
   }
 
-  toggleDistortion(enabled: boolean) {
+  toggleMainDistortion(enabled: boolean) {
     this.mainDistortion.wet.value = enabled
       ? this.config.distortionAmount
       : this.config.distortionInit
     this.mainChannel.volume.value = enabled ? -6 : 0
+  }
+
+  toggleSampleDelay(sample: Sample, enabled: boolean) {
+    sample.delay.wet.value = enabled ? 0.5 : 0
+  }
+
+  toggleSampleMute(sample: Sample, enabled: boolean) {
+    sample.channel.volume.value = enabled ? -Infinity : 0
   }
 
   getAnalyserValues() {

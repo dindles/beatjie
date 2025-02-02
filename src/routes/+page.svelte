@@ -46,6 +46,8 @@
   let audio_routing = $state(new RoutingAndFX(routingConfig))
   let audio_sequencer = $state(new AudioSequencer(sequencerConfig))
 
+  $inspect({ audio_engine, audio_data_to_code, audio_routing, audio_sequencer })
+
   // === STATE ================================
   let SAMPLES: Sample[] = $state([])
   let selected_pack_index: number = $state(0)
@@ -59,6 +61,7 @@
   let main_distorted: boolean = $state(false)
   let bpm: number = $state(sequencerConfig.bpm)
 
+  // === FUNCTIONS ================================
   function selectPack(direction: 'prev' | 'next' | 'random') {
     switch (direction) {
       case 'prev':
@@ -80,9 +83,11 @@
   async function initAudio() {
     // Then process our sample packs
     SAMPLES = await audio_data_to_code.processPacks(packs)
+    console.log('samples pre chain:', SAMPLES)
 
     // Set up audio routing once samples are loaded
     audio_routing.setChains(SAMPLES)
+    console.log('samples post chain:', SAMPLES)
   }
 
   // Sample playback
@@ -140,11 +145,16 @@
 
   function toggleSampleMute() {
     if (!selected_sample) return
+    audio_routing.toggleSampleMute(selected_sample, !selected_sample.muted)
     selected_sample.muted = !selected_sample.muted
   }
 
-  function toggleDelay() {
+  function toggleSampleDelay() {
     if (!selected_sample) return
+    audio_routing.toggleSampleDelay(
+      selected_sample,
+      !selected_sample.delay_active
+    )
     selected_sample.delay_active = !selected_sample.delay_active
   }
 
@@ -153,14 +163,14 @@
     audio_sequencer.setBPM(bpm)
   }
 
-  function toggleHighPass() {
+  function toggleMainHighPass() {
     main_highpassed = !main_highpassed
-    audio_routing.toggleHighPass(main_highpassed)
+    audio_routing.toggleMainHighPass(main_highpassed)
   }
 
-  function toggleDistortion() {
+  function toggleMainDistortion() {
     main_distorted = !main_distorted
-    audio_routing.toggleDistortion(main_distorted)
+    audio_routing.toggleMainDistortion(main_distorted)
   }
 
   // Utility
@@ -316,14 +326,16 @@
   <div class="app border">
     {#if !audio_engine.isInitialised()}
       <div class="audio-context-prompt">
-        <p class="text-small">this page uses audio. that cool?</p>
+        <p class="text-small audio-context-message">
+          this page uses audio. <br />is that cool?
+        </p>
         <button
-          class="emoji-small"
+          class="emoji-small border"
           onclick={() => {
             // Audio context initialisation requires user interaction
             audio_engine.initAudioContext()
             console.log('audio context initialised')
-          }}>let's make beats</button
+          }}>👍</button
         >
       </div>
     {/if}
@@ -406,7 +418,7 @@
           <button
             class="emoji-large"
             class:active={selected_sample.delay_active}
-            onclick={toggleDelay}
+            onclick={toggleSampleDelay}
           >
             🪞
           </button>
@@ -451,13 +463,13 @@
           <div class="main-settings">
             <button
               class="emoji-large"
-              onclick={toggleHighPass}
+              onclick={toggleMainHighPass}
               class:active={main_highpassed}>🫴</button
             >
             <button
               class:active={main_distorted}
               class="emoji-large"
-              onclick={toggleDistortion}>💥</button
+              onclick={toggleMainDistortion}>💥</button
             >
             <div class="bpm-control">
               <BPMSelector bind:bpm {updateBPM} />
