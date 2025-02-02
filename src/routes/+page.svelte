@@ -259,7 +259,6 @@
           onclick={() => {
             // Audio context initialisation requires user interaction
             audio_engine.initAudioContext()
-            console.log('audio context initialised')
           }}>👍</button
         >
       </div>

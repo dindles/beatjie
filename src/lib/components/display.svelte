@@ -1,4 +1,3 @@
-<!-- Display.svelte -->
 <script lang="ts">
   let { analysisValues, children } = $props<{
     analysisValues: Float32Array | Float32Array[]
@@ -6,7 +5,6 @@
   }>()
 
   let canvas: HTMLCanvasElement
-  let animationFrameId: number
 
   function resizeCanvas() {
     if (!canvas) return
@@ -17,73 +15,73 @@
 
   function draw() {
     if (!canvas) return
-
     const ctx = canvas.getContext('2d', { alpha: false })
     if (!ctx) return
 
+    // Get dimensions
     const dim = Math.min(canvas.width, canvas.height)
 
-    ctx.fillStyle = 'var(--black-or-white)'
+    // Clear and set background
+    ctx.fillStyle = getComputedStyle(document.documentElement)
+      .getPropertyValue('--black-or-white')
+      .trim()
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-    ctx.strokeStyle = 'var(--user-colour)'
-    ctx.lineWidth = Math.max(1, canvas.height * 0.04)
+    // Set line style
+    ctx.strokeStyle = getComputedStyle(document.documentElement)
+      .getPropertyValue('--user-colour')
+      .trim()
+    ctx.lineWidth = dim * 0.04
 
-    function calculateScalingFactor(analysis_values: Float32Array) {
-      const maxAmplitude = Math.max(...analysis_values.map(Math.abs))
-      const scalingFactor = 0.2 / maxAmplitude
-      return scalingFactor
-    }
+    if (!analysisValues || analysisValues.length === 0) return
 
-    function myMap(
-      value: number,
-      start1: number,
-      stop1: number,
-      start2: number,
-      stop2: number
-    ) {
-      return ((value - start1) / (stop1 - start1)) * (stop2 - start2) + start2
-    }
+    const values =
+      analysisValues instanceof Float32Array
+        ? analysisValues
+        : analysisValues[0]
 
-    if (analysisValues && analysisValues.length > 0) {
-      const values =
-        analysisValues instanceof Float32Array
-          ? analysisValues
-          : analysisValues[0]
+    // Calculate scaling
+    const maxAmplitude = Math.max(
+      ...Array.from(values).map((value) => Math.abs(value as number))
+    )
+    const scalingFactor = maxAmplitude > 0 ? 0.2 / maxAmplitude : 1
 
-      const scalingFactor = calculateScalingFactor(values)
+    // Draw waveform
+    ctx.beginPath()
+    for (let i = 0; i < values.length; i++) {
+      const x = (i / values.length) * canvas.width
+      const y =
+        canvas.height / 2 + (values[i] * scalingFactor * canvas.height) / 2
 
-      ctx.beginPath()
-      for (let i = 0; i < values.length; i++) {
-        const amplitude = values[i] * scalingFactor
-        const x = myMap(i, 0, values.length - 1, 0, canvas.width)
-        const y = canvas.height / 2 + amplitude * canvas.height
-
-        if (i === 0) {
-          ctx.moveTo(x, y)
-        } else {
-          ctx.lineTo(x, y)
-        }
+      if (i === 0) {
+        ctx.moveTo(x, y)
+      } else {
+        ctx.lineTo(x, y)
       }
-      ctx.stroke()
     }
-
-    animationFrameId = requestAnimationFrame(draw)
+    ctx.stroke()
   }
 
+  // Set up canvas and animation loop
   $effect(() => {
     if (!canvas) return
 
+    // Handle resize
     resizeCanvas()
-
-    const resizeObserver = new ResizeObserver(() => {
-      resizeCanvas()
-    })
-
+    const resizeObserver = new ResizeObserver(resizeCanvas)
     resizeObserver.observe(canvas)
 
-    draw()
+    // Start animation loop
+    let animationFrameId: number
 
+    function animate() {
+      draw()
+      animationFrameId = requestAnimationFrame(animate)
+    }
+
+    animate()
+
+    // Cleanup
     return () => {
       if (animationFrameId) {
         cancelAnimationFrame(animationFrameId)
@@ -94,7 +92,7 @@
 </script>
 
 <div class="display">
-  <canvas bind:this={canvas}></canvas>
+  <canvas bind:this={canvas} />
   {@render children()}
 </div>
 
