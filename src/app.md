@@ -2,17 +2,13 @@
 
 ## v1.0
 
-- get everything working
-
-  - display not working
-
 - split audioRouting and audioChainSettings
 - font loading screen
 - audio init screen
 - bye bye screen
 - audio (buffers) loading signal and screen
 
-- compressor on main channel
+- light compressor on main channel
 
 - try bitcrusher on main channel instead of/alongside distortion
 

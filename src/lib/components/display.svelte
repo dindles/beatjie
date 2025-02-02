@@ -6,6 +6,8 @@
 
   let canvas: HTMLCanvasElement
 
+  const AMPLITUDE_THRESHOLD = 0.001 // Adjust this value to set sensitivity
+
   function resizeCanvas() {
     if (!canvas) return
     const rect = canvas.getBoundingClientRect()
@@ -18,16 +20,13 @@
     const ctx = canvas.getContext('2d', { alpha: false })
     if (!ctx) return
 
-    // Get dimensions
     const dim = Math.min(canvas.width, canvas.height)
 
-    // Clear and set background
     ctx.fillStyle = getComputedStyle(document.documentElement)
       .getPropertyValue('--black-or-white')
       .trim()
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-    // Set line style
     ctx.strokeStyle = getComputedStyle(document.documentElement)
       .getPropertyValue('--user-colour')
       .trim()
@@ -40,13 +39,15 @@
         ? analysisValues
         : analysisValues[0]
 
-    // Calculate scaling
     const maxAmplitude = Math.max(
       ...Array.from(values).map((value) => Math.abs(value as number))
     )
     const scalingFactor = maxAmplitude > 0 ? 0.2 / maxAmplitude : 1
 
-    // Draw waveform
+    if (maxAmplitude < AMPLITUDE_THRESHOLD) {
+      return
+    }
+
     ctx.beginPath()
     for (let i = 0; i < values.length; i++) {
       const x = (i / values.length) * canvas.width
@@ -62,16 +63,13 @@
     ctx.stroke()
   }
 
-  // Set up canvas and animation loop
   $effect(() => {
     if (!canvas) return
 
-    // Handle resize
     resizeCanvas()
     const resizeObserver = new ResizeObserver(resizeCanvas)
     resizeObserver.observe(canvas)
 
-    // Start animation loop
     let animationFrameId: number
 
     function animate() {
@@ -81,7 +79,6 @@
 
     animate()
 
-    // Cleanup
     return () => {
       if (animationFrameId) {
         cancelAnimationFrame(animationFrameId)
