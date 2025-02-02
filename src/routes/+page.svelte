@@ -181,12 +181,18 @@
   // Display
   let analysis_values: Float32Array | Float32Array[] = $state([])
 
-  let pitch_emoji_rotation = $derived.by(() => {
-    if (!selected_sample) return 0
-    const pitchIndex = pitches.indexOf(selected_sample.pitch)
-    return pitchIndex * 90 // 90 degrees per pitch
+  $effect(() => {
+    function updateAnalysis() {
+      analysis_values = audio_chain.getAnalyserValues()
+      requestAnimationFrame(updateAnalysis)
+    }
+
+    updateAnalysis()
+
+    return () => {
+      analysis_values = []
+    }
   })
-  let hue_emoji_rotation = $state(0)
 
   // Colour
   let user_lightness = $state(0.8) //0-100%
@@ -222,19 +228,13 @@
     )
   })
 
-  // CALLED ON MOUNT
-  $effect(() => {
-    function updateAnalysis() {
-      analysis_values = audio_chain.getAnalyserValues()
-      requestAnimationFrame(updateAnalysis)
-    }
+  // CSS animations
+  let hue_emoji_rotation = $state(0)
 
-    updateAnalysis()
-
-    // Cleanup
-    return () => {
-      analysis_values = []
-    }
+  let pitch_emoji_rotation = $derived.by(() => {
+    if (!selected_sample) return 0
+    const pitchIndex = pitches.indexOf(selected_sample.pitch)
+    return pitchIndex * 90 // 90 degrees per pitch
   })
 </script>
 
