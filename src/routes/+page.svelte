@@ -24,6 +24,7 @@
 
   // Svelte components
   import BPMSelector from '$lib/components/bpm-selector.svelte'
+  import Display from '$lib/components/display.svelte'
 
   // === AUDIO ================================
 
@@ -45,8 +46,6 @@
   let audio_data_to_code = $state(new AudioDataToCode())
   let audio_routing = $state(new RoutingAndFX(routingConfig))
   let audio_sequencer = $state(new AudioSequencer(sequencerConfig))
-
-  $inspect({ audio_engine, audio_data_to_code, audio_routing, audio_sequencer })
 
   // === STATE ================================
   let SAMPLES: Sample[] = $state([])
@@ -83,11 +82,9 @@
   async function initAudio() {
     // Then process our sample packs
     SAMPLES = await audio_data_to_code.processPacks(packs)
-    console.log('samples pre chain:', SAMPLES)
 
     // Set up audio routing once samples are loaded
     audio_routing.setChains(SAMPLES)
-    console.log('samples post chain:', SAMPLES)
   }
 
   // Sample playback
@@ -191,8 +188,6 @@
 
   // VISUALS ================================
   // Display
-  let animation_frame_id: number
-  let canvas: HTMLCanvasElement
   let analysis_values: Float32Array | Float32Array[] = $state([])
 
   let pitch_emoji_rotation = $derived.by(() => {
@@ -236,90 +231,20 @@
     )
   })
 
-  // CALLED FOR DISPLAY
-  function startDrawingLoop() {
-    animation_frame_id = requestAnimationFrame(draw)
-  }
-
-  // todo: need this?
-  function stopDrawingLoop() {
-    cancelAnimationFrame(animation_frame_id)
-  }
-
-  function draw() {
-    const dim = Math.min(canvas.width, canvas.height)
-    const ctx = canvas.getContext('2d', { alpha: false })
-
-    if (ctx) {
-      // Background and stroke color
-      ctx.fillStyle = black_or_white
-      ctx.fillRect(0, 0, canvas.width, canvas.height)
-
-      ctx.strokeStyle = user_colour
-      ctx.lineWidth = dim * 0.04 // set line thickness
-
-      // Draw waveform
-      analysis_values = audio_routing.getAnalyserValues()
-      const scalingFactor = calculateScalingFactor(
-        analysis_values instanceof Float32Array
-          ? analysis_values
-          : analysis_values[0]
-      ) // Check analysis_values is of type Float32Array
-
-      ctx.beginPath()
-      for (let i = 0; i < analysis_values.length; i++) {
-        const amplitude = (analysis_values[i] as number) * scalingFactor // Apply scaling factor to amplitude
-        const x = myMap(i, 0, analysis_values.length - 1, 0, canvas.width)
-        const y = canvas.height / 2 + amplitude * canvas.height
-
-        // Place vertex
-        if (i === 0) {
-          ctx.moveTo(x, y)
-        } else {
-          ctx.lineTo(x, y)
-        }
-      }
-      ctx.stroke()
-    }
-
-    requestAnimationFrame(draw)
-  }
-
   // CALLED ON MOUNT
   $effect(() => {
-    selectPack('random')
-
-    const canvasElement = document.querySelector('canvas')
-    if (canvasElement) {
-      canvas = canvasElement
-    } else {
-      console.error('Canvas element not found')
+    function updateAnalysis() {
+      analysis_values = audio_routing.getAnalyserValues()
+      requestAnimationFrame(updateAnalysis)
     }
 
-    startDrawingLoop()
+    updateAnalysis()
 
+    // Cleanup
     return () => {
-      stopDrawingLoop()
+      analysis_values = []
     }
   })
-
-  // Utility - Vertical waveform scaling factor
-  function calculateScalingFactor(analysis_values: Float32Array) {
-    const maxAmplitude = Math.max(...analysis_values.map(Math.abs)) // Find the maximum absolute amplitude
-    const scalingFactor = 0.2 / maxAmplitude // Calculate scaling factor based on max amplitude (0.9 to leave some padding)
-    return scalingFactor
-  }
-
-  // Utility - Map one range to another
-  function myMap(
-    value: number,
-    start1: number,
-    stop1: number,
-    start2: number,
-    stop2: number
-  ) {
-    return ((value - start1) / (stop1 - start1)) * (stop2 - start2) + start2
-  }
 </script>
 
 <main>
@@ -327,7 +252,7 @@
     {#if !audio_engine.isInitialised()}
       <div class="audio-context-prompt">
         <p class="text-small audio-context-message">
-          this page uses audio. <br />is that cool?
+          this page makes sounds. <br />is that ok?
         </p>
         <button
           class="emoji-small border"
@@ -361,12 +286,11 @@
       </div>
 
       <div class="display">
-        <div>
-          <canvas></canvas>
-        </div>
-        {#if !selected_sample}
-          <p class="sample-select-message text-xsmall">select a sample</p>
-        {/if}
+        <Display analysisValues={analysis_values}>
+          {#if !selected_sample}
+            <p class="sample-select-message text-xsmall">select a sample</p>
+          {/if}
+        </Display>
       </div>
 
       <div class="packs">
@@ -517,7 +441,6 @@
   }
 
   /* === state === */
-
   .active,
   .playing {
     color: var(--black-or-white);
@@ -582,7 +505,6 @@
     pointer-events: none;
   }
 
-  /* pack selection */
   .pack-select {
     display: grid;
     grid-template-columns: auto 1fr auto;
@@ -600,7 +522,6 @@
     gap: var(--spacing);
   }
 
-  /* sample selection */
   .sample-select-message {
     text-align: center;
     padding: var(--spacing);
@@ -614,21 +535,18 @@
     margin-bottom: 0.4em;
   }
 
-  /* todo: spin this emoji 90 degrees each time it's clicked */
   .selected-sample-pitch {
     display: grid;
     place-items: center;
     transition: transform 0.3s ease;
   }
 
-  /* sequencer */
   .sequencer {
     display: grid;
     grid-template-columns: repeat(8, 1fr);
     gap: var(--spacing);
   }
 
-  /* transport and settings */
   .transport-and-main-settings {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
