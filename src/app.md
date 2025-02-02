@@ -2,7 +2,6 @@
 
 ## v1.0
 
-- split audioRouting and audioChainSettings
 - font loading screen
 - audio init screen
 - bye bye screen
