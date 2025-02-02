@@ -1,6 +1,6 @@
 // audio-sequencer.svelte.ts
 import * as Tone from 'tone'
-import type { Sample } from '$lib/models.svelte'
+import type { Sample } from '$lib/audio/audio-models.svelte'
 
 export interface SequencerConfig {
   bpm: number

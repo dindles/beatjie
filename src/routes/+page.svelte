@@ -7,16 +7,13 @@
   // Data
   import { packs } from '$lib/assets/audio/packs'
 
-  // Classes and types
-  import { Sample, type Packs } from '$lib/models.svelte'
+  // Classes
+  import { Sample } from '$lib/audio/audio-models.svelte'
 
   // Audio modules
   import { AudioEngine } from '$lib/audio/audio-engine.svelte'
   import { AudioDataToCode } from '$lib/audio/audio-data-to-code.svelte'
-  import {
-    RoutingAndFX,
-    type RoutingAndFXConfig,
-  } from '$lib/audio/audio-routing-and-fx.svelte'
+  import { AudioChain, type ChainConfig } from '$lib/audio/audio-chain.svelte'
   import {
     AudioSequencer,
     type SequencerConfig,
@@ -28,7 +25,7 @@
 
   // === AUDIO ================================
 
-  const routingConfig: RoutingAndFXConfig = {
+  const routingConfig: ChainConfig = {
     highpassFreq: 500,
     distortionInit: 0.2,
     distortionAmount: 0.9,
@@ -44,7 +41,7 @@
   // Instantiate audio classes
   let audio_engine = $state(new AudioEngine())
   let audio_data_to_code = $state(new AudioDataToCode())
-  let audio_routing = $state(new RoutingAndFX(routingConfig))
+  let audio_chain = $state(new AudioChain(routingConfig))
   let audio_sequencer = $state(new AudioSequencer(sequencerConfig))
 
   // === STATE ================================
@@ -61,6 +58,13 @@
   let bpm: number = $state(sequencerConfig.bpm)
 
   // === FUNCTIONS ================================
+
+  async function initAudio() {
+    SAMPLES = await audio_data_to_code.processPacks(packs)
+
+    audio_chain.setChains(SAMPLES)
+  }
+
   function selectPack(direction: 'prev' | 'next' | 'random') {
     switch (direction) {
       case 'prev':
@@ -78,16 +82,10 @@
     }
   }
 
-  // === INITIALIZATION ================================
-  async function initAudio() {
-    // Then process our sample packs
-    SAMPLES = await audio_data_to_code.processPacks(packs)
-
-    // Set up audio routing once samples are loaded
-    audio_routing.setChains(SAMPLES)
+  function getSampleByID(sample_id: number) {
+    return SAMPLES.find((s) => s.id === sample_id)
   }
 
-  // Sample playback
   function handleSampleClick(sample: Sample | undefined) {
     if (!sample) return
     selectSample(sample.id)
@@ -107,7 +105,6 @@
     }
   }
 
-  // Sequencer
   function handleSeqClick(sample: Sample, step_index: number) {
     sample.sequence[step_index] = !sample.sequence[step_index]
   }
@@ -127,7 +124,6 @@
     seq_is_playing = !seq_is_playing
   }
 
-  // Effects controls
   function loopSamplePitch() {
     if (!selected_sample) {
       console.log('No sample selected')
@@ -142,13 +138,13 @@
 
   function toggleSampleMute() {
     if (!selected_sample) return
-    audio_routing.toggleSampleMute(selected_sample, !selected_sample.muted)
+    audio_chain.toggleSampleMute(selected_sample, !selected_sample.muted)
     selected_sample.muted = !selected_sample.muted
   }
 
   function toggleSampleDelay() {
     if (!selected_sample) return
-    audio_routing.toggleSampleDelay(
+    audio_chain.toggleSampleDelay(
       selected_sample,
       !selected_sample.delay_active
     )
@@ -162,17 +158,12 @@
 
   function toggleMainHighPass() {
     main_highpassed = !main_highpassed
-    audio_routing.toggleMainHighPass(main_highpassed)
+    audio_chain.toggleMainHighPass(main_highpassed)
   }
 
   function toggleMainDistortion() {
     main_distorted = !main_distorted
-    audio_routing.toggleMainDistortion(main_distorted)
-  }
-
-  // Utility
-  function getSampleByID(sample_id: number) {
-    return SAMPLES.find((s) => s.id === sample_id)
+    audio_chain.toggleMainDistortion(main_distorted)
   }
 
   $effect(() => {
@@ -181,7 +172,7 @@
     // Cleanup when component is destroyed
     return () => {
       audio_sequencer.dispose()
-      audio_routing.dispose()
+      audio_chain.dispose()
       audio_engine.dispose()
     }
   })
@@ -234,7 +225,7 @@
   // CALLED ON MOUNT
   $effect(() => {
     function updateAnalysis() {
-      analysis_values = audio_routing.getAnalyserValues()
+      analysis_values = audio_chain.getAnalyserValues()
       requestAnimationFrame(updateAnalysis)
     }
 
@@ -485,13 +476,6 @@
 
   .display {
     position: relative;
-  }
-
-  canvas {
-    width: 100%;
-    aspect-ratio: 4/1;
-    color: var(--user-colour);
-    background-color: var(--black-or-white);
   }
 
   .sample-select-message {

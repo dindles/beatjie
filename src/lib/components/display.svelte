@@ -52,7 +52,7 @@
     for (let i = 0; i < values.length; i++) {
       const x = (i / values.length) * canvas.width
       const y =
-        canvas.height / 2 + (values[i] * scalingFactor * canvas.height) / 2
+        canvas.height / 2 + values[i] * scalingFactor * canvas.height * 1.8
 
       if (i === 0) {
         ctx.moveTo(x, y)
@@ -89,7 +89,7 @@
 </script>
 
 <div class="display">
-  <canvas bind:this={canvas} />
+  <canvas bind:this={canvas}></canvas>
   {@render children()}
 </div>
 

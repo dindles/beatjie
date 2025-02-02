@@ -1,4 +1,4 @@
-import type { Packs } from '$lib/models.svelte'
+import type { Packs } from '$lib/audio/audio-models.svelte'
 
 const audio_path = 'src/lib/assets/audio'
 
