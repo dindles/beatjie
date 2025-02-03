@@ -3,6 +3,7 @@
 ## v1.0
 
 - test font loading screen
+- could have a conditional svelte wrapper {app_state['fonts-loading']} with visible: hidden to prevent FOUT
 - test audio init screen
 
 - light compressor on main channel

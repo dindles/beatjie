@@ -3,7 +3,7 @@
   font-style: normal;
   font-weight: 500;
   src: url('/fonts/NotoEmoji-VariableFont_wght.ttf');
-  font-display: swap;
+  font-display: block;
 }
 
 @font-face {
@@ -11,5 +11,5 @@
   font-style: normal;
   font-weight: 500;
   src: url('/fonts/ZenDots-Regular.ttf');
-  font-display: swap;
+  font-display: block;
 }

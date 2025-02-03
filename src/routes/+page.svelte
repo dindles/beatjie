@@ -78,15 +78,10 @@
 
   $effect(() => {
     if (typeof document !== 'undefined') {
-      document.documentElement.classList.add('fonts-loading')
-
       document.fonts.ready.then(() => {
-        setTimeout(() => {
-          document.documentElement.classList.remove('fonts-loading')
-          app_state['fonts-loading'] = false
-          console.log('fonts loaded')
-          app_state['audio-prompt'] = true
-        }, 1000)
+        app_state['fonts-loading'] = false
+        console.log('fonts loaded')
+        app_state['audio-prompt'] = true
       })
     }
   })
@@ -111,9 +106,8 @@
     app_state['audio-prompt-denied'] = true
   }
 
-  async function initAudio() {
+  async function audioDataToCode() {
     SAMPLES = await audio_data_to_code.processPacks(packs)
-
     audio_chain.setChains(SAMPLES)
   }
 
@@ -220,7 +214,7 @@
 
   $effect(() => {
     if (app_state['audio-loading']) {
-      initAudio()
+      audioDataToCode()
     }
   })
 
@@ -284,7 +278,7 @@
     )
   })
 
-  // CSS animations
+  // css animations
   let hue_emoji_rotation = $state(0)
 
   let pitch_emoji_rotation = $derived.by(() => {
@@ -491,6 +485,10 @@
   .playing {
     color: var(--black-or-white);
     background-color: var(--user-colour);
+  }
+
+  .fonts-loading {
+    visibility: hidden;
   }
 
   .font-loading,
