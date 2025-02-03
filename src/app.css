@@ -11,8 +11,8 @@
   --font-text: 'Zen Dots', sans-serif;
 
   --emoji-large: clamp(2.8rem, 8vmin, 6rem);
-  --emoji-small: clamp(1.4rem, 3.8vmin, 4rem);
-  --emoji-sequencer: clamp(1.1rem, 3.3vmin, 4rem);
+  --emoji-small: clamp(1.4rem, 3.2vmin, 4rem);
+  --emoji-sequencer: clamp(1.1rem, 2.3vmin, 4rem);
   --text-small: clamp(1rem, 4vmin, 2.4rem);
   --text-display: clamp(1rem, 2.4vmin, 2.4rem);
 }

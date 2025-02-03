@@ -38,13 +38,11 @@
 
   const pitches = ['C2', 'G2', 'C3', 'C1']
 
-  // Instantiate audio classes
   let audio_engine = $state(new AudioEngine())
   let audio_data_to_code = $state(new AudioDataToCode())
   let audio_chain = $state(new AudioChain(routingConfig))
   let audio_sequencer = $state(new AudioSequencer(sequencerConfig))
 
-  // === STATE ================================
   let SAMPLES: Sample[] = $state([])
   let selected_pack_index: number = $state(0)
   let selected_sample: Sample | undefined = $state(undefined)
@@ -57,7 +55,61 @@
   let main_distorted: boolean = $state(false)
   let bpm: number = $state(sequencerConfig.bpm)
 
+  // === STATE ================================
+  interface AppState {
+    'fonts-loading': boolean
+    'audio-prompt': boolean
+    'audio-prompt-denied': boolean
+    'audio-loading': boolean
+    'app-ready': boolean
+  }
+
+  let app_state: AppState = $state({
+    'fonts-loading': true,
+    'audio-prompt': false,
+    'audio-prompt-denied': false,
+    'audio-loading': false,
+    'app-ready': false,
+  })
+
   // === FUNCTIONS ================================
+
+  // State
+
+  $effect(() => {
+    if (typeof document !== 'undefined') {
+      document.documentElement.classList.add('fonts-loading')
+
+      document.fonts.ready.then(() => {
+        setTimeout(() => {
+          document.documentElement.classList.remove('fonts-loading')
+          app_state['fonts-loading'] = false
+          console.log('fonts loaded')
+          app_state['audio-prompt'] = true
+        }, 1000)
+      })
+    }
+  })
+
+  $effect(() => {
+    if (app_state['audio-loading'] && audio_data_to_code.areBuffersLoaded()) {
+      app_state['audio-loading'] = false
+      app_state['app-ready'] = true
+    }
+  })
+
+  // Audio
+
+  async function handleAudioConfirm() {
+    await audio_engine.initAudioContext()
+    app_state['audio-prompt'] = false
+    app_state['audio-loading'] = true
+  }
+
+  function handleAudioDeny() {
+    app_state['audio-prompt'] = false
+    app_state['audio-prompt-denied'] = true
+  }
 
   async function initAudio() {
     SAMPLES = await audio_data_to_code.processPacks(packs)
@@ -167,8 +219,12 @@
   }
 
   $effect(() => {
-    initAudio()
+    if (app_state['audio-loading']) {
+      initAudio()
+    }
+  })
 
+  $effect(() => {
     // Cleanup when component is destroyed
     return () => {
       audio_sequencer.dispose()
@@ -240,21 +296,27 @@
 
 <main>
   <div class="app border">
-    {#if !audio_engine.isInitialised()}
+    {#if app_state['fonts-loading']}
+      <div class="font-loading">
+        <p class="text-small fonts-loading-message">loading fonts...</p>
+      </div>
+    {:else if app_state['audio-prompt']}
       <div class="audio-context-prompt">
         <p class="text-small audio-context-message">
           this page makes sounds. <br />is that ok?
         </p>
-        <button
-          class="emoji-small border"
-          onclick={() => {
-            // Audio context initialisation requires user interaction
-            audio_engine.initAudioContext()
-          }}>👍</button
-        >
+        <button class="emoji-small" onclick={handleAudioConfirm}>👍</button>
+        <button class="emoji-small" onclick={handleAudioDeny}>👎</button>
       </div>
-    {/if}
-    {#if audio_engine.isInitialised()}
+    {:else if app_state['audio-prompt-denied']}
+      <div class="audio-prompt-denied">
+        <p class="text-small audio-denied-message">🤫👋</p>
+      </div>
+    {:else if app_state['audio-loading']}
+      <div class="audio-loading">
+        <p class="text-small audio-loading-message">loading audio...</p>
+      </div>
+    {:else if app_state['app-ready']}
       <div class="color-controls">
         <button
           class="hue-control emoji-small"
@@ -336,16 +398,6 @@
           >
             🪞
           </button>
-          <!-- *not sure how to make this comprehensible visually -->
-          <!-- <button
-          class="preview_samples_setting emoji-small"
-          class:active={preview_samples_active}
-          onclick={() => {
-            preview_samples_active = !preview_samples_active
-          }}
-        >
-          🎧
-        </button> -->
         </div>
 
         <div class="sequencer">
@@ -435,6 +487,19 @@
   .playing {
     color: var(--black-or-white);
     background-color: var(--user-colour);
+  }
+
+  .font-loading,
+  .audio-context-prompt,
+  .audio-prompt-denied,
+  .audio-loading {
+    margin: auto;
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
   }
 
   /* === html elements === */

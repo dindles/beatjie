@@ -30,7 +30,7 @@
     ctx.strokeStyle = getComputedStyle(document.documentElement)
       .getPropertyValue('--user-colour')
       .trim()
-    ctx.lineWidth = dim * 0.08
+    ctx.lineWidth = dim * 0.06
 
     if (!analysis_values || analysis_values.length === 0) return
 
