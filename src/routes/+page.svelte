@@ -302,15 +302,19 @@
       </div>
     {:else if app_state['audio-prompt']}
       <div class="audio-context-prompt">
-        <p class="text-small audio-context-message">
-          this page makes sounds. <br />is that ok?
+        <p class="text-small">
+          this page <br />uses audio. <br />is that ok?
         </p>
-        <button class="emoji-small" onclick={handleAudioConfirm}>👍</button>
-        <button class="emoji-small" onclick={handleAudioDeny}>👎</button>
+        <div>
+          <button class="emoji-small" onclick={handleAudioConfirm}>👍</button>
+          <button class="emoji-small" onclick={handleAudioDeny}>👎</button>
+        </div>
       </div>
     {:else if app_state['audio-prompt-denied']}
       <div class="audio-prompt-denied">
-        <p class="text-small audio-denied-message">🤫👋</p>
+        <p class="emoji-small audio-denied-message">
+          <a href="https://wikipedia.org">👋</a>
+        </p>
       </div>
     {:else if app_state['audio-loading']}
       <div class="audio-loading">
@@ -493,13 +497,26 @@
   .audio-context-prompt,
   .audio-prompt-denied,
   .audio-loading {
-    margin: auto;
-    text-align: center;
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    inset: 0;
+    display: grid;
+    place-content: center;
     text-align: center;
+  }
+
+  .audio-context-prompt button {
+    display: inline-block;
+  }
+
+  .audio-context-prompt {
+    display: grid;
+    gap: 1em;
+  }
+
+  .audio-context-prompt div {
+    display: flex;
+    gap: 1em;
+    justify-content: center;
   }
 
   /* === html elements === */

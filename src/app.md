@@ -2,10 +2,8 @@
 
 ## v1.0
 
-- font loading screen
-- audio init screen
-- bye bye screen
-- audio (buffers) loading signal and screen
+- test font loading screen
+- test audio init screen
 
 - light compressor on main channel
 
