@@ -1,12 +1,12 @@
 <script lang="ts">
-  let { analysisValues, children } = $props<{
-    analysisValues: Float32Array | Float32Array[]
+  let { analysis_values, children } = $props<{
+    analysis_values: Float32Array | Float32Array[]
     children: any
   }>()
 
   let canvas: HTMLCanvasElement
 
-  const AMPLITUDE_THRESHOLD = 0.001 // Adjust this value to set sensitivity
+  const AMPLITUDE_THRESHOLD = 0.001
 
   function resizeCanvas() {
     if (!canvas) return
@@ -30,14 +30,14 @@
     ctx.strokeStyle = getComputedStyle(document.documentElement)
       .getPropertyValue('--user-colour')
       .trim()
-    ctx.lineWidth = dim * 0.04
+    ctx.lineWidth = dim * 0.08
 
-    if (!analysisValues || analysisValues.length === 0) return
+    if (!analysis_values || analysis_values.length === 0) return
 
     const values =
-      analysisValues instanceof Float32Array
-        ? analysisValues
-        : analysisValues[0]
+      analysis_values instanceof Float32Array
+        ? analysis_values
+        : analysis_values[0]
 
     const maxAmplitude = Math.max(
       ...Array.from(values).map((value) => Math.abs(value as number))

@@ -276,7 +276,7 @@
       </div>
 
       <div class="display">
-        <Display analysisValues={analysis_values}>
+        <Display {analysis_values}>
           {#if !selected_sample}
             <p class="sample-select-message text-xsmall">select a sample</p>
           {/if}
