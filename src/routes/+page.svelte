@@ -25,14 +25,17 @@
 
   // === AUDIO ================================
 
-  const routingConfig: ChainConfig = {
+  const chain_config: ChainConfig = $state({
     highpassFreq: 500,
     distortionInit: 0.2,
     distortionAmount: 0.9,
     analyserResolution: 256,
-  }
+    compressorThreshold: -24,
+    compressorAttack: 0.05,
+    compressorRelease: 0.15,
+  })
 
-  const sequencerConfig: SequencerConfig = {
+  const sequencer_config: SequencerConfig = {
     bpm: 120,
   }
 
@@ -40,8 +43,8 @@
 
   let audio_engine = $state(new AudioEngine())
   let audio_data_to_code = $state(new AudioDataToCode())
-  let audio_chain = $state(new AudioChain(routingConfig))
-  let audio_sequencer = $state(new AudioSequencer(sequencerConfig))
+  let audio_chain = $derived(new AudioChain(chain_config))
+  let audio_sequencer = $state(new AudioSequencer(sequencer_config))
 
   let SAMPLES: Sample[] = $state([])
   let selected_pack_index: number = $state(0)
@@ -53,7 +56,7 @@
 
   let main_highpassed: boolean = $state(false)
   let main_distorted: boolean = $state(false)
-  let bpm: number = $state(sequencerConfig.bpm)
+  let bpm: number = $state(sequencer_config.bpm)
 
   // === STATE ================================
   interface AppState {
@@ -288,6 +291,16 @@
   })
 </script>
 
+<!-- todo: fix this -->
+<input
+  type="range"
+  min="-24"
+  max="0"
+  step="6"
+  bind:value={chain_config.compressorThreshold}
+/>
+{chain_config.compressorThreshold}
+
 <main>
   <div class="app border">
     {#if app_state['fonts-loading']}
@@ -485,10 +498,6 @@
   .playing {
     color: var(--black-or-white);
     background-color: var(--user-colour);
-  }
-
-  .fonts-loading {
-    visibility: hidden;
   }
 
   .font-loading,

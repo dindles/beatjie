@@ -6,6 +6,9 @@ export interface ChainConfig {
   highpassFreq: number
   distortionInit: number
   distortionAmount: number
+  compressorThreshold: number
+  compressorAttack: number
+  compressorRelease: number
   analyserResolution: number
 }
 
@@ -13,6 +16,7 @@ export class AudioChain {
   private mainChannel: Tone.Channel
   private mainFilterHP: Tone.Filter
   private mainDistortion: Tone.Distortion
+  private mainCompressor: Tone.Compressor
   private mainAnalyser: Tone.Analyser
 
   constructor(private config: ChainConfig) {
@@ -20,11 +24,18 @@ export class AudioChain {
     this.mainFilterHP = new Tone.Filter(0, 'highpass')
     this.mainDistortion = new Tone.Distortion()
     this.mainDistortion.wet.value = config.distortionInit
+    this.mainCompressor = new Tone.Compressor()
+    this.mainCompressor.threshold.value = config.compressorThreshold
+    this.mainCompressor.ratio.value = 4
+    this.mainCompressor.attack.value = config.compressorAttack
+    this.mainCompressor.release.value = config.compressorRelease
+
     this.mainAnalyser = new Tone.Analyser('waveform', config.analyserResolution)
 
     this.mainChannel.chain(
       this.mainFilterHP,
       this.mainDistortion,
+      this.mainCompressor,
       this.mainAnalyser,
       Tone.getDestination()
     )

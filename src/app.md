@@ -2,11 +2,13 @@
 
 ## v1.0
 
+- fix compressor on main channel
+
+- audio classes should have fine-grained state
+
 - test font loading screen
 - to prevent FOUT, could have a conditional svelte wrapper {app_state['fonts-loading']} with visible: hidden
 - test audio init screen
-
-- light compressor on main channel
 
 - try bitcrusher on main channel instead of/alongside distortion
 
