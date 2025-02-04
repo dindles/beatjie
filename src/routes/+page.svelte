@@ -30,7 +30,7 @@
     distortionInit: 0.2,
     distortionAmount: 0.9,
     analyserResolution: 256,
-    compressorThreshold: -24,
+    compressorThreshold: -12,
     compressorAttack: 0.05,
     compressorRelease: 0.15,
   })
@@ -43,7 +43,7 @@
 
   let audio_engine = $state(new AudioEngine())
   let audio_data_to_code = $state(new AudioDataToCode())
-  let audio_chain = $derived(new AudioChain(chain_config))
+  let audio_chain = $state(new AudioChain(chain_config))
   let audio_sequencer = $state(new AudioSequencer(sequencer_config))
 
   let SAMPLES: Sample[] = $state([])
@@ -51,11 +51,10 @@
   let selected_sample: Sample | undefined = $state(undefined)
   let preview_samples_active: boolean = $state(true)
 
+  // todo: this should be in sequencer class
   let seq_is_playing = $state(false)
   let active_step_index: number = $state(0)
 
-  let main_highpassed: boolean = $state(false)
-  let main_distorted: boolean = $state(false)
   let bpm: number = $state(sequencer_config.bpm)
 
   // === STATE ================================
@@ -205,16 +204,6 @@
     audio_sequencer.setBPM(bpm)
   }
 
-  function toggleMainHighPass() {
-    main_highpassed = !main_highpassed
-    audio_chain.toggleMainHighPass(main_highpassed)
-  }
-
-  function toggleMainDistortion() {
-    main_distorted = !main_distorted
-    audio_chain.toggleMainDistortion(main_distorted)
-  }
-
   $effect(() => {
     if (app_state['audio-loading']) {
       audioDataToCode()
@@ -290,16 +279,6 @@
     return pitchIndex * 90 // 90 degrees per pitch
   })
 </script>
-
-<!-- todo: fix this -->
-<input
-  type="range"
-  min="-24"
-  max="0"
-  step="6"
-  bind:value={chain_config.compressorThreshold}
-/>
-{chain_config.compressorThreshold}
 
 <main>
   <div class="app border">
@@ -440,14 +419,18 @@
           <div class="main-settings">
             <button
               class="emoji-large"
-              onclick={toggleMainHighPass}
-              class:active={main_highpassed}>🫴</button
+              onclick={() =>
+                audio_chain.toggleMainHighPass(!audio_chain.mainHighPassed)}
+              class:active={audio_chain.mainHighPassed}>🫴</button
             >
             <button
-              class:active={main_distorted}
+              class:active={audio_chain.mainDistorted}
               class="emoji-large"
-              onclick={toggleMainDistortion}>💥</button
+              onclick={() =>
+                audio_chain.toggleMainDistortion(!audio_chain.mainDistorted)}
+              >💥</button
             >
+
             <div class="bpm-control">
               <BPMSelector bind:bpm {updateBPM} />
             </div>
