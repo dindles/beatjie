@@ -15,8 +15,11 @@ export interface ChainConfig {
 export class AudioChain {
   private mainChannel: Tone.Channel
   private mainFilterHP: Tone.Filter
+  mainHighPassed: boolean = $state(false)
   private mainDistortion: Tone.Distortion
+  mainDistorted: boolean = $state(false)
   private mainCompressor: Tone.Compressor
+  mainCompressed: boolean = $state(false)
   private mainAnalyser: Tone.Analyser
 
   constructor(private config: ChainConfig) {
@@ -49,14 +52,21 @@ export class AudioChain {
   }
 
   toggleMainHighPass(enabled: boolean) {
+    this.mainHighPassed = enabled
     this.mainFilterHP.frequency.value = enabled ? this.config.highpassFreq : 0
   }
 
   toggleMainDistortion(enabled: boolean) {
+    this.mainDistorted = enabled
     this.mainDistortion.wet.value = enabled
       ? this.config.distortionAmount
       : this.config.distortionInit
     this.mainChannel.volume.value = enabled ? -6 : 0
+  }
+
+  toggleCompressor(enabled: boolean) {
+    this.mainCompressed = enabled
+    this.mainCompressor.threshold.value = enabled ? -6 : -48
   }
 
   toggleSampleDelay(sample: Sample, enabled: boolean) {

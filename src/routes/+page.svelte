@@ -30,7 +30,7 @@
     distortionInit: 0.2,
     distortionAmount: 0.9,
     analyserResolution: 256,
-    compressorThreshold: -24,
+    compressorThreshold: -6,
     compressorAttack: 0.05,
     compressorRelease: 0.15,
   })
@@ -43,7 +43,7 @@
 
   let audio_engine = $state(new AudioEngine())
   let audio_data_to_code = $state(new AudioDataToCode())
-  let audio_chain = $derived(new AudioChain(chain_config))
+  let audio_chain = $state(new AudioChain(chain_config))
   let audio_sequencer = $state(new AudioSequencer(sequencer_config))
 
   let SAMPLES: Sample[] = $state([])
@@ -54,8 +54,6 @@
   let seq_is_playing = $state(false)
   let active_step_index: number = $state(0)
 
-  let main_highpassed: boolean = $state(false)
-  let main_distorted: boolean = $state(false)
   let bpm: number = $state(sequencer_config.bpm)
 
   // === STATE ================================
@@ -205,16 +203,6 @@
     audio_sequencer.setBPM(bpm)
   }
 
-  function toggleMainHighPass() {
-    main_highpassed = !main_highpassed
-    audio_chain.toggleMainHighPass(main_highpassed)
-  }
-
-  function toggleMainDistortion() {
-    main_distorted = !main_distorted
-    audio_chain.toggleMainDistortion(main_distorted)
-  }
-
   $effect(() => {
     if (app_state['audio-loading']) {
       audioDataToCode()
@@ -300,6 +288,9 @@
   bind:value={chain_config.compressorThreshold}
 />
 {chain_config.compressorThreshold}
+<button onclick={() => audio_chain.toggleCompressor(false)}
+  >toggle compressor</button
+>
 
 <main>
   <div class="app border">
