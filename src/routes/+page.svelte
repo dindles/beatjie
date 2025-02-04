@@ -30,11 +30,7 @@
     distortionInit: 0.2,
     distortionAmount: 0.9,
     analyserResolution: 256,
-<<<<<<< HEAD
-    compressorThreshold: -6,
-=======
     compressorThreshold: -12,
->>>>>>> 5699629337ccfdd8da4c171b63a52163e16dd43f
     compressorAttack: 0.05,
     compressorRelease: 0.15,
   })
@@ -284,22 +280,6 @@
   })
 </script>
 
-<<<<<<< HEAD
-<!-- todo: fix this -->
-<input
-  type="range"
-  min="-24"
-  max="0"
-  step="6"
-  bind:value={chain_config.compressorThreshold}
-/>
-{chain_config.compressorThreshold}
-<button onclick={() => audio_chain.toggleCompressor(false)}
-  >toggle compressor</button
->
-
-=======
->>>>>>> 5699629337ccfdd8da4c171b63a52163e16dd43f
 <main>
   <div class="app border">
     {#if app_state['fonts-loading']}
