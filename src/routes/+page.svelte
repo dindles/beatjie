@@ -30,7 +30,11 @@
     distortionInit: 0.2,
     distortionAmount: 0.9,
     analyserResolution: 256,
+<<<<<<< HEAD
     compressorThreshold: -6,
+=======
+    compressorThreshold: -12,
+>>>>>>> 5699629337ccfdd8da4c171b63a52163e16dd43f
     compressorAttack: 0.05,
     compressorRelease: 0.15,
   })
@@ -51,6 +55,7 @@
   let selected_sample: Sample | undefined = $state(undefined)
   let preview_samples_active: boolean = $state(true)
 
+  // todo: this should be in sequencer class
   let seq_is_playing = $state(false)
   let active_step_index: number = $state(0)
 
@@ -279,6 +284,7 @@
   })
 </script>
 
+<<<<<<< HEAD
 <!-- todo: fix this -->
 <input
   type="range"
@@ -292,6 +298,8 @@
   >toggle compressor</button
 >
 
+=======
+>>>>>>> 5699629337ccfdd8da4c171b63a52163e16dd43f
 <main>
   <div class="app border">
     {#if app_state['fonts-loading']}
@@ -431,14 +439,18 @@
           <div class="main-settings">
             <button
               class="emoji-large"
-              onclick={toggleMainHighPass}
-              class:active={main_highpassed}>🫴</button
+              onclick={() =>
+                audio_chain.toggleMainHighPass(!audio_chain.mainHighPassed)}
+              class:active={audio_chain.mainHighPassed}>🫴</button
             >
             <button
-              class:active={main_distorted}
+              class:active={audio_chain.mainDistorted}
               class="emoji-large"
-              onclick={toggleMainDistortion}>💥</button
+              onclick={() =>
+                audio_chain.toggleMainDistortion(!audio_chain.mainDistorted)}
+              >💥</button
             >
+
             <div class="bpm-control">
               <BPMSelector bind:bpm {updateBPM} />
             </div>
