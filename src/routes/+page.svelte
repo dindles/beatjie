@@ -33,6 +33,7 @@
     compressorThreshold: -12,
     compressorAttack: 0.05,
     compressorRelease: 0.15,
+    bitCrusherBits: 4,
   })
 
   const sequencer_config: SequencerConfig = {
@@ -41,10 +42,10 @@
 
   const pitches = ['C2', 'G2', 'C3', 'C1']
 
-  let audio_engine = $state(new AudioEngine())
-  let audio_data_to_code = $state(new AudioDataToCode())
-  let audio_chain = $state(new AudioChain(chain_config))
-  let audio_sequencer = $state(new AudioSequencer(sequencer_config))
+  let audio_engine = new AudioEngine()
+  let audio_data_to_code = new AudioDataToCode()
+  let audio_chain = new AudioChain(chain_config)
+  let audio_sequencer = new AudioSequencer(sequencer_config)
 
   let SAMPLES: Sample[] = $state([])
   let selected_pack_index: number = $state(0)

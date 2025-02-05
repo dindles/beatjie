@@ -1,4 +1,3 @@
-// audio-chain.svelte.ts
 import * as Tone from 'tone'
 import type { Sample } from '$lib/audio/audio-models.svelte'
 
@@ -10,6 +9,7 @@ export interface ChainConfig {
   compressorAttack: number
   compressorRelease: number
   analyserResolution: number
+  bitCrusherBits: number
 }
 
 export class AudioChain {
@@ -17,9 +17,9 @@ export class AudioChain {
   private mainFilterHP: Tone.Filter
   mainHighPassed: boolean = $state(false)
   private mainDistortion: Tone.Distortion
+  private mainBitCrusher: Tone.BitCrusher
   mainDistorted: boolean = $state(false)
   private mainCompressor: Tone.Compressor
-  mainCompressed: boolean = $state(false)
   private mainAnalyser: Tone.Analyser
 
   constructor(private config: ChainConfig) {
@@ -27,17 +27,19 @@ export class AudioChain {
     this.mainFilterHP = new Tone.Filter(0, 'highpass')
     this.mainDistortion = new Tone.Distortion()
     this.mainDistortion.wet.value = config.distortionInit
+    this.mainBitCrusher = new Tone.BitCrusher(config.bitCrusherBits)
+    this.mainBitCrusher.wet.value = 0
     this.mainCompressor = new Tone.Compressor()
     this.mainCompressor.threshold.value = config.compressorThreshold
-    this.mainCompressor.ratio.value = 4
+    this.mainCompressor.ratio.value = 2
     this.mainCompressor.attack.value = config.compressorAttack
     this.mainCompressor.release.value = config.compressorRelease
-
     this.mainAnalyser = new Tone.Analyser('waveform', config.analyserResolution)
 
     this.mainChannel.chain(
       this.mainFilterHP,
       this.mainDistortion,
+      this.mainBitCrusher,
       this.mainCompressor,
       this.mainAnalyser,
       Tone.getDestination()
@@ -61,12 +63,8 @@ export class AudioChain {
     this.mainDistortion.wet.value = enabled
       ? this.config.distortionAmount
       : this.config.distortionInit
+    this.mainBitCrusher.wet.value = enabled ? 0.2 : 0
     this.mainChannel.volume.value = enabled ? -6 : 0
-  }
-
-  toggleCompressor(enabled: boolean) {
-    this.mainCompressed = enabled
-    this.mainCompressor.threshold.value = enabled ? -6 : -48
   }
 
   toggleSampleDelay(sample: Sample, enabled: boolean) {
@@ -85,6 +83,7 @@ export class AudioChain {
     this.mainChannel.dispose()
     this.mainFilterHP.dispose()
     this.mainDistortion.dispose()
+    this.mainBitCrusher.dispose()
     this.mainAnalyser.dispose()
   }
 }
