@@ -2,14 +2,14 @@
 import * as Tone from 'tone'
 
 export class AudioEngine {
-  private initialised: boolean = $state(false)
+  #initialised: boolean = $state(false)
 
   async initAudioContext() {
-    if (this.initialised) return
+    if (this.#initialised) return
 
     try {
       await Tone.start()
-      this.initialised = true
+      this.#initialised = true
       console.log('audio context initialised')
     } catch (error) {
       console.error('failed to initialise audio context:', error)
@@ -17,11 +17,11 @@ export class AudioEngine {
   }
 
   dispose() {
-    if (!this.initialised) return
+    if (!this.#initialised) return
 
     try {
       Tone.getContext().dispose()
-      this.initialised = false
+      this.#initialised = false
       console.log('audio context disposed')
     } catch (error) {
       console.error('error disposing audio context:', error)
@@ -29,6 +29,6 @@ export class AudioEngine {
   }
 
   isInitialised(): boolean {
-    return this.initialised && Tone.getContext().state === 'running'
+    return this.#initialised && Tone.getContext().state === 'running'
   }
 }

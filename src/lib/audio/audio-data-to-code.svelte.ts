@@ -1,28 +1,29 @@
-// audio-data-to-code.svelte.ts
 import * as Tone from 'tone'
 import type { Packs } from '$lib/audio/audio-models.svelte'
 import { Sample } from '$lib/audio/audio-models.svelte'
 
 export class AudioDataToCode {
-  private buffers_are_loaded: boolean = $state(false)
+  #buffers_are_loaded: boolean = $state(false)
+  #error_state: string | null = $state(null)
 
-  // Convert pack data into Sample objects
   async processPacks(packs: Packs): Promise<Sample[]> {
     try {
       const buffers = await this.makeBuffers(packs)
       const samples = this.makeSamples(packs)
       const buffered_samples = this.setBuffers(samples, buffers)
-      this.buffers_are_loaded = true
+      this.#buffers_are_loaded = true
+      this.#error_state = null
       return buffered_samples
     } catch (error) {
+      this.#error_state =
+        error instanceof Error ? error.message : 'Unknown error'
       console.error('Error processing audio packs:', error)
       throw error
     }
   }
 
-  // Convert audio files into buffers
   private makeBuffers(packs: Packs): Promise<Tone.ToneAudioBuffers> {
-    const urls: { [key: string]: string } = {}
+    const urls: Record<string, string> = {}
     packs.forEach((pack) => {
       pack.samples.forEach((sample) => {
         urls[sample.id.toString()] = sample.url
@@ -57,7 +58,11 @@ export class AudioDataToCode {
     return samples
   }
 
-  areBuffersLoaded(): boolean {
-    return this.buffers_are_loaded
+  buffersAreLoaded(): boolean {
+    return this.#buffers_are_loaded
+  }
+
+  getErrorState(): string | null {
+    return this.#error_state
   }
 }

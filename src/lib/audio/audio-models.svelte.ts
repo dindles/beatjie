@@ -31,7 +31,7 @@ export class Sample {
   channel: Tone.Channel
   delay: Tone.FeedbackDelay
   delay_active: boolean = $state(false)
-  muted: boolean = $state(false)
+  is_muted: boolean = $state(false)
   sequence: Sequence = $state([])
   playing: boolean = $state(false)
 

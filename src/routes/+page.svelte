@@ -90,7 +90,7 @@
   })
 
   $effect(() => {
-    if (app_state['audio-loading'] && audio_data_to_code.areBuffersLoaded()) {
+    if (app_state['audio-loading'] && audio_data_to_code.buffersAreLoaded()) {
       app_state['audio-loading'] = false
       app_state['app-ready'] = true
     }
@@ -187,17 +187,17 @@
 
   function toggleSampleMute() {
     if (!selected_sample) return
-    audio_chain.toggleSampleMute(selected_sample, !selected_sample.muted)
-    selected_sample.muted = !selected_sample.muted
+    audio_chain.toggleSampleMute(selected_sample, !selected_sample.is_muted)
+    selected_sample.is_muted = !selected_sample.is_muted
   }
 
   function toggleSampleDelay() {
     if (!selected_sample) return
     audio_chain.toggleSampleDelay(
       selected_sample,
-      !selected_sample.delay_active
+      !selected_sample.delay_is_active
     )
-    selected_sample.delay_active = !selected_sample.delay_active
+    selected_sample.delay_is_active = !selected_sample.delay_is_active
   }
 
   function updateBPM(newBPM: number) {
@@ -371,7 +371,7 @@
       {#if selected_sample}
         <div class="selected-sample-settings">
           <button class="emoji-large" onclick={() => toggleSampleMute()}
-            >{selected_sample.muted ? '🔇' : '🔊'}</button
+            >{selected_sample.is_muted ? '🔇' : '🔊'}</button
           >
           <button
             class="selected-sample-pitch emoji-large"
@@ -384,7 +384,7 @@
           </button>
           <button
             class="emoji-large"
-            class:active={selected_sample.delay_active}
+            class:active={selected_sample.delay_is_active}
             onclick={toggleSampleDelay}
           >
             🪞
@@ -421,15 +421,16 @@
             <button
               class="emoji-large"
               onclick={() =>
-                audio_chain.toggleMainHighPass(!audio_chain.mainHighPassed)}
-              class:active={audio_chain.mainHighPassed}>🫴</button
+                audio_chain.toggleMainHighPass(!audio_chain.mainIsHighPassed())}
+              class:active={audio_chain.mainIsHighPassed()}>🫴</button
             >
             <button
-              class:active={audio_chain.mainDistorted}
+              class:active={audio_chain.mainIsDistorted()}
               class="emoji-large"
               onclick={() =>
-                audio_chain.toggleMainDistortion(!audio_chain.mainDistorted)}
-              >💥</button
+                audio_chain.toggleMainDistortion(
+                  !audio_chain.mainIsDistorted()
+                )}>💥</button
             >
 
             <div class="bpm-control">
