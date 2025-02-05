@@ -30,7 +30,7 @@ export class Sample {
   attack: number = $state(0.01)
   channel: Tone.Channel
   delay: Tone.FeedbackDelay
-  delay_active: boolean = $state(false)
+  delay_is_active: boolean = $state(false)
   is_muted: boolean = $state(false)
   sequence: Sequence = $state([])
   playing: boolean = $state(false)
