@@ -7,8 +7,8 @@ export interface SequencerConfig {
 }
 
 export class AudioSequencer {
-  private sequences: Tone.Sequence[] = []
-  private isPlaying: boolean = $state(false)
+  #sequences: Tone.Sequence[] = []
+  is_playing: boolean = $state(false)
 
   constructor(private config: SequencerConfig) {
     Tone.getTransport().bpm.value = config.bpm
@@ -16,9 +16,9 @@ export class AudioSequencer {
 
   makeSequences(samples: Sample[], onStep: (index: number) => void) {
     // Clean up any existing sequences
-    this.sequences.forEach((seq) => seq.dispose())
+    this.#sequences.forEach((seq) => seq.dispose())
 
-    this.sequences = samples.map((sample) => {
+    this.#sequences = samples.map((sample) => {
       return new Tone.Sequence(
         (time, step) => {
           onStep(step)
@@ -36,25 +36,25 @@ export class AudioSequencer {
   }
 
   async togglePlayback() {
-    if (!this.isPlaying) {
+    if (!this.is_playing) {
       await this.startPlayback()
     } else {
       this.stopPlayback()
     }
-    this.isPlaying = !this.isPlaying
+    this.is_playing = !this.is_playing
   }
 
   private async startPlayback() {
     if (Tone.getContext().state !== 'running') {
       await Tone.start()
     }
-    this.sequences.forEach((seq) => seq.start())
+    this.#sequences.forEach((seq) => seq.start())
     Tone.getTransport().start('+0.1')
   }
 
   private stopPlayback() {
     Tone.getTransport().stop()
-    this.sequences.forEach((seq) => {
+    this.#sequences.forEach((seq) => {
       seq.stop()
     })
   }
@@ -64,7 +64,7 @@ export class AudioSequencer {
   }
 
   dispose() {
-    this.sequences.forEach((seq) => seq.dispose())
-    this.sequences = []
+    this.#sequences.forEach((seq) => seq.dispose())
+    this.#sequences = []
   }
 }

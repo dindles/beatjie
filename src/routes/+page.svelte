@@ -7,10 +7,8 @@
   // Data
   import { packs } from '$lib/assets/audio/packs'
 
-  // Classes
+  // Audio types & classes
   import { Sample } from '$lib/audio/audio-models.svelte'
-
-  // Audio modules
   import { AudioEngine } from '$lib/audio/audio-engine.svelte'
   import { AudioDataToCode } from '$lib/audio/audio-data-to-code.svelte'
   import { AudioChain, type ChainConfig } from '$lib/audio/audio-chain.svelte'
@@ -26,14 +24,14 @@
   // === AUDIO ================================
 
   const chain_config: ChainConfig = $state({
-    highpassFreq: 500,
-    distortionInit: 0.2,
-    distortionAmount: 0.9,
-    analyserResolution: 256,
-    compressorThreshold: -12,
-    compressorAttack: 0.05,
-    compressorRelease: 0.15,
-    bitCrusherBits: 4,
+    highpass_freq: 500,
+    distortion_init: 0.2,
+    distortion_amount: 0.9,
+    analyser_resolution: 256,
+    compressor_threshold: -12,
+    compressor_attack: 0.05,
+    compressor_release: 0.15,
+    bit_crusher_bits: 4,
   })
 
   const sequencer_config: SequencerConfig = {
@@ -161,7 +159,7 @@
   async function toggleSeqPlayback() {
     active_step_index = 0
 
-    if (!seq_is_playing) {
+    if (!audio_sequencer.is_playing) {
       audio_sequencer.makeSequences(SAMPLES, (step) => {
         active_step_index = step
       })
@@ -170,7 +168,7 @@
       await audio_sequencer.togglePlayback()
     }
 
-    seq_is_playing = !seq_is_playing
+    audio_sequencer.is_playing = !audio_sequencer.is_playing
   }
 
   function loopSamplePitch() {
@@ -212,7 +210,6 @@
   })
 
   $effect(() => {
-    // Cleanup when component is destroyed
     return () => {
       audio_sequencer.dispose()
       audio_chain.dispose()
@@ -413,7 +410,7 @@
         <div class="transport-and-main-settings">
           <div class="transport">
             <button class="emoji-large" onclick={toggleSeqPlayback}
-              >{seq_is_playing ? '⏹' : '▶'}</button
+              >{audio_sequencer.is_playing ? '⏹' : '▶'}</button
             >
           </div>
 

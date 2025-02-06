@@ -4,8 +4,7 @@ import { Sample } from '$lib/audio/audio-models.svelte'
 
 export class AudioDataToCode {
   #buffers_are_loaded: boolean = $state(false)
-  #error_state: string | null = $state(null)
-
+  #error_state: string | null = null
   async processPacks(packs: Packs): Promise<Sample[]> {
     try {
       const buffers = await this.makeBuffers(packs)

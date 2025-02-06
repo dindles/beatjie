@@ -2,12 +2,20 @@
 
 ## v1.0
 
+- issues: high pass starting engaged, sequencer start stop is f'd
+
+- tidy modules. decide on sveltey $state classes vs explicit getters/setters
+- more distortion
+
+- componentisation
+
+- custom cursor
+
 - test font loading screen
 - to prevent FOUT, could have a conditional svelte wrapper {app_state['fonts-loading']} with visible: hidden
 - something going on with fonts loading - console
-- test audio init screen
 
-- try bitcrusher on main channel instead of/alongside distortion
+- test audio init screen
 
 - samples (they don't need names)
 

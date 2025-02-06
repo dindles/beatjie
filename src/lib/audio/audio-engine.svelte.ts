@@ -2,7 +2,7 @@
 import * as Tone from 'tone'
 
 export class AudioEngine {
-  #initialised: boolean = $state(false)
+  #initialised: boolean = false
 
   async initAudioContext() {
     if (this.#initialised) return
