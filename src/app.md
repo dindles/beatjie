@@ -2,10 +2,8 @@
 
 ## v1.0
 
-- issues: sequencer start stop is f'd
-
 - tidy modules. decide on sveltey $state classes vs explicit getters/setters
-- more distortion
+- more distortion?
 
 - componentisation
 
