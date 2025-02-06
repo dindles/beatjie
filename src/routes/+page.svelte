@@ -290,7 +290,7 @@
     {:else if app_state['audio-prompt-denied']}
       <div class="audio-prompt-denied">
         <p class="emoji-small audio-denied-message">
-          <a href="https://wikipedia.org">👋</a>
+          <a href="https://wikipedia.org/wiki/Special:Random">👋</a>
         </p>
       </div>
     {:else if app_state['audio-loading']}
