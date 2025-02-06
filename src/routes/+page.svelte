@@ -157,18 +157,7 @@
   }
 
   async function toggleSeqPlayback() {
-    active_step_index = 0
-
-    if (!audio_sequencer.is_playing) {
-      audio_sequencer.makeSequences(SAMPLES, (step) => {
-        active_step_index = step
-      })
-      await audio_sequencer.togglePlayback()
-    } else {
-      await audio_sequencer.togglePlayback()
-    }
-
-    audio_sequencer.is_playing = !audio_sequencer.is_playing
+    await audio_sequencer.togglePlayback()
   }
 
   function loopSamplePitch() {
@@ -207,6 +196,10 @@
     if (app_state['audio-loading']) {
       audioDataToCode()
     }
+  })
+
+  $effect(() => {
+    audio_sequencer.updateSequences(SAMPLES)
   })
 
   $effect(() => {
@@ -394,7 +387,7 @@
               {#each selected_sample.sequence as _, index}
                 <button
                   class="step border emoji-sequencer"
-                  class:active={index === active_step_index}
+                  class:active={index === audio_sequencer.active_step_index}
                   onclick={() => handleSeqClick(sample, index)}
                   onkeydown={() => handleSeqClick(sample, index)}
                 >

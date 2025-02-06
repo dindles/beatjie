@@ -15,14 +15,13 @@ export class AudioSequencer {
     Tone.getTransport().bpm.value = config.bpm
   }
 
-  makeSequences(samples: Sample[], onStep: (index: number) => void) {
-    // Clean up any existing sequences
+  updateSequences(samples: Sample[]) {
     this.#sequences.forEach((seq) => seq.dispose())
 
     this.#sequences = samples.map((sample) => {
-      return new Tone.Sequence(
+      const seq = new Tone.Sequence(
         (time, step) => {
-          onStep(step)
+          this.active_step_index = step
           if (sample.sequence[step]) {
             sample.playing = true
             sample.play(time)
@@ -33,18 +32,23 @@ export class AudioSequencer {
         [...Array(16).keys()],
         '16n'
       )
+
+      if (this.is_playing) {
+        seq.start()
+      }
+      return seq
     })
   }
 
   async togglePlayback() {
     if (!this.is_playing) {
+      this.active_step_index = 0
       await this.startPlayback()
     } else {
       this.stopPlayback()
     }
     this.is_playing = !this.is_playing
   }
-
   private async startPlayback() {
     if (Tone.getContext().state !== 'running') {
       await Tone.start()
