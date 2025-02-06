@@ -7,7 +7,7 @@ export interface SequencerConfig {
 }
 
 export class AudioSequencer {
-  #sequences: Tone.Sequence[] = []
+  sequences: Tone.Sequence[] = []
   is_playing: boolean = $state(false)
   active_step_index: number = $state(0)
 
@@ -15,10 +15,10 @@ export class AudioSequencer {
     Tone.getTransport().bpm.value = config.bpm
   }
 
-  updateSequences(samples: Sample[]) {
-    this.#sequences.forEach((seq) => seq.dispose())
+  makeSequences(samples: Sample[]) {
+    this.sequences.forEach((seq) => seq.dispose())
 
-    this.#sequences = samples.map((sample) => {
+    this.sequences = samples.map((sample) => {
       const seq = new Tone.Sequence(
         (time, step) => {
           this.active_step_index = step
@@ -29,8 +29,8 @@ export class AudioSequencer {
             sample.playing = false
           }
         },
-        //this syntax creates an iterator and spreads the index values
-        // across the Array we just made. basically an easy way to assign
+        //this syntax creates an empty array and spreads the index values
+        // across a new array. basically an easy way to assign
         // sequential numbers to the positions of an array.
         [...Array(16).keys()],
         '16n'
@@ -56,13 +56,13 @@ export class AudioSequencer {
     if (Tone.getContext().state !== 'running') {
       await Tone.start()
     }
-    this.#sequences.forEach((seq) => seq.start())
+    this.sequences.forEach((seq) => seq.start())
     Tone.getTransport().start('+0.1')
   }
 
   private stopPlayback() {
     Tone.getTransport().stop()
-    this.#sequences.forEach((seq) => {
+    this.sequences.forEach((seq) => {
       seq.stop()
     })
   }
@@ -72,7 +72,7 @@ export class AudioSequencer {
   }
 
   dispose() {
-    this.#sequences.forEach((seq) => seq.dispose())
-    this.#sequences = []
+    this.sequences.forEach((seq) => seq.dispose())
+    this.sequences = []
   }
 }

@@ -110,6 +110,7 @@
   async function audioDataToCode() {
     SAMPLES = await audio_data_to_code.processPacks(packs)
     audio_chain.setChains(SAMPLES)
+    audio_sequencer.makeSequences(SAMPLES)
   }
 
   function selectPack(direction: 'prev' | 'next' | 'random') {
@@ -154,6 +155,8 @@
 
   function handleSeqClick(sample: Sample, step_index: number) {
     sample.sequence[step_index] = !sample.sequence[step_index]
+    console.log(sample.sequence)
+    console.log(audio_sequencer.sequences)
   }
 
   async function toggleSeqPlayback() {
@@ -196,10 +199,6 @@
     if (app_state['audio-loading']) {
       audioDataToCode()
     }
-  })
-
-  $effect(() => {
-    audio_sequencer.updateSequences(SAMPLES)
   })
 
   $effect(() => {
