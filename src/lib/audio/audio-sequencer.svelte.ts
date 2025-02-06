@@ -3,7 +3,7 @@ import * as Tone from 'tone'
 import type { Sample } from '$lib/audio/audio-models.svelte'
 
 export interface SequencerConfig {
-  bpm: number
+  readonly bpm: number
 }
 
 export class AudioSequencer {
@@ -29,6 +29,9 @@ export class AudioSequencer {
             sample.playing = false
           }
         },
+        //this syntax creates an iterator and spreads the index values
+        // across the Array we just made. basically an easy way to assign
+        // sequential numbers to the positions of an array.
         [...Array(16).keys()],
         '16n'
       )
