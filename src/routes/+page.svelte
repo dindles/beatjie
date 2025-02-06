@@ -1,3 +1,5 @@
+<!-- +page.svelte -->
+
 <script lang="ts">
   // === IMPORTS ================================
 
@@ -51,9 +53,7 @@
   let preview_samples_active: boolean = $state(true)
 
   // todo: this should be in sequencer class
-  let seq_is_playing = $state(false)
   let active_step_index: number = $state(0)
-
   let bpm: number = $state(sequencer_config.bpm)
 
   // === STATE ================================
@@ -409,7 +409,7 @@
 
         <div class="transport-and-main-settings">
           <div class="transport">
-            <button class="emoji-large" onclick={toggleSeqPlayback}
+            <button class="emoji-large" onclick={() => toggleSeqPlayback()}
               >{audio_sequencer.is_playing ? '⏹' : '▶'}</button
             >
           </div>
@@ -418,16 +418,15 @@
             <button
               class="emoji-large"
               onclick={() =>
-                audio_chain.toggleMainHighPass(!audio_chain.mainIsHighPassed())}
-              class:active={audio_chain.mainIsHighPassed()}>🫴</button
+                audio_chain.toggleMainHighPass(!audio_chain.mainIsHighPassed)}
+              class:active={audio_chain.mainIsHighPassed}>🫴</button
             >
             <button
-              class:active={audio_chain.mainIsDistorted()}
+              class:active={audio_chain.mainIsDistorted}
               class="emoji-large"
               onclick={() =>
-                audio_chain.toggleMainDistortion(
-                  !audio_chain.mainIsDistorted()
-                )}>💥</button
+                audio_chain.toggleMainDistortion(!audio_chain.mainIsDistorted)}
+              >💥</button
             >
 
             <div class="bpm-control">

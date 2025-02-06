@@ -15,16 +15,16 @@ export interface ChainConfig {
 export class AudioChain {
   #mainChannel: Tone.Channel
   #mainFilterHP: Tone.Filter
-  #mainHighPassed: boolean = $state(false)
+  mainIsHighPassed: boolean = $state(false)
   #mainDistortion: Tone.Distortion
   #mainBitCrusher: Tone.BitCrusher
-  #mainDistorted: boolean = $state(false)
+  mainIsDistorted: boolean = $state(false)
   #mainCompressor: Tone.Compressor
   #mainAnalyser: Tone.Analyser
 
   constructor(private config: ChainConfig) {
     this.#mainChannel = new Tone.Channel(0)
-    this.#mainFilterHP = new Tone.Filter(config.highpass_freq, 'highpass')
+    this.#mainFilterHP = new Tone.Filter(0, 'highpass')
     this.#mainDistortion = new Tone.Distortion()
     this.#mainDistortion.wet.value = config.distortion_init
     this.#mainBitCrusher = new Tone.BitCrusher(config.bit_crusher_bits)
@@ -57,25 +57,17 @@ export class AudioChain {
   }
 
   toggleMainHighPass(enabled: boolean) {
-    this.#mainHighPassed = enabled
+    this.mainIsHighPassed = enabled
     this.#mainFilterHP.frequency.value = enabled ? this.config.highpass_freq : 0
   }
 
-  mainIsHighPassed(): boolean {
-    return this.#mainHighPassed
-  }
-
   toggleMainDistortion(enabled: boolean) {
-    this.#mainDistorted = enabled
+    this.mainIsDistorted = enabled
     this.#mainDistortion.wet.value = enabled
       ? this.config.distortion_amount
       : this.config.distortion_init
     this.#mainBitCrusher.wet.value = enabled ? 0.2 : 0
     this.#mainChannel.volume.value = enabled ? -6 : 0
-  }
-
-  mainIsDistorted(): boolean {
-    return this.#mainDistorted
   }
 
   toggleSampleDelay(sample: Sample, enabled: boolean) {
