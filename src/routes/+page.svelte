@@ -20,8 +20,10 @@
   } from '$lib/audio/audio-sequencer.svelte'
 
   // Svelte components
-  import BPMSelector from '$lib/components/bpm-selector.svelte'
+  import FontLoadingMessage from '$lib/components/font-loading-message.svelte'
+  import AudioContextPrompt from '$lib/components/audio-context-prompt.svelte'
   import Display from '$lib/components/display.svelte'
+  import BPMSelector from '$lib/components/bpm-selector.svelte'
 
   // === AUDIO ================================
 
@@ -271,19 +273,9 @@
 <main>
   <div class="app border">
     {#if app_state['fonts-loading']}
-      <div class="font-loading">
-        <p class="text-small fonts-loading-message">loading fonts...</p>
-      </div>
+      <FontLoadingMessage />
     {:else if app_state['audio-prompt']}
-      <div class="audio-context-prompt">
-        <p class="text-small">
-          this page <br />uses audio. <br />is that ok?
-        </p>
-        <div>
-          <button class="emoji-small" onclick={handleAudioConfirm}>👍</button>
-          <button class="emoji-small" onclick={handleAudioDeny}>👎</button>
-        </div>
-      </div>
+      <AudioContextPrompt {handleAudioConfirm} {handleAudioDeny} />
     {:else if app_state['audio-prompt-denied']}
       <div class="audio-prompt-denied">
         <p class="emoji-small audio-denied-message">
@@ -431,48 +423,25 @@
 
 <style>
   /* === utilities === */
-  .border {
-    border: var(--border-weight) solid var(--user-colour);
-    border-radius: var(--border-radius);
-    color: var(--user-colour);
-    background-color: var(--black-or-white);
-  }
-
-  .emoji-large {
-    font-family: var(--font-emoji);
-    font-size: var(--emoji-large);
-  }
-
-  .emoji-small {
-    font-family: var(--font-emoji);
-    font-size: var(--emoji-small);
-    font-weight: 900;
-  }
 
   .emoji-sequencer {
     font-family: var(--font-emoji);
     font-size: var(--emoji-sequencer);
   }
 
-  .text-small {
-    font-family: var(--font-text);
-    font-size: var(--text-small);
-  }
-
-  .text-xsmall {
-    font-family: var(--font-text);
-    font-size: var(--text-xsmall);
-  }
-
   /* === state === */
+
   .active,
   .playing {
     color: var(--black-or-white);
     background-color: var(--user-colour);
   }
 
-  .font-loading,
-  .audio-context-prompt,
+  .active.playing {
+    color: var(--user-colour);
+    background-color: var(--black-or-white);
+  }
+
   .audio-prompt-denied,
   .audio-loading {
     position: absolute;
@@ -480,34 +449,6 @@
     display: grid;
     place-content: center;
     text-align: center;
-  }
-
-  .audio-context-prompt button {
-    display: inline-block;
-  }
-
-  .audio-context-prompt {
-    display: grid;
-    gap: 1em;
-  }
-
-  .audio-context-prompt div {
-    display: flex;
-    gap: 1em;
-    justify-content: center;
-  }
-
-  /* === html elements === */
-  button {
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    padding: 0;
-    aspect-ratio: 1;
-    display: grid;
-    place-items: center;
-    color: var(--user-colour);
-    background-color: var(--black-or-white);
   }
 
   /* === layout === */

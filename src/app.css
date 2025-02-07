@@ -64,3 +64,45 @@ dt,
 blockquote {
   overflow-wrap: break-word;
 }
+
+/* Global class and element styles */
+
+button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  color: var(--user-colour);
+  background-color: var(--black-or-white);
+}
+
+.border {
+  border: var(--border-weight) solid var(--user-colour);
+  border-radius: var(--border-radius);
+  color: var(--user-colour);
+  background-color: var(--black-or-white);
+}
+
+.emoji-large {
+  font-family: var(--font-emoji);
+  font-size: var(--emoji-large);
+}
+
+.emoji-small {
+  font-family: var(--font-emoji);
+  font-size: var(--emoji-small);
+  font-weight: 900;
+}
+
+.text-small {
+  font-family: var(--font-text);
+  font-size: var(--text-small);
+}
+
+.text-xsmall {
+  font-family: var(--font-text);
+  font-size: var(--text-xsmall);
+}
