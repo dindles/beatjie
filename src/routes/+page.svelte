@@ -155,8 +155,6 @@
 
   function handleSeqClick(sample: Sample, step_index: number) {
     sample.sequence[step_index] = !sample.sequence[step_index]
-    console.log(sample.sequence)
-    console.log(audio_sequencer.sequences)
   }
 
   async function toggleSeqPlayback() {
@@ -227,11 +225,11 @@
   })
 
   // Colour
-  let user_lightness = $state(0.8) //0-100%
-  const chroma = 0.2 //0-0.4
+  let user_lightness = $state(0.8) //0-1
+  const CHROMA = 0.2 //0-0.4
   let user_hue = $state(250) //0-360
 
-  let user_colour = $derived(`oklch(${user_lightness} ${chroma} ${user_hue})`)
+  let user_colour = $derived(`oklch(${user_lightness} ${CHROMA} ${user_hue})`)
 
   let black_or_white = $state('oklch(0 0 0)') // black
 
@@ -243,7 +241,7 @@
   }
 
   function changeLightness() {
-    user_lightness = user_lightness === 0.8 ? 0.4 : 0.8
+    user_lightness = user_lightness === 0.8 ? 0.5 : 0.8
   }
 
   function switchLightDark() {
@@ -266,7 +264,7 @@
   let pitch_emoji_rotation = $derived.by(() => {
     if (!selected_sample) return 0
     const pitchIndex = pitches.indexOf(selected_sample.pitch)
-    return pitchIndex * 90 // 90 degrees per pitch
+    return pitchIndex * 90
   })
 </script>
 

@@ -1,8 +1,8 @@
 @font-face {
   font-family: 'Noto Emoji';
   font-style: normal;
-  font-weight: 500;
-  src: url('/fonts/NotoEmoji-VariableFont_wght.ttf');
+  font-weight: 700;
+  src: url('/fonts/NotoEmoji-VariableFont_wght.ttf') format('truetype');
   font-display: block;
 }
 
@@ -10,6 +10,6 @@
   font-family: 'Zen Dots';
   font-style: normal;
   font-weight: 500;
-  src: url('/fonts/ZenDots-Regular.ttf');
+  src: url('/fonts/ZenDots-Regular.ttf') format('truetype');
   font-display: block;
 }

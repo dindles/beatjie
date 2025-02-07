@@ -2,20 +2,16 @@
 
 ## v1.0
 
-- tidy modules. decide on sveltey $state classes vs explicit getters/setters
-- more distortion?
-
 - componentisation
 
 - custom cursor
 
-- test font loading screen
-- to prevent FOUT, could have a conditional svelte wrapper {app_state['fonts-loading']} with visible: hidden
-- something going on with fonts loading - console
-
 - test audio init screen
+- test font loading screen
 
 - samples (they don't need names)
+
+- font subsetting? https://fontfaceobserver.com/?
 
 - todos and console.logs
 
@@ -24,8 +20,6 @@
 - default pattern, and save patterns (to local storage)
 
 - share patterns
-
-- componentisation
 
 - keyboard control
 
