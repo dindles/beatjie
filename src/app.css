@@ -4,8 +4,8 @@
   --border-radius: 8px;
   --border-weight: 5px;
 
-  --user-colour: oklch(0.4 0.2 0);
-  --black-or-white: oklch(1 0 0);
+  --user-colour: oklch(0.8 0.2 250);
+  --black-or-white: oklch(0 0 0);
 
   --font-emoji: 'Noto Emoji';
   --font-text: 'Zen Dots', sans-serif;

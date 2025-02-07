@@ -24,10 +24,13 @@
   import AudioContextPrompt from '$lib/components/audio-context-prompt.svelte'
   import AudioPromptDenied from '$lib/components/audio-prompt-denied.svelte'
   import AudioLoadingMessage from '$lib/components/audio-loading-message.svelte'
+  import ColourSelector from '$lib/components/colour-selector.svelte'
   import Display from '$lib/components/display.svelte'
   import BPMSelector from '$lib/components/bpm-selector.svelte'
 
-  // === AUDIO ================================
+  // === BINDABLES ============================
+
+  // === AUDIO
 
   const chain_config: ChainConfig = $state({
     highpass_freq: 500,
@@ -228,42 +231,7 @@
     }
   })
 
-  // Colour
-  let user_lightness = $state(0.8) //0-1
-  const CHROMA = 0.2 //0-0.4
-  let user_hue = $state(250) //0-360
-
-  let user_colour = $derived(`oklch(${user_lightness} ${CHROMA} ${user_hue})`)
-
-  let black_or_white = $state('oklch(0 0 0)') // black
-
-  function changeHue() {
-    user_hue = user_hue + 50
-    if (user_hue > 300) {
-      user_hue = 50
-    }
-  }
-
-  function changeLightness() {
-    user_lightness = user_lightness === 0.8 ? 0.5 : 0.8
-  }
-
-  function switchLightDark() {
-    black_or_white =
-      black_or_white === 'oklch(1 0 0)' ? 'oklch(0 0 0)' : 'oklch(1 0 0)'
-  }
-
-  // sets css variables (defined in app.css)
-  $effect(() => {
-    document.documentElement.style.setProperty('--user-colour', user_colour)
-    document.documentElement.style.setProperty(
-      '--black-or-white',
-      black_or_white
-    )
-  })
-
   // css animations
-  let hue_emoji_rotation = $state(0)
 
   let pitch_emoji_rotation = $derived.by(() => {
     if (!selected_sample) return 0
@@ -283,33 +251,13 @@
     {:else if app_state['audio-loading']}
       <AudioLoadingMessage />
     {:else if app_state['app-ready']}
-      <div class="color-controls">
-        <button
-          class="hue-control emoji-small"
-          style="transform: rotate({hue_emoji_rotation}deg)"
-          onclick={() => {
-            hue_emoji_rotation += 90
-            changeHue()
-          }}>🎨</button
-        >
-        <button
-          class="light-dark emoji-small"
-          onclick={() => switchLightDark()}
-        >
-          {black_or_white === 'oklch(1 0 0)' ? '🌞' : '🌛'}
-        </button>
-        <button class="emoji-small" onclick={() => changeLightness()}
-          >{user_lightness === 0.8 ? '🤩' : '😎'}</button
-        >
-      </div>
+      <ColourSelector />
 
-      <div class="display">
-        <Display {analysis_values}>
-          {#if !selected_sample}
-            <p class="sample-select-message text-xsmall">select a sample</p>
-          {/if}
-        </Display>
-      </div>
+      <Display {analysis_values}>
+        {#if !selected_sample}
+          <p class="sample-select-message text-xsmall">select a sample</p>
+        {/if}
+      </Display>
 
       <div class="packs">
         <div class="pack-select">
@@ -450,16 +398,6 @@
     overflow: hidden;
     padding: 0.4%;
     grid-template-rows: auto auto 1fr auto auto;
-  }
-
-  .color-controls {
-    display: flex;
-    justify-content: center;
-    gap: 10vmin;
-  }
-
-  .hue-control {
-    transition: transform 0.3s ease;
   }
 
   .display {

@@ -19,6 +19,8 @@
 
 - default pattern, and save patterns (to local storage)
 
+- color persists between sessions
+
 - share patterns
 
 - keyboard control
