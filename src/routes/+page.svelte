@@ -22,6 +22,8 @@
   // Svelte components
   import FontLoadingMessage from '$lib/components/font-loading-message.svelte'
   import AudioContextPrompt from '$lib/components/audio-context-prompt.svelte'
+  import AudioPromptDenied from '$lib/components/audio-prompt-denied.svelte'
+  import AudioLoadingMessage from '$lib/components/audio-loading-message.svelte'
   import Display from '$lib/components/display.svelte'
   import BPMSelector from '$lib/components/bpm-selector.svelte'
 
@@ -277,15 +279,9 @@
     {:else if app_state['audio-prompt']}
       <AudioContextPrompt {handleAudioConfirm} {handleAudioDeny} />
     {:else if app_state['audio-prompt-denied']}
-      <div class="audio-prompt-denied">
-        <p class="emoji-small audio-denied-message">
-          <a href="https://wikipedia.org/wiki/Special:Random">👋</a>
-        </p>
-      </div>
+      <AudioPromptDenied />
     {:else if app_state['audio-loading']}
-      <div class="audio-loading">
-        <p class="text-small audio-loading-message">loading audio...</p>
-      </div>
+      <AudioLoadingMessage />
     {:else if app_state['app-ready']}
       <div class="color-controls">
         <button
@@ -440,15 +436,6 @@
   .active.playing {
     color: var(--user-colour);
     background-color: var(--black-or-white);
-  }
-
-  .audio-prompt-denied,
-  .audio-loading {
-    position: absolute;
-    inset: 0;
-    display: grid;
-    place-content: center;
-    text-align: center;
   }
 
   /* === layout === */
