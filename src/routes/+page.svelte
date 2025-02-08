@@ -7,7 +7,7 @@
   import * as Tone from 'tone'
 
   // === Data
-  import { packs } from '$lib/assets/audio/packs'
+  import { packs } from '$lib/audio/audio-packs'
 
   // === Audio types & classes
   import { Sample } from '$lib/audio/audio-models.svelte'

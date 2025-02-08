@@ -38,7 +38,6 @@ export class AudioDataToCode {
           new Sample(
             sample.id,
             pack.name,
-            sample.name,
             sample.emoji,
             sample.url,
             sample.pitch

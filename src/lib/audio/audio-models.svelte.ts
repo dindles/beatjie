@@ -1,10 +1,11 @@
+// audio-models.svelte.ts
+
 import * as Tone from 'tone'
 import type { Note } from 'tone/build/esm/core/type/NoteUnits'
 import type { Time } from 'tone/build/esm/core/type/Units'
 
 interface SampleHeader {
   readonly id: number
-  readonly name: string
   readonly emoji: string
   readonly pitch: Note
   readonly url: string
@@ -41,7 +42,6 @@ export class Sample {
 
   readonly id: number
   readonly pack: string
-  readonly name: string
   readonly emoji: string
   readonly url: string
 
@@ -56,14 +56,12 @@ export class Sample {
   constructor(
     id: number,
     pack: string,
-    name: string,
     emoji: string,
     url: string,
     pitch: Note
   ) {
     this.id = id
     this.pack = pack
-    this.name = name
     this.emoji = emoji
     this.url = url
     this.pitch = pitch
