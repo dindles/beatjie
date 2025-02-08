@@ -2,6 +2,8 @@
 
 ## v1.0
 
+- pack squares – selected and playing
+
 - componentisation
 
 - custom cursor
@@ -9,7 +11,7 @@
 - test audio init screen
 - test font loading screen
 
-- samples (they don't need names)
+- samples – drums, vox, inst, fx?
 
 - font subsetting? https://fontfaceobserver.com/?
 
