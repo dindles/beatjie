@@ -1,7 +1,7 @@
 // audio-packs.ts
 import type { Packs } from '$lib/audio/audio-models.svelte'
 
-const audio_path = 'static/audio'
+const audio_path = '/audio'
 
 export const packs: Packs = [
   {
