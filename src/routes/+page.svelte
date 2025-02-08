@@ -1,15 +1,15 @@
 <!-- +page.svelte -->
 
 <script lang="ts">
-  // === IMPORTS ================================
+  // === IMPORTS ==============================
 
-  // Tone
+  // === Tone
   import * as Tone from 'tone'
 
-  // Data
+  // === Data
   import { packs } from '$lib/assets/audio/packs'
 
-  // Audio types & classes
+  // === Audio types & classes
   import { Sample } from '$lib/audio/audio-models.svelte'
   import { AudioEngine } from '$lib/audio/audio-engine.svelte'
   import { AudioDataToCode } from '$lib/audio/audio-data-to-code.svelte'
@@ -19,7 +19,7 @@
     type SequencerConfig,
   } from '$lib/audio/audio-sequencer.svelte'
 
-  // Svelte components
+  // === Svelte components
   import FontLoadingMessage from '$lib/components/font-loading-message.svelte'
   import AudioContextPrompt from '$lib/components/audio-context-prompt.svelte'
   import AudioPromptDenied from '$lib/components/audio-prompt-denied.svelte'
@@ -30,7 +30,7 @@
 
   // === BINDABLES ============================
 
-  // === AUDIO
+  // === Audio
 
   const chain_config: ChainConfig = $state({
     highpass_freq: 500,
@@ -60,10 +60,9 @@
   let preview_samples_active: boolean = $state(true)
 
   // todo: this should be in sequencer class
-  let active_step_index: number = $state(0)
   let bpm: number = $state(sequencer_config.bpm)
 
-  // === STATE ================================
+  // === State
   interface AppState {
     'fonts-loading': boolean
     'audio-prompt': boolean
@@ -82,7 +81,7 @@
 
   // === FUNCTIONS ================================
 
-  // State
+  // === State
 
   $effect(() => {
     if (typeof document !== 'undefined') {
