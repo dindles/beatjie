@@ -8,6 +8,8 @@
 
 - custom cursor
 
+- disco ball swaps between themes on the beat
+
 - font subsetting? https://fontfaceobserver.com/?
 
 - todos and console.logs

@@ -101,7 +101,6 @@
   })
 
   // Audio
-
   async function handleAudioConfirm() {
     await audio_engine.initAudioContext()
     app_state['audio-prompt'] = false
@@ -393,7 +392,7 @@
   }
 
   .app {
-    aspect-ratio: 4/6.9;
+    /* aspect-ratio: 4/6.9; */
     overflow: hidden;
     padding: 0.4%;
     grid-template-rows: auto auto 1fr auto auto;
