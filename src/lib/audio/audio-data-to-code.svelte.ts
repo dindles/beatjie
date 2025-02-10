@@ -34,14 +34,7 @@ export class AudioDataToCode {
   private makeSamples(packs: Packs): Sample[] {
     return packs.flatMap((pack) =>
       pack.samples.map(
-        (sample) =>
-          new Sample(
-            sample.id,
-            pack.name,
-            sample.emoji,
-            sample.url,
-            sample.pitch
-          )
+        (sample) => new Sample(sample.id, pack.name, sample.emoji, sample.url)
       )
     )
   }

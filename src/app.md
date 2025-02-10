@@ -8,11 +8,6 @@
 
 - custom cursor
 
-- test audio init screen
-- test font loading screen
-
-- samples – drums, vox, inst, fx?
-
 - font subsetting? https://fontfaceobserver.com/?
 
 - todos and console.logs
@@ -41,3 +36,7 @@
 ## 3.0
 
 - update with new packs
+
+## 4.0
+
+- upload your bars, share them with others

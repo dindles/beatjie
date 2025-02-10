@@ -399,10 +399,6 @@
     grid-template-rows: auto auto 1fr auto auto;
   }
 
-  .display {
-    position: relative;
-  }
-
   .sample-select-message {
     font-size: var(--text-display);
     width: 100%;

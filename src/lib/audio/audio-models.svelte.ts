@@ -7,7 +7,6 @@ import type { Time } from 'tone/build/esm/core/type/Units'
 interface SampleHeader {
   readonly id: number
   readonly emoji: string
-  readonly pitch: Note
   readonly url: string
 }
 
@@ -53,18 +52,11 @@ export class Sample {
   sequence: Sequence = $state(new Array(DEFAULT_SEQUENCE_LENGTH).fill(false))
   playing: boolean = $state(false)
 
-  constructor(
-    id: number,
-    pack: string,
-    emoji: string,
-    url: string,
-    pitch: Note
-  ) {
+  constructor(id: number, pack: string, emoji: string, url: string) {
     this.id = id
     this.pack = pack
     this.emoji = emoji
     this.url = url
-    this.pitch = pitch
 
     this.#sampler = new Tone.Sampler()
     this.#channel = new Tone.Channel().set({ volume: this.volume })
