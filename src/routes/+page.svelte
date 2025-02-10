@@ -263,9 +263,17 @@
             class="pack-select-prev emoji-small"
             onclick={() => selectPack('prev')}>👈</button
           >
-          <p class="selected-pack text-small">
-            {packs[selected_pack_index].name}
-          </p>
+          <div class="pack-indicators">
+            {#each packs as pack, index}
+              <div
+                class="pack-indicator border"
+                class:active={index === selected_pack_index}
+                class:playing={SAMPLES.some(
+                  (s) => s.pack === pack.name && s.playing
+                )}
+              ></div>
+            {/each}
+          </div>
           <button
             class="pack-select-next emoji-small"
             onclick={() => selectPack('next')}>👉</button
@@ -392,7 +400,7 @@
   }
 
   .app {
-    /* aspect-ratio: 4/6.9; */
+    aspect-ratio: 4/6.9;
     overflow: hidden;
     padding: 0.4%;
     grid-template-rows: auto auto 1fr auto auto;
@@ -412,6 +420,23 @@
     display: grid;
     grid-template-columns: auto 1fr auto;
     place-items: center;
+    gap: var(--spacing);
+  }
+
+  .pack-indicators {
+    display: flex;
+    gap: var(--spacing);
+    justify-content: center;
+  }
+
+  .pack-indicator {
+    aspect-ratio: 1;
+    height: 1.2em;
+    transition: all 0.1s ease;
+  }
+
+  .pack-indicator.playing {
+    transform: scale(1.1);
   }
 
   .selected-pack {
