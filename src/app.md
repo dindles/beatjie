@@ -2,7 +2,7 @@
 
 ## v1.0
 
-- pack squares – selected and playing
+- samples: 909 kick louder, cello quieter
 
 - componentisation
 
