@@ -8,7 +8,7 @@
 
 - custom cursor
 
-- disco ball swaps between themes on the beat
+- help page
 
 - font subsetting? https://fontfaceobserver.com/?
 

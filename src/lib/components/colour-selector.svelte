@@ -2,9 +2,9 @@
   import * as Tone from 'tone'
 
   let hue_emoji_rotation = $state(0)
-  let user_lightness = $state(0.8)
-  const CHROMA = 0.2
-  let user_hue = $state(250)
+  let user_lightness = $state(0.8) // 0 - 1
+  const CHROMA = 0.2 // 0 - 0.4
+  let user_hue = $state(250) // 0 - 360
   let user_colour = $derived(`oklch(${user_lightness} ${CHROMA} ${user_hue})`)
   let black_or_white = $state('oklch(0 0 0)')
   let theme = $state('light')
