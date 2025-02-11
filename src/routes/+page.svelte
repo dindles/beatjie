@@ -47,7 +47,7 @@
     bpm: 120,
   }
 
-  const pitches = ['C2', 'G2', 'C3', 'C1']
+  const pitches = ['C2', 'E2', 'F2', 'C1']
 
   let audio_engine = new AudioEngine()
   let audio_data_to_code = new AudioDataToCode()
@@ -79,6 +79,12 @@
     'app-ready': false,
   })
 
+  $effect(() => {
+    if (app_state['audio-loading']) {
+      audioDataToCode()
+    }
+  })
+
   // === FUNCTIONS ================================
 
   // === State
@@ -100,7 +106,6 @@
     }
   })
 
-  // Audio
   async function handleAudioConfirm() {
     await audio_engine.initAudioContext()
     app_state['audio-prompt'] = false
@@ -111,6 +116,14 @@
     app_state['audio-prompt'] = false
     app_state['audio-prompt-denied'] = true
   }
+
+  $effect(() => {
+    if (app_state['audio-loading']) {
+      audioDataToCode()
+    }
+  })
+
+  // === Audio
 
   async function audioDataToCode() {
     SAMPLES = await audio_data_to_code.processPacks(packs)
@@ -199,12 +212,6 @@
   }
 
   $effect(() => {
-    if (app_state['audio-loading']) {
-      audioDataToCode()
-    }
-  })
-
-  $effect(() => {
     return () => {
       audio_sequencer.dispose()
       audio_chain.dispose()
@@ -212,8 +219,8 @@
     }
   })
 
-  // VISUALS ================================
-  // Display
+  // === VISUALS ================================
+  // === Display
   let analysis_values: Float32Array | Float32Array[] = $state([])
 
   $effect(() => {
@@ -229,7 +236,7 @@
     }
   })
 
-  // css animations
+  // === css animations
 
   let pitch_emoji_rotation = $derived.by(() => {
     if (!selected_sample) return 0
@@ -372,13 +379,6 @@
 </main>
 
 <style>
-  /* === utilities === */
-
-  .emoji-sequencer {
-    font-family: var(--font-emoji);
-    font-size: var(--emoji-sequencer);
-  }
-
   /* === state === */
 
   .active,
@@ -473,6 +473,11 @@
     display: grid;
     grid-template-columns: repeat(8, 1fr);
     gap: var(--spacing);
+  }
+
+  .emoji-sequencer {
+    font-family: var(--font-emoji);
+    font-size: var(--emoji-sequencer);
   }
 
   .transport-and-main-settings {
