@@ -2,6 +2,8 @@
 
 ## v1.0
 
+- fix pack indicator not flashing on sample click
+
 - samples: 909 kick louder, cello quieter
 
 - componentisation

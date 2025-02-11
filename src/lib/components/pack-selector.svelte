@@ -4,8 +4,14 @@
   let {
     packs,
     SAMPLES,
+    selected_sample,
     selected_pack_index = $bindable(),
-  }: { packs: Packs; SAMPLES: Sample[]; selected_pack_index: number } = $props()
+  }: {
+    packs: Packs
+    SAMPLES: Sample[]
+    selected_sample: Sample | undefined
+    selected_pack_index: number
+  } = $props()
 
   function selectPack(direction: 'prev' | 'next' | 'random') {
     switch (direction) {
@@ -33,9 +39,8 @@
       <div
         class="pack-indicator border"
         class:active={index === selected_pack_index}
-        class:playing={SAMPLES.some(
-          (s: Sample) => s.pack === pack.name && s.playing
-        )}
+        class:playing={selected_sample?.pack === pack.name &&
+          selected_sample?.playing}
       ></div>
     {/each}
   </div>

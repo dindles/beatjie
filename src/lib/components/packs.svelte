@@ -8,24 +8,25 @@
     selected_pack_index = $bindable(),
     SAMPLES,
     handleSampleClick,
+    selected_sample,
   }: {
     packs: Packs
     SAMPLES: Sample[]
     selected_pack_index: number
     handleSampleClick: (sample: Sample | undefined) => void
+    selected_sample: Sample | undefined
   } = $props()
-  let selected_sample: Sample | undefined = $state(undefined)
 
   function getSampleByID(sample_id: number) {
     return SAMPLES.find((s: Sample) => s.id === sample_id)
   }
 </script>
 
-<PackSelector {packs} {SAMPLES} bind:selected_pack_index />
+<PackSelector {packs} {SAMPLES} {selected_sample} bind:selected_pack_index />
 
 {#key selected_pack_index}
   <div class="pack">
-    {#each SAMPLES as sample}
+    {#each SAMPLES as sample: Sample}
       {#if sample && sample.pack === packs[selected_pack_index].name}
         <button
           class="sample border emoji-large"

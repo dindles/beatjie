@@ -243,14 +243,18 @@
       <AudioLoadingMessage />
     {:else if app_state['app-ready']}
       <ColourSelector />
-
       <Display {analysis_values}>
         {#if !selected_sample}
           <p class="sample-select-message text-xsmall">select a sample</p>
         {/if}
       </Display>
-
-      <Packs {packs} {SAMPLES} bind:selected_pack_index {handleSampleClick} />
+      <Packs
+        {packs}
+        {SAMPLES}
+        bind:selected_pack_index
+        {handleSampleClick}
+        {selected_sample}
+      />
 
       {#if selected_sample}
         <div class="selected-sample-settings">
