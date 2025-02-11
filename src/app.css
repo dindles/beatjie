@@ -106,3 +106,14 @@ button {
   font-family: var(--font-text);
   font-size: var(--text-xsmall);
 }
+
+.active,
+.playing {
+  color: var(--black-or-white);
+  background-color: var(--user-colour);
+}
+
+.active.playing {
+  color: var(--user-colour);
+  background-color: var(--black-or-white);
+}

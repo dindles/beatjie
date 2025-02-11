@@ -26,6 +26,7 @@
   import AudioLoadingMessage from '$lib/components/audio-loading-message.svelte'
   import ColourSelector from '$lib/components/colour-selector.svelte'
   import Display from '$lib/components/display.svelte'
+  import Packs from '$lib/components/packs.svelte'
   import BPMSelector from '$lib/components/bpm-selector.svelte'
 
   // === BINDABLES ============================
@@ -89,6 +90,8 @@
 
   // === State
 
+  $inspect(() => selected_pack_index)
+
   $effect(() => {
     if (typeof document !== 'undefined') {
       document.fonts.ready.then(() => {
@@ -129,23 +132,6 @@
     SAMPLES = await audio_data_to_code.processPacks(packs)
     audio_chain.setChains(SAMPLES)
     audio_sequencer.makeSequences(SAMPLES)
-  }
-
-  function selectPack(direction: 'prev' | 'next' | 'random') {
-    switch (direction) {
-      case 'prev':
-        selected_pack_index =
-          (selected_pack_index - 1 + packs.length) % packs.length
-        break
-      case 'next':
-        selected_pack_index = (selected_pack_index + 1) % packs.length
-        break
-      case 'random':
-        selected_pack_index = Math.floor(Math.random() * packs.length)
-        break
-      default:
-        console.error('Invalid direction for selectPack')
-    }
   }
 
   function getSampleByID(sample_id: number) {
@@ -264,45 +250,7 @@
         {/if}
       </Display>
 
-      <div class="packs">
-        <div class="pack-select">
-          <button
-            class="pack-select-prev emoji-small"
-            onclick={() => selectPack('prev')}>👈</button
-          >
-          <div class="pack-indicators">
-            {#each packs as pack, index}
-              <div
-                class="pack-indicator border"
-                class:active={index === selected_pack_index}
-                class:playing={SAMPLES.some(
-                  (s) => s.pack === pack.name && s.playing
-                )}
-              ></div>
-            {/each}
-          </div>
-          <button
-            class="pack-select-next emoji-small"
-            onclick={() => selectPack('next')}>👉</button
-          >
-        </div>
-
-        {#key selected_pack_index}
-          <div class="pack">
-            {#each SAMPLES as sample}
-              {#if sample && sample.pack === packs[selected_pack_index].name}
-                <button
-                  class="sample border emoji-large"
-                  class:active={sample.id === selected_sample?.id}
-                  class:playing={sample.playing}
-                  onclick={() => handleSampleClick(getSampleByID(sample.id))}
-                  >{sample.emoji}</button
-                >
-              {/if}
-            {/each}
-          </div>
-        {/key}
-      </div>
+      <Packs {packs} {SAMPLES} bind:selected_pack_index {handleSampleClick} />
 
       {#if selected_sample}
         <div class="selected-sample-settings">
@@ -381,17 +329,6 @@
 <style>
   /* === state === */
 
-  .active,
-  .playing {
-    color: var(--black-or-white);
-    background-color: var(--user-colour);
-  }
-
-  .active.playing {
-    color: var(--user-colour);
-    background-color: var(--black-or-white);
-  }
-
   /* === layout === */
   main {
     min-height: 100vh;
@@ -414,40 +351,6 @@
     left: 50%;
     transform: translate(-50%, -50%);
     pointer-events: none;
-  }
-
-  .pack-select {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    place-items: center;
-    gap: var(--spacing);
-  }
-
-  .pack-indicators {
-    display: flex;
-    gap: var(--spacing);
-    justify-content: center;
-  }
-
-  .pack-indicator {
-    aspect-ratio: 1;
-    height: 1.2em;
-    transition: all 0.1s ease;
-  }
-
-  .pack-indicator.playing {
-    transform: scale(1.1);
-  }
-
-  .selected-pack {
-    display: grid;
-    place-items: center;
-  }
-
-  .pack {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: var(--spacing);
   }
 
   .sample-select-message {
