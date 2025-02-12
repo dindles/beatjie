@@ -2,9 +2,9 @@
 
 ## v1.0
 
-- fix pack indicator not flashing on sample click
+- do we need to toggle is_playing in sequencer if it's toggled in .play()?
 
-- samples: 909 kick louder, cello quieter
+- samples: 909 kick louder, delete cello, add vox
 
 - componentisation
 
@@ -40,7 +40,4 @@
 ## 3.0
 
 - update with new packs
-
-## 4.0
-
 - upload your bars, share them with others

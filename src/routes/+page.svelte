@@ -323,8 +323,6 @@
 </main>
 
 <style>
-  /* === state === */
-
   /* === layout === */
   main {
     min-height: 100vh;
