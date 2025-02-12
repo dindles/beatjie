@@ -56,7 +56,7 @@
   let audio_sequencer = new AudioSequencer(sequencer_config)
 
   let SAMPLES: Sample[] = $state([])
-  let selected_pack_index: number = $state(0)
+
   let selected_sample: Sample | undefined = $state(undefined)
   let preview_samples_active: boolean = $state(true)
 
@@ -89,8 +89,6 @@
   // === FUNCTIONS ================================
 
   // === State
-
-  $inspect(() => selected_pack_index)
 
   $effect(() => {
     if (typeof document !== 'undefined') {
@@ -248,13 +246,7 @@
           <p class="sample-select-message text-xsmall">select a sample</p>
         {/if}
       </Display>
-      <Packs
-        {packs}
-        {SAMPLES}
-        bind:selected_pack_index
-        {handleSampleClick}
-        {selected_sample}
-      />
+      <Packs {packs} {SAMPLES} {handleSampleClick} {selected_sample} />
 
       {#if selected_sample}
         <div class="selected-sample-settings">

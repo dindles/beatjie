@@ -1,7 +1,8 @@
+/* app.css */
 /* COLOUR */
 :root {
   --spacing: 3px;
-  --border-radius: 8px;
+  --border-radius: 14px;
   --border-weight: 5px;
 
   --user-colour: oklch(0.8 0.2 250);

@@ -87,7 +87,13 @@ export class Sample {
       console.warn('Attempted to play sample before sampler was loaded')
       return
     }
+
+    this.is_playing = true
     this.#sampler.triggerAttack(this.pitch, time)
+
+    setTimeout(() => {
+      this.is_playing = false
+    }, 100)
   }
 }
 

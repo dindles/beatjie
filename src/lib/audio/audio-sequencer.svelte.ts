@@ -23,10 +23,10 @@ export class AudioSequencer {
         (time, step) => {
           this.active_step_index = step
           if (sample.sequence[step]) {
-            sample.playing = true
+            sample.is_playing = true
             sample.play(time)
           } else {
-            sample.playing = false
+            sample.is_playing = false
           }
         },
         //this syntax creates an empty array and spreads the index values

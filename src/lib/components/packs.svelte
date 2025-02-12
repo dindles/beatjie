@@ -5,17 +5,17 @@
 
   let {
     packs,
-    selected_pack_index = $bindable(),
     SAMPLES,
     handleSampleClick,
     selected_sample,
   }: {
     packs: Packs
     SAMPLES: Sample[]
-    selected_pack_index: number
     handleSampleClick: (sample: Sample | undefined) => void
     selected_sample: Sample | undefined
   } = $props()
+
+  let selected_pack_index: number = $state(0)
 
   function getSampleByID(sample_id: number) {
     return SAMPLES.find((s: Sample) => s.id === sample_id)
