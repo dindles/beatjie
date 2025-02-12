@@ -31,7 +31,7 @@
         <button
           class="sample border emoji-large"
           class:active={sample.id === selected_sample?.id}
-          class:playing={sample.playing}
+          class:playing={sample.is_playing}
           onclick={() => handleSampleClick(getSampleByID(sample.id))}
         >
           {sample.emoji}

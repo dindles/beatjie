@@ -39,8 +39,9 @@
       <div
         class="pack-indicator border"
         class:active={index === selected_pack_index}
-        class:playing={selected_sample?.pack === pack.name &&
-          selected_sample?.playing}
+        class:playing={SAMPLES.some(
+          (sample) => sample.pack === pack.name && sample.is_playing
+        )}
       ></div>
     {/each}
   </div>

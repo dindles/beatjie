@@ -50,7 +50,7 @@ export class Sample {
   delay_is_active: boolean = $state(false)
   is_muted: boolean = $state(false)
   sequence: Sequence = $state(new Array(DEFAULT_SEQUENCE_LENGTH).fill(false))
-  playing: boolean = $state(false)
+  is_playing: boolean = $state(false)
 
   constructor(id: number, pack: string, emoji: string, url: string) {
     this.id = id
