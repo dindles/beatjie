@@ -11,8 +11,8 @@ export class AudioSequencer {
   is_playing: boolean = $state(false)
   active_step_index: number = $state(0)
 
-  constructor(private config: SequencerConfig) {
-    Tone.getTransport().bpm.value = config.bpm
+  constructor(private bpm: number) {
+    Tone.getTransport().bpm.value = bpm
   }
 
   makeSequences(samples: Sample[]) {

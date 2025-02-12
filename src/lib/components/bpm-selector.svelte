@@ -1,5 +1,18 @@
+<!-- bpm-selector.svelte -->
 <script lang="ts">
-  let { bpm = $bindable(), updateBPM } = $props()
+  import type { AudioSequencer } from '$lib/audio/audio-sequencer.svelte'
+
+  interface Props {
+    audio_sequencer: AudioSequencer
+  }
+
+  let { audio_sequencer }: Props = $props()
+
+  function updateBPM(newBPM: number) {
+    audio_sequencer.setBPM(newBPM)
+  }
+
+  let bpm: number = $state(120)
 
   // config
   const MIN_BPM = 60

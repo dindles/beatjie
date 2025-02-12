@@ -2,13 +2,13 @@
   import type { Sample } from '$lib/audio/audio-models.svelte'
   import type { AudioChain } from '$lib/audio/audio-chain.svelte'
 
-  type ComponentProps = {
+  type Props = {
     selected_sample: Sample | undefined
     pitches: string[]
     audio_chain: AudioChain
   }
 
-  let { selected_sample, pitches, audio_chain }: ComponentProps = $props()
+  let { selected_sample, pitches, audio_chain }: Props = $props()
 
   let pitch_emoji_rotation = $derived.by(() => {
     if (!selected_sample) return 0

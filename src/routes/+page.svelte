@@ -14,10 +14,7 @@
   import { AudioEngine } from '$lib/audio/audio-engine.svelte'
   import { AudioDataToCode } from '$lib/audio/audio-data-to-code.svelte'
   import { AudioChain, type ChainConfig } from '$lib/audio/audio-chain.svelte'
-  import {
-    AudioSequencer,
-    type SequencerConfig,
-  } from '$lib/audio/audio-sequencer.svelte'
+  import { AudioSequencer } from '$lib/audio/audio-sequencer.svelte'
 
   // === Svelte components
   import FontLoadingMessage from '$lib/components/font-loading-message.svelte'
@@ -28,7 +25,8 @@
   import Display from '$lib/components/display.svelte'
   import Packs from '$lib/components/packs.svelte'
   import SelectedSampleSettings from '$lib/components/selected-sample-settings.svelte'
-  import BPMSelector from '$lib/components/bpm-selector.svelte'
+  import Sequencer from '$lib/components/sequencer.svelte'
+  import TransportAndMainSettings from '$lib/components/transport-and-main-settings.svelte'
 
   // === BINDABLES ============================
 
@@ -45,24 +43,17 @@
     bit_crusher_bits: 4,
   })
 
-  const sequencer_config: SequencerConfig = {
-    bpm: 120,
-  }
-
   const pitches = ['C2', 'E2', 'F2', 'C1']
 
   let audio_engine = new AudioEngine()
   let audio_data_to_code = new AudioDataToCode()
   let audio_chain = new AudioChain(chain_config)
-  let audio_sequencer = new AudioSequencer(sequencer_config)
+  let audio_sequencer = new AudioSequencer(120)
 
   let SAMPLES: Sample[] = $state([])
 
   let selected_sample: Sample | undefined = $state(undefined)
   let preview_samples_active: boolean = $state(true)
-
-  // todo: this should be in sequencer class
-  let bpm: number = $state(sequencer_config.bpm)
 
   // === State
   interface AppState {
@@ -139,11 +130,6 @@
 
   function handleSampleClick(sample: Sample | undefined) {
     if (!sample) return
-    selectSample(sample.id)
-
-    if (preview_samples_active) {
-      triggerSample(sample)
-    }
 
     function selectSample(sample_id: number) {
       selected_sample = getSampleByID(sample_id)
@@ -154,19 +140,18 @@
         sample.play(Tone.now())
       }
     }
+
+    selectSample(sample.id)
+
+    console.log('selected sample:', selected_sample)
+
+    if (preview_samples_active) {
+      triggerSample(sample)
+    }
   }
 
   function handleSeqClick(sample: Sample, step_index: number) {
     sample.sequence[step_index] = !sample.sequence[step_index]
-  }
-
-  async function toggleSeqPlayback() {
-    await audio_sequencer.togglePlayback()
-  }
-
-  function updateBPM(newBPM: number) {
-    bpm = newBPM
-    audio_sequencer.setBPM(bpm)
   }
 
   $effect(() => {
@@ -193,8 +178,6 @@
       analysis_values = []
     }
   })
-
-  // === css animations
 </script>
 
 <main>
@@ -218,53 +201,13 @@
 
       {#if selected_sample}
         <SelectedSampleSettings {selected_sample} {pitches} {audio_chain} />
-
-        <div class="sequencer">
-          {#each SAMPLES as sample}
-            {#if sample.id === selected_sample?.id}
-              {#each selected_sample.sequence as _, index}
-                <button
-                  class="step border emoji-sequencer"
-                  class:active={index === audio_sequencer.active_step_index}
-                  onclick={() => handleSeqClick(sample, index)}
-                  onkeydown={() => handleSeqClick(sample, index)}
-                >
-                  {#if selected_sample.sequence[index]}
-                    {selected_sample.emoji}
-                  {/if}
-                </button>
-              {/each}
-            {/if}
-          {/each}
-        </div>
-
-        <div class="transport-and-main-settings">
-          <div class="transport">
-            <button class="emoji-large" onclick={() => toggleSeqPlayback()}
-              >{audio_sequencer.is_playing ? '⏹' : '▶'}</button
-            >
-          </div>
-
-          <div class="main-settings">
-            <button
-              class="emoji-large"
-              onclick={() =>
-                audio_chain.toggleMainHighPass(!audio_chain.mainIsHighPassed)}
-              class:active={audio_chain.mainIsHighPassed}>🫴</button
-            >
-            <button
-              class:active={audio_chain.mainIsDistorted}
-              class="emoji-large"
-              onclick={() =>
-                audio_chain.toggleMainDistortion(!audio_chain.mainIsDistorted)}
-              >💥</button
-            >
-
-            <div class="bpm-control">
-              <BPMSelector bind:bpm {updateBPM} />
-            </div>
-          </div>
-        </div>
+        <Sequencer
+          {SAMPLES}
+          {selected_sample}
+          {audio_sequencer}
+          {handleSeqClick}
+        />
+        <TransportAndMainSettings {audio_sequencer} {audio_chain} />
       {/if}
     {/if}
   </div>
@@ -298,36 +241,5 @@
   .sample-select-message {
     text-align: center;
     padding: var(--spacing);
-  }
-
-  .sequencer {
-    display: grid;
-    grid-template-columns: repeat(8, 1fr);
-    gap: var(--spacing);
-  }
-
-  .emoji-sequencer {
-    font-family: var(--font-emoji);
-    font-size: var(--emoji-sequencer);
-  }
-
-  .transport-and-main-settings {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: var(--spacing);
-    margin-top: 0.4em;
-    margin-bottom: 0.4em;
-  }
-
-  .transport {
-    display: grid;
-    grid-template-columns: 1fr;
-  }
-
-  .main-settings {
-    grid-column: span 3;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: var(--spacing);
   }
 </style>
