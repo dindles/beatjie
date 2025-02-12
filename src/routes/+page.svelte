@@ -27,6 +27,7 @@
   import ColourSelector from '$lib/components/colour-selector.svelte'
   import Display from '$lib/components/display.svelte'
   import Packs from '$lib/components/packs.svelte'
+  import SelectedSampleSettings from '$lib/components/selected-sample-settings.svelte'
   import BPMSelector from '$lib/components/bpm-selector.svelte'
 
   // === BINDABLES ============================
@@ -163,33 +164,6 @@
     await audio_sequencer.togglePlayback()
   }
 
-  function loopSamplePitch() {
-    if (!selected_sample) {
-      console.log('No sample selected')
-      return
-    }
-
-    const currentIndex = pitches.indexOf(selected_sample.pitch)
-    const nextIndex = (currentIndex + 1) % pitches.length
-    // hacky typescript business?
-    selected_sample.pitch = pitches[nextIndex] as typeof selected_sample.pitch
-  }
-
-  function toggleSampleMute() {
-    if (!selected_sample) return
-    audio_chain.toggleSampleMute(selected_sample, !selected_sample.is_muted)
-    selected_sample.is_muted = !selected_sample.is_muted
-  }
-
-  function toggleSampleDelay() {
-    if (!selected_sample) return
-    audio_chain.toggleSampleDelay(
-      selected_sample,
-      !selected_sample.delay_is_active
-    )
-    selected_sample.delay_is_active = !selected_sample.delay_is_active
-  }
-
   function updateBPM(newBPM: number) {
     bpm = newBPM
     audio_sequencer.setBPM(bpm)
@@ -221,12 +195,6 @@
   })
 
   // === css animations
-
-  let pitch_emoji_rotation = $derived.by(() => {
-    if (!selected_sample) return 0
-    const pitchIndex = pitches.indexOf(selected_sample.pitch)
-    return pitchIndex * 90
-  })
 </script>
 
 <main>
@@ -249,27 +217,7 @@
       <Packs {packs} {SAMPLES} {handleSampleClick} {selected_sample} />
 
       {#if selected_sample}
-        <div class="selected-sample-settings">
-          <button class="emoji-large" onclick={() => toggleSampleMute()}
-            >{selected_sample.is_muted ? '🔇' : '🔊'}</button
-          >
-          <button
-            class="selected-sample-pitch emoji-large"
-            style="transform: rotate({pitch_emoji_rotation}deg)"
-            onclick={() => {
-              loopSamplePitch()
-            }}
-          >
-            🎵
-          </button>
-          <button
-            class="emoji-large"
-            class:active={selected_sample.delay_is_active}
-            onclick={toggleSampleDelay}
-          >
-            🪞
-          </button>
-        </div>
+        <SelectedSampleSettings {selected_sample} {pitches} {audio_chain} />
 
         <div class="sequencer">
           {#each SAMPLES as sample}
@@ -350,20 +298,6 @@
   .sample-select-message {
     text-align: center;
     padding: var(--spacing);
-  }
-
-  .selected-sample-settings {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: var(--spacing);
-    margin-top: 0.4em;
-    margin-bottom: 0.4em;
-  }
-
-  .selected-sample-pitch {
-    display: grid;
-    place-items: center;
-    transition: transform 0.3s ease;
   }
 
   .sequencer {
