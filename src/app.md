@@ -2,6 +2,8 @@
 
 ## v1.0
 
+- fix bpm
+
 - do we need to toggle is_playing in sequencer if it's toggled in .play()?
 
 - samples: 909 kick louder, delete cello, add vox
