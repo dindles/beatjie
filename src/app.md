@@ -2,11 +2,7 @@
 
 ## v1.0
 
-- do we need to toggle is_playing in sequencer if it's toggled in .play()?
-
 - samples: 909 kick louder, delete cello, add vox
-
-- componentisation
 
 - custom cursor
 
@@ -15,6 +11,8 @@
 - font subsetting? https://fontfaceobserver.com/?
 
 - todos and console.logs
+
+- deploy
 
 ## 1.1
 
