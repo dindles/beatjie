@@ -3,17 +3,19 @@
   import type { AudioSequencer } from '$lib/audio/audio-sequencer.svelte'
 
   interface Props {
-    SAMPLES: Sample[]
+    samples: Sample[]
     selected_sample: Sample | undefined
     audio_sequencer: AudioSequencer
-    handleSeqClick: (sample: Sample, index: number) => void
   }
-  let { SAMPLES, selected_sample, audio_sequencer, handleSeqClick }: Props =
-    $props()
+  let { samples, selected_sample, audio_sequencer }: Props = $props()
+
+  function handleSeqClick(sample: Sample, step_index: number) {
+    sample.sequence[step_index] = !sample.sequence[step_index]
+  }
 </script>
 
 <div class="sequencer">
-  {#each SAMPLES as sample}
+  {#each samples as sample}
     {#if sample.id === selected_sample?.id}
       {#each selected_sample.sequence as _, index}
         <button

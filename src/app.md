@@ -2,7 +2,7 @@
 
 ## v1.0
 
-- sample select message component. does this also point to help toggle?
+- move more page logic to components
 
 - samples: 909 kick louder, delete cello, add vox
 

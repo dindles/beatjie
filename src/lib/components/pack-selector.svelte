@@ -3,13 +3,11 @@
   import type { Packs, Sample } from '$lib/audio/audio-models.svelte'
   let {
     packs,
-    SAMPLES,
-    selected_sample,
+    samples,
     selected_pack_index = $bindable(),
   }: {
     packs: Packs
-    SAMPLES: Sample[]
-    selected_sample: Sample | undefined
+    samples: Sample[]
     selected_pack_index: number
   } = $props()
 
@@ -39,7 +37,7 @@
       <div
         class="pack-indicator border"
         class:active={index === selected_pack_index}
-        class:playing={SAMPLES.some(
+        class:playing={samples.some(
           (sample) => sample.pack === pack.name && sample.is_playing
         )}
       ></div>

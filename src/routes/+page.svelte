@@ -21,8 +21,9 @@
   import AudioPromptDenied from '$lib/components/audio-prompt-denied.svelte'
   import AudioLoadingMessage from '$lib/components/audio-loading-message.svelte'
   import ColourSelector from '$lib/components/colour-selector.svelte'
+  import UserActivityPrompt from '$lib/components/user-activity-prompt.svelte'
   import Display from '$lib/components/display.svelte'
-  import Packs from '$lib/components/packs.svelte'
+  import Samples from '$lib/components/samples.svelte'
   import SelectedSampleSettings from '$lib/components/selected-sample-settings.svelte'
   import Sequencer from '$lib/components/sequencer.svelte'
   import TransportAndMainSettings from '$lib/components/transport-and-main-settings.svelte'
@@ -48,12 +49,8 @@
   let audio_chain = new AudioChain(chain_config)
   let audio_sequencer = new AudioSequencer()
 
-  let SAMPLES: Sample[] = $state([])
-
+  let samples: Sample[] = $state([])
   let selected_sample: Sample | undefined = $state(undefined)
-
-  // todo: decide on this
-  let preview_samples_active: boolean = $state(true)
 
   // === State
   interface AppState {
@@ -74,8 +71,7 @@
 
   // === FUNCTIONS ================================
 
-  // === State
-
+  // state
   $effect(() => {
     if (typeof document !== 'undefined') {
       document.fonts.ready.then(() => {
@@ -110,38 +106,14 @@
     }
   })
 
-  // === Audio
-
+  // loading data
   async function audioDataToCode() {
-    SAMPLES = await audio_data_to_code.processPacks(packs)
-    audio_chain.setChains(SAMPLES)
-    audio_sequencer.makeSequences(SAMPLES)
+    samples = await audio_data_to_code.processPacks(packs)
+    audio_chain.setChains(samples)
+    audio_sequencer.makeSequences(samples)
   }
 
-  function handleSampleClick(sample: Sample | undefined) {
-    if (!sample) return
-
-    function selectSample(sample_id: number) {
-      selected_sample = SAMPLES.find((s) => s.id === sample_id)
-    }
-
-    function triggerSample(sample: Sample | undefined) {
-      if (audio_engine.isInitialised() && sample) {
-        sample.play(Tone.now())
-      }
-    }
-
-    selectSample(sample.id)
-
-    if (preview_samples_active) {
-      triggerSample(sample)
-    }
-  }
-
-  function handleSeqClick(sample: Sample, step_index: number) {
-    sample.sequence[step_index] = !sample.sequence[step_index]
-  }
-
+  // cleanup
   $effect(() => {
     return () => {
       audio_sequencer.dispose()
@@ -152,6 +124,7 @@
 
   // === VISUALS ================================
   // === Display
+  // todo: put this in display component
   let analysis_values: Float32Array | Float32Array[] = $state([])
 
   $effect(() => {
@@ -180,16 +153,15 @@
       <AudioLoadingMessage />
     {:else if app_state['app-ready']}
       <ColourSelector />
-      <Display {analysis_values} {selected_sample} />
-      <Packs {packs} {SAMPLES} {handleSampleClick} {selected_sample} />
+      <Display {analysis_values}>
+        {#if !selected_sample}
+          <UserActivityPrompt />
+        {/if}
+      </Display>
+      <Samples {packs} {samples} {audio_engine} {selected_sample} />
       {#if selected_sample}
         <SelectedSampleSettings {selected_sample} {pitches} {audio_chain} />
-        <Sequencer
-          {SAMPLES}
-          {selected_sample}
-          {audio_sequencer}
-          {handleSeqClick}
-        />
+        <Sequencer {samples} {selected_sample} {audio_sequencer} />
         <TransportAndMainSettings {audio_sequencer} {audio_chain} />
       {/if}
     {/if}
