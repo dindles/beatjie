@@ -12,7 +12,12 @@
     selected_sample: Sample | undefined
   }
 
-  let { packs, samples, audio_engine, selected_sample }: Props = $props()
+  let {
+    packs,
+    samples,
+    audio_engine,
+    selected_sample = $bindable(),
+  }: Props = $props()
 
   let selected_pack_index: number = $state(0)
 

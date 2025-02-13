@@ -158,7 +158,7 @@
           <UserActivityPrompt />
         {/if}
       </Display>
-      <Samples {packs} {samples} {audio_engine} {selected_sample} />
+      <Samples {packs} {samples} {audio_engine} bind:selected_sample />
       {#if selected_sample}
         <SelectedSampleSettings {selected_sample} {pitches} {audio_chain} />
         <Sequencer {samples} {selected_sample} {audio_sequencer} />
