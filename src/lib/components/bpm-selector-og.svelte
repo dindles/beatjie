@@ -1,3 +1,4 @@
+<!-- bpm-selector.svelte -->
 <script lang="ts">
   let { bpm = $bindable(), updateBPM } = $props()
 

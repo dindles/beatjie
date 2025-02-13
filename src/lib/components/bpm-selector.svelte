@@ -8,13 +8,6 @@
 
   let { audio_sequencer }: Props = $props()
 
-  function updateBPM(newBPM: number) {
-    audio_sequencer.setBPM(newBPM)
-  }
-
-  let bpm: number = $state(120)
-
-  // config
   const MIN_BPM = 60
   const MAX_BPM = 200
   const DRAG_SENSITIVITY = 0.5
@@ -27,52 +20,48 @@
     return Math.min(MAX_BPM, Math.max(MIN_BPM, value))
   }
 
-  function handleWheel(e: WheelEvent) {
-    e.preventDefault()
-    const delta = Math.sign(e.deltaY) * -1
-    const newBPM = constrainBPM(bpm + delta)
-    if (bpm !== newBPM) {
-      updateBPM(newBPM)
+  function updateBPM(newBPM: number) {
+    const constrained = constrainBPM(newBPM)
+    if (constrained !== audio_sequencer.getBPM()) {
+      audio_sequencer.setBPM(constrained)
     }
   }
 
-  function startBPMDrag(e: PointerEvent) {
+  function handleWheel(e: WheelEvent) {
+    e.preventDefault()
+    updateBPM(audio_sequencer.getBPM() + Math.sign(e.deltaY) * -1)
+  }
+
+  function handlePointerDown(e: PointerEvent) {
     isDragging = true
     dragStartY = e.clientY
-    startBPM = bpm
+    startBPM = audio_sequencer.getBPM()
     ;(e.target as HTMLElement).setPointerCapture(e.pointerId)
   }
 
-  function handleBPMDrag(e: PointerEvent) {
+  function handlePointerMove(e: PointerEvent) {
     if (!isDragging) return
-
     const dragDelta = dragStartY - e.clientY
-    const newBPM = constrainBPM(
-      startBPM + Math.round(dragDelta * DRAG_SENSITIVITY)
-    )
-
-    if (bpm !== newBPM) {
-      updateBPM(newBPM)
-    }
+    updateBPM(startBPM + Math.round(dragDelta * DRAG_SENSITIVITY))
   }
 
-  function endBPMDrag(e: PointerEvent) {
+  function handlePointerUp(e: PointerEvent) {
     if (!isDragging) return
-    ;(e.target as HTMLElement).releasePointerCapture(e.pointerId)
     isDragging = false
+    ;(e.target as HTMLElement).releasePointerCapture(e.pointerId)
   }
 </script>
 
 <button
   class="bpm-display"
-  onpointerdown={startBPMDrag}
-  onpointermove={handleBPMDrag}
-  onpointerup={endBPMDrag}
-  onpointercancel={endBPMDrag}
+  onpointerdown={handlePointerDown}
+  onpointermove={handlePointerMove}
+  onpointerup={handlePointerUp}
+  onpointercancel={handlePointerUp}
   onwheel={handleWheel}
   aria-label="BPM control"
 >
-  {bpm}
+  {audio_sequencer.getBPM()}
 </button>
 
 <style>

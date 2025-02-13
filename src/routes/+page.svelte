@@ -48,7 +48,7 @@
   let audio_engine = new AudioEngine()
   let audio_data_to_code = new AudioDataToCode()
   let audio_chain = new AudioChain(chain_config)
-  let audio_sequencer = new AudioSequencer(120)
+  let audio_sequencer = new AudioSequencer()
 
   let SAMPLES: Sample[] = $state([])
 

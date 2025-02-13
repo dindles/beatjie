@@ -2,18 +2,11 @@
 import * as Tone from 'tone'
 import type { Sample } from '$lib/audio/audio-models.svelte'
 
-export interface SequencerConfig {
-  readonly bpm: number
-}
-
 export class AudioSequencer {
   sequences: Tone.Sequence[] = []
   is_playing: boolean = $state(false)
   active_step_index: number = $state(0)
-
-  constructor(private bpm: number) {
-    Tone.getTransport().bpm.value = bpm
-  }
+  bpm: number = $state(120)
 
   makeSequences(samples: Sample[]) {
     this.sequences.forEach((seq) => seq.dispose())
@@ -67,8 +60,13 @@ export class AudioSequencer {
     })
   }
 
-  setBPM(bpm: number) {
-    Tone.getTransport().bpm.value = bpm
+  getBPM(): number {
+    return this.bpm
+  }
+
+  setBPM(new_bpm: number) {
+    this.bpm = new_bpm
+    Tone.getTransport().bpm.value = new_bpm
   }
 
   dispose() {
