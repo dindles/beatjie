@@ -1,5 +1,4 @@
 <!-- +page.svelte -->
-
 <script lang="ts">
   // === IMPORTS ==============================
 
@@ -31,7 +30,6 @@
   // === BINDABLES ============================
 
   // === Audio
-
   const chain_config: ChainConfig = $state({
     highpass_freq: 500,
     distortion_init: 0.2,
@@ -124,15 +122,11 @@
     audio_sequencer.makeSequences(SAMPLES)
   }
 
-  function getSampleByID(sample_id: number) {
-    return SAMPLES.find((s) => s.id === sample_id)
-  }
-
   function handleSampleClick(sample: Sample | undefined) {
     if (!sample) return
 
     function selectSample(sample_id: number) {
-      selected_sample = getSampleByID(sample_id)
+      selected_sample = SAMPLES.find((s) => s.id === sample_id)
     }
 
     function triggerSample(sample: Sample | undefined) {
@@ -142,8 +136,6 @@
     }
 
     selectSample(sample.id)
-
-    console.log('selected sample:', selected_sample)
 
     if (preview_samples_active) {
       triggerSample(sample)
@@ -198,7 +190,6 @@
         {/if}
       </Display>
       <Packs {packs} {SAMPLES} {handleSampleClick} {selected_sample} />
-
       {#if selected_sample}
         <SelectedSampleSettings {selected_sample} {pitches} {audio_chain} />
         <Sequencer

@@ -2,6 +2,8 @@
 
 ## v1.0
 
+- sample select message component. does this also point to help toggle?
+
 - samples: 909 kick louder, delete cello, add vox
 
 - custom cursor
@@ -16,11 +18,9 @@
 
 ## 1.1
 
-- default pattern, and save patterns (to local storage)
+- default sequence, and save sequences (to local storage)
 
 - color persists between sessions
-
-- share patterns
 
 - keyboard control
 
@@ -34,8 +34,9 @@
 ## 2.0
 
 - sign in, save sequences
+- share sequences
 
 ## 3.0
 
 - update with new packs
-- upload your bars, share them with others
+- upload your bars as audio, share them with others
