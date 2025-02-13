@@ -1,12 +1,15 @@
+<!--display.svelte -->
 <script lang="ts">
+  import type { AudioChain } from '$lib/audio/audio-chain.svelte'
+
   interface Props {
-    analysis_values: Float32Array | Float32Array[]
+    audio_chain: AudioChain
     children: any
   }
 
-  let { analysis_values, children }: Props = $props()
-
+  let { audio_chain, children }: Props = $props()
   let canvas: HTMLCanvasElement
+  let analysis_values: Float32Array | Float32Array[] = $state([])
 
   const AMPLITUDE_THRESHOLD = 0.001
 
@@ -16,6 +19,19 @@
     canvas.width = rect.width
     canvas.height = rect.height
   }
+
+  $effect(() => {
+    function updateAnalysis() {
+      analysis_values = audio_chain.getAnalyserValues()
+      requestAnimationFrame(updateAnalysis)
+    }
+
+    updateAnalysis()
+
+    return () => {
+      analysis_values = []
+    }
+  })
 
   function draw() {
     if (!canvas) return

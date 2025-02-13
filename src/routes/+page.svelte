@@ -2,9 +2,6 @@
 <script lang="ts">
   // === IMPORTS ==============================
 
-  // === Tone
-  import * as Tone from 'tone'
-
   // === Data
   import { packs } from '$lib/audio/audio-packs'
 
@@ -69,9 +66,9 @@
     'app-ready': false,
   })
 
-  // === FUNCTIONS ================================
+  // === LIFECYCLE ================================
 
-  // state
+  // === State
   $effect(() => {
     if (typeof document !== 'undefined') {
       document.fonts.ready.then(() => {
@@ -106,37 +103,19 @@
     }
   })
 
-  // loading data
+  // === Load data
   async function audioDataToCode() {
     samples = await audio_data_to_code.processPacks(packs)
     audio_chain.setChains(samples)
     audio_sequencer.makeSequences(samples)
   }
 
-  // cleanup
+  // === Cleanup
   $effect(() => {
     return () => {
       audio_sequencer.dispose()
       audio_chain.dispose()
       audio_engine.dispose()
-    }
-  })
-
-  // === VISUALS ================================
-  // === Display
-  // todo: put this in display component
-  let analysis_values: Float32Array | Float32Array[] = $state([])
-
-  $effect(() => {
-    function updateAnalysis() {
-      analysis_values = audio_chain.getAnalyserValues()
-      requestAnimationFrame(updateAnalysis)
-    }
-
-    updateAnalysis()
-
-    return () => {
-      analysis_values = []
     }
   })
 </script>
@@ -153,7 +132,7 @@
       <AudioLoadingMessage />
     {:else if app_state['app-ready']}
       <ColourSelector />
-      <Display {analysis_values}>
+      <Display {audio_chain}>
         {#if !selected_sample}
           <UserActivityPrompt />
         {/if}
