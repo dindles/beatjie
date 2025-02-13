@@ -1,8 +1,13 @@
 <script lang="ts">
-  let { analysis_values, children } = $props<{
+  import type { Sample } from '$lib/audio/audio-models.svelte'
+  import UserActivityPrompt from './user-activity-prompt.svelte'
+
+  interface Props {
     analysis_values: Float32Array | Float32Array[]
-    children: any
-  }>()
+    selected_sample: Sample | undefined
+  }
+
+  let { analysis_values, selected_sample }: Props = $props()
 
   let canvas: HTMLCanvasElement
 
@@ -89,8 +94,10 @@
 </script>
 
 <div class="display">
+  {#if !selected_sample}
+    <UserActivityPrompt />
+  {/if}
   <canvas bind:this={canvas}></canvas>
-  {@render children()}
 </div>
 
 <style>

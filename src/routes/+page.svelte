@@ -27,7 +27,7 @@
   import Sequencer from '$lib/components/sequencer.svelte'
   import TransportAndMainSettings from '$lib/components/transport-and-main-settings.svelte'
 
-  // === BINDABLES ============================
+  // === BINDINGS ============================
 
   // === Audio
   const chain_config: ChainConfig = $state({
@@ -51,6 +51,8 @@
   let SAMPLES: Sample[] = $state([])
 
   let selected_sample: Sample | undefined = $state(undefined)
+
+  // todo: decide on this
   let preview_samples_active: boolean = $state(true)
 
   // === State
@@ -70,12 +72,6 @@
     'app-ready': false,
   })
 
-  $effect(() => {
-    if (app_state['audio-loading']) {
-      audioDataToCode()
-    }
-  })
-
   // === FUNCTIONS ================================
 
   // === State
@@ -87,13 +83,6 @@
         console.log('fonts loaded')
         app_state['audio-prompt'] = true
       })
-    }
-  })
-
-  $effect(() => {
-    if (app_state['audio-loading'] && audio_data_to_code.buffersAreLoaded()) {
-      app_state['audio-loading'] = false
-      app_state['app-ready'] = true
     }
   })
 
@@ -111,6 +100,13 @@
   $effect(() => {
     if (app_state['audio-loading']) {
       audioDataToCode()
+    }
+  })
+
+  $effect(() => {
+    if (app_state['audio-loading'] && audio_data_to_code.buffersAreLoaded()) {
+      app_state['audio-loading'] = false
+      app_state['app-ready'] = true
     }
   })
 
@@ -184,11 +180,7 @@
       <AudioLoadingMessage />
     {:else if app_state['app-ready']}
       <ColourSelector />
-      <Display {analysis_values}>
-        {#if !selected_sample}
-          <p class="sample-select-message text-xsmall">select a sample</p>
-        {/if}
-      </Display>
+      <Display {analysis_values} {selected_sample} />
       <Packs {packs} {SAMPLES} {handleSampleClick} {selected_sample} />
       {#if selected_sample}
         <SelectedSampleSettings {selected_sample} {pitches} {audio_chain} />
@@ -205,7 +197,6 @@
 </main>
 
 <style>
-  /* === layout === */
   main {
     min-height: 100vh;
     display: grid;
@@ -217,20 +208,5 @@
     overflow: hidden;
     padding: 0.4%;
     grid-template-rows: auto auto 1fr auto auto;
-  }
-
-  .sample-select-message {
-    font-size: var(--text-display);
-    width: 100%;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    pointer-events: none;
-  }
-
-  .sample-select-message {
-    text-align: center;
-    padding: var(--spacing);
   }
 </style>

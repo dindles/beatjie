@@ -6,6 +6,12 @@
 
 - samples: 909 kick louder, delete cello, add vox
 
+- clear sequence button
+
+- another sample effect
+
+- make distortion more boom
+
 - custom cursor
 
 - help page
@@ -16,11 +22,11 @@
 
 - deploy
 
+- video
+
 ## 1.1
 
-- default sequence, and save sequences (to local storage)
-
-- color persists between sessions
+- color/sequence persists between sessions
 
 - keyboard control
 
