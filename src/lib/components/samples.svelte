@@ -19,7 +19,9 @@
     selected_sample = $bindable(),
   }: Props = $props()
 
-  let selected_pack_index: number = $state(0)
+  let selected_pack_index: number = $state(
+    Math.floor(Math.random() * packs.length)
+  )
 
   // todo: decide on this
   let preview_samples_active: boolean = $state(true)

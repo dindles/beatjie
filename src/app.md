@@ -2,13 +2,13 @@
 
 ## v1.0
 
+- help overlay toggle
+
 - samples: 909 kick louder, mhmm sfoter, delete cello, delete flute. add vox/faces
 
 - clear sequence button
 
 - custom cursor
-
-- help page
 
 - font subsetting? https://fontfaceobserver.com/?
 
@@ -28,8 +28,8 @@
   - asdf, jkl; to play samples
 
 - visualiser
-  - add const main_analyser_fft = new Tone.Analyser('fft', main_init.analyser_resolution) and add toggles between waveform and fft
-  - threlte visualiser
+  - add toggles between waveform and fft?
+  - threlte?
 
 ## 2.0
 
