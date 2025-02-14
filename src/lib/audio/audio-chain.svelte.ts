@@ -50,9 +50,15 @@ export class AudioChain {
   }
 
   // Set up chaining for each sample
-  setChains(samples: Sample[]) {
-    samples.forEach((sample) => {
-      sample.sampler.chain(sample.channel, sample.delay, this.#mainChannel)
+  async setChains(samples: Sample[]) {
+    samples.forEach(async (sample) => {
+      await sample.reverb.generate()
+      sample.sampler.chain(
+        sample.channel,
+        sample.delay,
+        sample.reverb,
+        this.#mainChannel
+      )
     })
   }
 
@@ -74,6 +80,10 @@ export class AudioChain {
     sample.delay.wet.value = enabled ? 0.5 : 0
   }
 
+  toggleSampleReverb(sample: Sample, enabled: boolean) {
+    sample.reverb.wet.value = enabled ? 0.69 : 0
+  }
+
   toggleSampleMute(sample: Sample, enabled: boolean) {
     sample.channel.volume.value = enabled ? -Infinity : 0
   }
@@ -82,11 +92,18 @@ export class AudioChain {
     return this.#mainAnalyser.getValue()
   }
 
-  dispose() {
+  dispose(samples: Sample[]) {
     this.#mainChannel.dispose()
     this.#mainFilterHP.dispose()
     this.#mainDistortion.dispose()
     this.#mainBitCrusher.dispose()
     this.#mainAnalyser.dispose()
+
+    samples.forEach((sample) => {
+      sample.sampler.dispose()
+      sample.channel.dispose()
+      sample.delay.dispose()
+      sample.reverb.dispose()
+    })
   }
 }

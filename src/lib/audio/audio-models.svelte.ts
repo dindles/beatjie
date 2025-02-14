@@ -38,6 +38,7 @@ export class Sample {
   readonly #sampler: Tone.Sampler
   readonly #channel: Tone.Channel
   readonly #delay: Tone.FeedbackDelay
+  readonly #reverb: Tone.Reverb
 
   readonly id: number
   readonly pack: string
@@ -48,6 +49,7 @@ export class Sample {
   pitch: Note = $state(DEFAULT_PITCH)
   attack: number = $state(DEFAULT_ATTACK)
   delay_is_active: boolean = $state(false)
+  reverb_is_active: boolean = $state(false)
   is_muted: boolean = $state(false)
   sequence: Sequence = $state(new Array(DEFAULT_SEQUENCE_LENGTH).fill(false))
   is_playing: boolean = $state(false)
@@ -61,6 +63,10 @@ export class Sample {
     this.#sampler = new Tone.Sampler()
     this.#channel = new Tone.Channel().set({ volume: this.volume })
     this.#delay = new Tone.FeedbackDelay(DEFAULT_DELAY_CONFIG)
+    this.#reverb = new Tone.Reverb({
+      decay: 2.0,
+      wet: 0.0,
+    })
   }
 
   get sampler(): Tone.Sampler {
@@ -73,6 +79,10 @@ export class Sample {
 
   get delay(): Tone.FeedbackDelay {
     return this.#delay
+  }
+
+  get reverb(): Tone.Reverb {
+    return this.#reverb
   }
 
   setSamplerBuffers(pitch: Note, buffer: Tone.ToneAudioBuffer): void {

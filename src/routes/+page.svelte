@@ -31,9 +31,9 @@
   const chain_config: ChainConfig = $state({
     highpass_freq: 500,
     distortion_init: 0.2,
-    distortion_amount: 0.9,
+    distortion_amount: 1,
     analyser_resolution: 256,
-    compressor_threshold: -12,
+    compressor_threshold: -6,
     compressor_attack: 0.05,
     compressor_release: 0.15,
     bit_crusher_bits: 4,
@@ -114,7 +114,7 @@
   $effect(() => {
     return () => {
       audio_sequencer.dispose()
-      audio_chain.dispose()
+      audio_chain.dispose(samples)
       audio_engine.dispose()
     }
   })

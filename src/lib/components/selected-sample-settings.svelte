@@ -42,6 +42,15 @@
     )
     selected_sample.delay_is_active = !selected_sample.delay_is_active
   }
+
+  function toggleSampleReverb() {
+    if (!selected_sample) return
+    audio_chain.toggleSampleReverb(
+      selected_sample,
+      !selected_sample.reverb_is_active
+    )
+    selected_sample.reverb_is_active = !selected_sample.reverb_is_active
+  }
 </script>
 
 <div class="selected-sample-settings">
@@ -63,6 +72,13 @@
     onclick={toggleSampleDelay}
   >
     🪞
+  </button>
+  <button
+    class="emoji-large"
+    class:active={selected_sample?.reverb_is_active}
+    onclick={toggleSampleReverb}
+  >
+    😶‍🌫️
   </button>
 </div>
 
