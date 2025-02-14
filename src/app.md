@@ -2,15 +2,9 @@
 
 ## v1.0
 
-- move more page logic to components
-
-- samples: 909 kick louder, delete cello, add vox
+- samples: 909 kick louder, mhmm sfoter, delete cello, delete flute. add vox/faces
 
 - clear sequence button
-
-- another sample effect
-
-- make distortion more boom
 
 - custom cursor
 
