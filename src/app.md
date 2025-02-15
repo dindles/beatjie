@@ -4,9 +4,9 @@
 
 - help overlay toggle
 
-- samples: 909 kick louder, mhmm sfoter, delete cello, delete flute. add vox/faces
-
 - clear sequence button
+
+- adjust sample volumes
 
 - custom cursor
 

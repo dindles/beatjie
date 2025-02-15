@@ -3,26 +3,38 @@ import * as Tone from 'tone'
 import type { Sample } from '$lib/audio/audio-models.svelte'
 
 export class AudioSequencer {
-  sequences: Tone.Sequence[] = []
+  private sequences: Tone.Sequence[] = []
+  private transport
+  private stepArray: number[] // Cache the step array
   is_playing: boolean = $state(false)
   active_step_index: number = $state(0)
   bpm: number = $state(120)
 
-  makeSequences(samples: Sample[]) {
-    this.sequences.forEach((seq) => seq.dispose())
+  constructor() {
+    this.transport = Tone.getTransport()
+    // Pre-compute the step array
+    this.stepArray = [...Array(16).keys()]
+  }
 
+  makeSequences(samples: Sample[]) {
+    // Clean up existing sequences
+    this.dispose()
+
+    // Create all sequences at once
     this.sequences = samples.map((sample) => {
       const seq = new Tone.Sequence(
         (time, step) => {
-          this.active_step_index = step
+          // Only update active_step_index for one sequence to avoid redundant updates
+          if (this.sequences[0] === seq) {
+            this.active_step_index = step
+          }
+
+          // Check sequence state before playing
           if (sample.sequence[step]) {
             sample.play(time)
           }
         },
-        //this syntax creates an empty array and spreads the index values
-        // across a new array. basically an easy way to assign
-        // sequential numbers to the positions of an array.
-        [...Array(16).keys()],
+        this.stepArray,
         '16n'
       )
 
@@ -42,19 +54,22 @@ export class AudioSequencer {
     }
     this.is_playing = !this.is_playing
   }
+
   private async startPlayback() {
-    if (Tone.getContext().state !== 'running') {
+    const context = Tone.getContext()
+    if (context.state !== 'running') {
       await Tone.start()
     }
-    this.sequences.forEach((seq) => seq.start())
-    Tone.getTransport().start('+0.1')
+
+    // Batch sequence starts
+    Promise.all(this.sequences.map((seq) => seq.start()))
+    this.transport.start('+0.1')
   }
 
   private stopPlayback() {
-    Tone.getTransport().stop()
-    this.sequences.forEach((seq) => {
-      seq.stop()
-    })
+    this.transport.stop()
+    // Batch sequence stops
+    Promise.all(this.sequences.map((seq) => seq.stop()))
   }
 
   getBPM(): number {
@@ -63,11 +78,11 @@ export class AudioSequencer {
 
   setBPM(new_bpm: number) {
     this.bpm = new_bpm
-    Tone.getTransport().bpm.value = new_bpm
+    this.transport.bpm.value = new_bpm
   }
 
   dispose() {
-    this.sequences.forEach((seq) => seq.dispose())
+    Promise.all(this.sequences.map((seq) => seq.dispose()))
     this.sequences = []
   }
 }
