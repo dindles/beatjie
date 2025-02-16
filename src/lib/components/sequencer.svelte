@@ -1,3 +1,4 @@
+<!-- sequencer.svelte -->
 <script lang="ts">
   import type { Sample } from '$lib/audio/audio-models.svelte'
   import type { AudioSequencer } from '$lib/audio/audio-sequencer.svelte'

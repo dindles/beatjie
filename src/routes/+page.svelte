@@ -17,7 +17,8 @@
   import AudioContextPrompt from '$lib/components/audio-context-prompt.svelte'
   import AudioPromptDenied from '$lib/components/audio-prompt-denied.svelte'
   import AudioLoadingMessage from '$lib/components/audio-loading-message.svelte'
-  import ColourSelector from '$lib/components/colour-selector.svelte'
+  import HelpOverlay from '$lib/components/help-overlay.svelte'
+  import AppSettings from '$lib/components/app-settings.svelte'
   import UserActivityPrompt from '$lib/components/user-activity-prompt.svelte'
   import Display from '$lib/components/display.svelte'
   import Samples from '$lib/components/samples.svelte'
@@ -48,6 +49,8 @@
 
   let samples: Sample[] = $state([])
   let selected_sample: Sample | undefined = $state(undefined)
+
+  let help_overlay_active = $state(false)
 
   // === State
   interface AppState {
@@ -131,7 +134,10 @@
     {:else if app_state['audio-loading']}
       <AudioLoadingMessage />
     {:else if app_state['app-ready']}
-      <ColourSelector />
+      {#if help_overlay_active}
+        <HelpOverlay bind:help_overlay_active />
+      {/if}
+      <AppSettings bind:help_overlay_active {audio_sequencer} {samples} />
       <Display {audio_chain}>
         {#if !selected_sample}
           <UserActivityPrompt />
