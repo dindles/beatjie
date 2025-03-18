@@ -121,7 +121,7 @@
 
   canvas {
     width: 100%;
-    aspect-ratio: 4/1;
+    aspect-ratio: 4/0.5;
     display: block;
   }
 </style>

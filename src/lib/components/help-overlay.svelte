@@ -1,10 +1,15 @@
+<!-- help-overlay.svelte -->
 <script lang="ts">
-  let { help_overlay_active = $bindable() } = $props()
+  interface Props {
+    help_overlay_active: boolean
+  }
+
+  let { help_overlay_active = $bindable() }: Props = $props()
 </script>
 
 <div class="app border">
   <div class="app-settings">
-    app settings
+    app settings – help, colours and clear sequences
     <div class="help-toggle">
       <button
         class="emoji-small"
@@ -15,10 +20,15 @@
     </div>
   </div>
   <div class="display">display</div>
-  <div class="samples">samples</div>
-  <div class="selected-sample-settings">selected sample settings</div>
-  <div class="sequencer">sequencer</div>
-  <div class="transport-and-main-settings">transport and main settings</div>
+  <div class="pack-select">use the pack selectors to switch sample packs</div>
+  <div class="samples">
+    samples - choose one to play, add to sequencer, or apply effects
+  </div>
+  <div class="selected-sample-settings">effects for the selected sample</div>
+  <div class="sequencer">16-step sequencer</div>
+  <div class="transport-and-main-settings">
+    sequencer stop/start, bpm and main channel effects
+  </div>
 </div>
 
 <style>

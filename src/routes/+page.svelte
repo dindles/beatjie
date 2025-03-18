@@ -50,8 +50,6 @@
   let samples: Sample[] = $state([])
   let selected_sample: Sample | undefined = $state(undefined)
 
-  let help_overlay_active = $state(false)
-
   // === State
   interface AppState {
     'fonts-loading': boolean
@@ -68,6 +66,8 @@
     'audio-loading': false,
     'app-ready': false,
   })
+
+  let help_overlay_active = $state(false)
 
   // === LIFECYCLE ================================
 
@@ -161,7 +161,7 @@
   }
 
   .app {
-    aspect-ratio: 4/6.9;
+    aspect-ratio: 4/6.6;
     overflow: hidden;
     padding: 0.4%;
     grid-template-rows: auto auto 1fr auto auto;
