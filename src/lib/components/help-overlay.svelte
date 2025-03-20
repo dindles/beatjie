@@ -33,9 +33,25 @@
 
 <style>
   .app {
-    aspect-ratio: 4/6.9;
+    aspect-ratio: 4/6.6;
     overflow: hidden;
     padding: 0.4%;
     grid-template-rows: auto auto 1fr auto auto;
+    text-align: center;
+  }
+
+  .app-settings {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 1rem;
+  }
+
+  .display {
+    width: 100%;
+    aspect-ratio: 4/0.5;
+    display: block;
   }
 </style>

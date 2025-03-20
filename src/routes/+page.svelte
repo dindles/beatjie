@@ -3,7 +3,7 @@
   // === IMPORTS ==============================
 
   // === Data
-  import { packs } from '$lib/audio/audio-packs'
+  import { packs } from '$lib/data/audio-packs'
 
   // === Audio types & classes
   import { Sample } from '$lib/audio/audio-models.svelte'

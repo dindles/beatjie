@@ -4,6 +4,14 @@
 
 - help overlay toggle
 
+- beatjie
+
+- change guitar to bass
+
+- get rid of pack-select fingers, click on pack icons or swipe
+
+- videos: d&b, usual test house w/ scream
+
 - clear sequence button
 
 - adjust sample volumes

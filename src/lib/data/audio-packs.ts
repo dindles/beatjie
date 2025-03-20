@@ -37,7 +37,7 @@ export const packs: Packs = [
       { id: 17, emoji: '🛖', url: `${audio_path}/2/1_hut.mp3` },
       { id: 18, emoji: '🔈', url: `${audio_path}/2/2_bass.mp3` },
       { id: 19, emoji: '🧘', url: `${audio_path}/2/3_yoga.mp3` },
-      { id: 20, emoji: '🎸', url: `${audio_path}/2/4_guitar.mp3` },
+      { id: 20, emoji: '🎸', url: `${audio_path}/2/4_standup.mp3` },
       { id: 21, emoji: '🪈', url: `${audio_path}/2/5_flute.mp3` },
       { id: 22, emoji: '🚗', url: `${audio_path}/2/6_rhodes.mp3` },
       { id: 23, emoji: '🧗', url: `${audio_path}/2/7_climb.mp3` },
