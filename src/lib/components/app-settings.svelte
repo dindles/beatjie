@@ -17,12 +17,12 @@
   }: Props = $props()
 
   let hue_emoji_rotation = $state(0)
-  let user_lightness = $state(0.8) // 0 - 1
+  let user_lightness = $state(1) // 0 - 1
   const CHROMA = 0.2 // 0 - 0.4
   let user_hue = $state(250) // 0 - 360
   let user_colour = $derived(`oklch(${user_lightness} ${CHROMA} ${user_hue})`)
   let black_or_white = $state('oklch(0 0 0)')
-  let theme = $state('light')
+  let theme: 'light' | 'dark' = $state('light')
   let disco_toggle = $state(false)
 
   function deleteSequences() {
@@ -41,20 +41,20 @@
     if (user_hue > 300) user_hue = 50
   }
 
-  function changeLightness() {
-    user_lightness = user_lightness === 0.8 ? 0.5 : 0.8
-  }
-
-  function cycleTheme() {
-    theme = theme === 'light' ? 'dark' : theme === 'dark' ? 'disco' : 'light'
+  function changeTheme() {
+    user_lightness = user_lightness === 1 ? 0.3 : 1
+    theme = theme === 'light' ? 'dark' : 'light'
     black_or_white = theme === 'light' ? 'oklch(0 0 0)' : 'oklch(1 0 0)'
   }
 
+  function toggleDisco() {
+    disco_toggle = !disco_toggle
+  }
+
   $effect(() => {
-    if (theme === 'disco') {
+    if (disco_toggle) {
       const interval = Tone.getTransport().scheduleRepeat(() => {
-        black_or_white =
-          black_or_white === 'oklch(0 0 0)' ? 'oklch(1 0 0)' : 'oklch(0 0 0)'
+        changeHue()
       }, '4n')
       return () => Tone.getTransport().clear(interval)
     }
@@ -64,11 +64,7 @@
     document.documentElement.style.setProperty('--user-colour', user_colour)
     document.documentElement.style.setProperty(
       '--black-or-white',
-      theme === 'disco'
-        ? disco_toggle
-          ? user_colour
-          : black_or_white
-        : black_or_white
+      black_or_white
     )
   })
 </script>
@@ -92,11 +88,12 @@
         changeHue()
       }}>🎨</button
     >
-    <button class="light-dark emoji-small" onclick={cycleTheme}>
-      {theme === 'light' ? '🌞' : theme === 'dark' ? '🌛' : '🪩'}
+    <button class="light-dark emoji-small" onclick={changeTheme}>
+      {theme === 'light' ? '🤩' : '😎'}
     </button>
-    <button class="emoji-small" onclick={changeLightness}
-      >{user_lightness === 0.8 ? '🤩' : '😎'}</button
+    <button
+      class="emoji-small disco-ball {disco_toggle ? 'active' : ''}"
+      onclick={toggleDisco}>🪩</button
     >
   </div>
 
@@ -133,5 +130,10 @@
 
   .help-toggle {
     margin-right: auto;
+  }
+
+  .disco-ball {
+    transition: transform 0.3s ease;
+    border-radius: var(--border-radius);
   }
 </style>
