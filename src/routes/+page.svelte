@@ -26,7 +26,7 @@
   import Sequencer from '$lib/components/sequencer.svelte'
   import TransportAndMainSettings from '$lib/components/transport-and-main-settings.svelte'
 
-  // === BINDINGS ============================
+  // === VARIABLES ============================
 
   // === Audio
   const chain_config: ChainConfig = $state({
@@ -123,6 +123,7 @@
   })
 </script>
 
+<!-- todo i expect there's a more elegant, type-driven solution to state management -->
 <main>
   <div class="app border">
     {#if app_state['fonts-loading']}
@@ -138,17 +139,11 @@
         <HelpOverlay bind:help_overlay_active />
       {/if}
       <AppSettings bind:help_overlay_active {audio_sequencer} {samples} />
-      <Display {audio_chain}>
-        {#if !selected_sample}
-          <UserActivityPrompt />
-        {/if}
-      </Display>
+      <Display {audio_chain} />
       <Samples {packs} {samples} {audio_engine} bind:selected_sample />
-      {#if selected_sample}
-        <SelectedSampleSettings {selected_sample} {pitches} {audio_chain} />
-        <Sequencer {samples} {selected_sample} {audio_sequencer} />
-        <TransportAndMainSettings {audio_sequencer} {audio_chain} />
-      {/if}
+      <SelectedSampleSettings {selected_sample} {pitches} {audio_chain} />
+      <Sequencer {samples} {selected_sample} {audio_sequencer} />
+      <TransportAndMainSettings {audio_sequencer} {audio_chain} />
     {/if}
   </div>
 </main>
@@ -161,9 +156,12 @@
   }
 
   .app {
+    position: relative;
+    grid-template-rows: auto auto 1fr auto auto;
+    display: grid;
+    min-height: 90vmin;
     aspect-ratio: 4/6.6;
     overflow: hidden;
     padding: 0.4%;
-    grid-template-rows: auto auto 1fr auto auto;
   }
 </style>

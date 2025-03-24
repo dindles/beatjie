@@ -4,10 +4,13 @@
 
   interface Props {
     audio_chain: AudioChain
-    children: any
+    // children: any
   }
 
-  let { audio_chain, children }: Props = $props()
+  // use children props (and uncomment @render below) to send text to display
+  // let { audio_chain, children }: Props = $props()
+
+  let { audio_chain }: Props = $props()
   let canvas: HTMLCanvasElement
   let analysis_values: Float32Array | Float32Array[] = $state([])
 
@@ -107,7 +110,7 @@
 </script>
 
 <div class="display">
-  {@render children()}
+  <!-- {@render children()} -->
   <canvas bind:this={canvas}></canvas>
 </div>
 

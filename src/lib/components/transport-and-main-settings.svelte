@@ -25,20 +25,20 @@
 
   <div class="main-settings">
     <button
-      class="emoji-large"
+      class="emoji-large border"
       onclick={() =>
         audio_chain.toggleMainHighPass(!audio_chain.mainIsHighPassed)}
       class:active={audio_chain.mainIsHighPassed}>🫴</button
     >
     <button
       class:active={audio_chain.mainIsDistorted}
-      class="emoji-large"
+      class="emoji-large border"
       onclick={() =>
         audio_chain.toggleMainDistortion(!audio_chain.mainIsDistorted)}
       >💥</button
     >
 
-    <div class="bpm-control">
+    <div class="bpm-control border">
       <BPMSelector {audio_sequencer} />
     </div>
   </div>

@@ -10,6 +10,8 @@
 
 - get rid of pack-select fingers, click on pack icons or swipe
 
+- should be able to undo deletion of sequence
+
 - videos: d&b, usual test house w/ scream
 
 - clear sequence button
