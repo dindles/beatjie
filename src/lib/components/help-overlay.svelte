@@ -7,8 +7,10 @@
 
 <div class="help-overlay">
   <div class="overlay-content">
-    <div class="app-settings element">
-      app settings – help, colours and clear sequences
+    <div class="app-settings-help-toggle-container">
+      <div class="app-settings element">
+        <div>app settings – help, colours and clear sequences</div>
+      </div>
       <div class="help-toggle">
         <button
           class="emoji-small"
@@ -18,19 +20,21 @@
         >
       </div>
     </div>
-    <div class="display element">display</div>
+    <div class="display element"><div>display</div></div>
     <div class="pack-select element">
-      use the pack selectors to switch sample packs
+      <div>use the pack selectors to switch sample packs</div>
     </div>
     <div class="samples element">
-      samples - choose one to play, add to sequencer, or apply effects
+      <div>
+        samples - choose one to play, add to sequencer, or apply effects
+      </div>
     </div>
     <div class="selected-sample-settings element">
-      effects for the selected sample
+      <div>effects for the selected sample</div>
     </div>
     <div class="sequencer element">16-step sequencer</div>
     <div class="transport-and-main-settings element">
-      sequencer stop/start, bpm and main channel effects
+      <div>sequencer stop/start, bpm and main channel effects</div>
     </div>
   </div>
 </div>
@@ -56,69 +60,52 @@
   }
 
   .element {
-    border: 1px solid var(--border-color, white);
-    border-radius: var(--border-radius, 4px);
-    text-align: center;
+    border: 1px solid var(--user-colour);
+    border-radius: var(--border-radius);
+    color: var(--user-colour);
+    background-color: var(--black-or-white);
+    display: grid;
+    place-items: center;
   }
 
-  .app-settings {
-    position: relative;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  .app-settings-help-toggle-container {
     width: 100%;
     padding: 1rem;
+    display: flex;
   }
 
   .display {
     width: 100%;
     aspect-ratio: 4/0.5;
-    display: flex;
-    justify-content: center;
-    align-items: center;
   }
 
   .pack-select {
-    display: grid;
     grid-template-columns: auto 1fr auto;
-    place-items: center;
     gap: var(--spacing);
   }
 
   .samples {
-    display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: var(--spacing);
-    place-items: center;
   }
 
   .selected-sample-settings {
-    display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: var(--spacing);
-    place-items: center;
-    margin-top: 0.4em;
-    margin-bottom: 0.4em;
   }
 
   .sequencer {
-    display: grid;
     grid-template-columns: repeat(8, 1fr);
+    grid-template-rows: repeat(2, 1fr);
     gap: var(--spacing);
-    place-items: center;
   }
 
   .transport-and-main-settings {
-    display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: var(--spacing);
-    place-items: center;
-    margin-top: 0.4em;
-    margin-bottom: 0.4em;
   }
 
   .help-toggle {
-    position: absolute;
-    right: 1rem;
+    margin-left: auto;
   }
 </style>

@@ -17,7 +17,7 @@
   }: Props = $props()
 
   let hue_emoji_rotation = $state(0)
-  let user_lightness = $state(1) // 0 - 1
+  let user_lightness = $state(0.9) // 0 - 1
   const CHROMA = 0.2 // 0 - 0.4
   let user_hue = $state(250) // 0 - 360
   let user_colour = $derived(`oklch(${user_lightness} ${CHROMA} ${user_hue})`)
@@ -42,7 +42,7 @@
   }
 
   function changeTheme() {
-    user_lightness = user_lightness === 1 ? 0.3 : 1
+    user_lightness = user_lightness === 0.9 ? 0.5 : 0.9
     theme = theme === 'light' ? 'dark' : 'light'
     black_or_white = theme === 'light' ? 'oklch(0 0 0)' : 'oklch(1 0 0)'
   }
@@ -70,14 +70,7 @@
 </script>
 
 <div class="controls-container">
-  <div class="help-toggle">
-    <button
-      class="emoji-small"
-      onclick={() => {
-        help_overlay_active = !help_overlay_active
-      }}>❓</button
-    >
-  </div>
+  <button class="delete emoji-small" onclick={deleteSequences}>🗑</button>
 
   <div class="color-controls">
     <button
@@ -97,7 +90,14 @@
     >
   </div>
 
-  <button class="delete emoji-small" onclick={deleteSequences}>🗑</button>
+  <div class="help-toggle">
+    <button
+      class="emoji-small"
+      onclick={() => {
+        help_overlay_active = !help_overlay_active
+      }}>❓</button
+    >
+  </div>
 </div>
 
 <style>
@@ -111,7 +111,7 @@
   }
 
   .delete {
-    margin-left: auto;
+    margin-right: auto;
   }
 
   .color-controls {
@@ -129,7 +129,7 @@
   }
 
   .help-toggle {
-    margin-right: auto;
+    margin-left: auto;
   }
 
   .disco-ball {
