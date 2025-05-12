@@ -2,11 +2,11 @@
 
 ## v1.0
 
+- first screen colour
+
+- custom cursor
+
 - help overlay toggle
-
-- beatjie
-
-- change guitar to bass
 
 - get rid of pack-select fingers, click on pack icons or swipe
 

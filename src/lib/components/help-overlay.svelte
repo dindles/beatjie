@@ -8,11 +8,7 @@
 <div class="help-overlay">
   <div class="overlay-content">
     <div class="app-settings-help-toggle-container">
-      <div class="app-settings element">
-        <div class="help-text">
-          app settings – help, colours and clear sequences
-        </div>
-      </div>
+      <div class="app-settings element no-border"></div>
       <div class="help-toggle">
         <button
           class="emoji-small"
@@ -22,25 +18,21 @@
         >
       </div>
     </div>
-    <div class="display element"><div>display</div></div>
+    <div class="display no-border"></div>
     <div class="pack-select element">
-      <div class="help-text">use the pack selectors to switch sample packs</div>
+      <div class="help-text">select a pack</div>
     </div>
     <div class="samples element">
-      <div class="help-text">
-        samples - choose one to play, add to sequencer, or apply effects
-      </div>
+      <div class="help-text">select a sample</div>
     </div>
     <div class="selected-sample-settings element">
-      <div class="help-text">effects for the selected sample</div>
+      <div class="help-text">selected-sample effects</div>
     </div>
     <div class="sequencer element">
-      <div class="help-text">16-step sequencer</div>
+      <div class="help-text">selected-sample sequencer</div>
     </div>
     <div class="transport-and-main-settings element">
-      <div class="help-text">
-        sequencer stop/start, bpm and main channel effects
-      </div>
+      <div class="help-text">stop/start, main-channel effects, bpm</div>
     </div>
   </div>
 </div>
@@ -66,7 +58,7 @@
   }
 
   .element {
-    border: 1px solid var(--user-colour);
+    border: 3px solid var(--user-colour);
     border-radius: var(--border-radius);
     color: var(--user-colour);
     background-color: var(--black-or-white);
@@ -78,6 +70,7 @@
 
   .help-text {
     grid-column: 1 / -1;
+    font-size: 2rem;
   }
 
   .app-settings-help-toggle-container {
@@ -88,5 +81,9 @@
 
   .help-toggle {
     margin-left: auto;
+  }
+
+  .no-border {
+    border: none;
   }
 </style>
