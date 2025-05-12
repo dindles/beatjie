@@ -3,6 +3,8 @@
 </script>
 
 <div class="audio-context-prompt">
+  <div class="welcome text-small"><i>beatjie</i></div>
+  <div class="emoji-large">🙂</div>
   <p class="text-small">
     this page <br />uses audio. <br />is that ok?
   </p>
@@ -34,5 +36,9 @@
     display: flex;
     gap: 1em;
     justify-content: center;
+  }
+
+  .welcome {
+    font-size: 4rem;
   }
 </style>

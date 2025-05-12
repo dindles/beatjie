@@ -13,6 +13,7 @@
   import { AudioSequencer } from '$lib/audio/audio-sequencer.svelte'
 
   // === Svelte components
+  import Cursor from '$lib/components/cursor.svelte'
   import FontLoadingMessage from '$lib/components/font-loading-message.svelte'
   import AudioContextPrompt from '$lib/components/audio-context-prompt.svelte'
   import AudioPromptDenied from '$lib/components/audio-prompt-denied.svelte'
@@ -124,6 +125,8 @@
 </script>
 
 <!-- todo i expect there's a more elegant, type-driven solution to state management -->
+
+<Cursor />
 <main>
   <div class="app border">
     {#if app_state['fonts-loading']}
@@ -139,7 +142,7 @@
         <HelpOverlay bind:help_overlay_active />
       {/if}
       <AppSettings bind:help_overlay_active {audio_sequencer} {samples} />
-      <Display {audio_chain} />
+      <Display {audio_chain} {selected_sample} />
       <Samples {packs} {samples} {audio_engine} bind:selected_sample />
       <SelectedSampleSettings {selected_sample} {pitches} {audio_chain} />
       <Sequencer {samples} {selected_sample} {audio_sequencer} />
@@ -156,6 +159,7 @@
   }
 
   .app {
+    cursor: none;
     position: relative;
     grid-template-rows: auto auto 1fr auto auto;
     display: grid;

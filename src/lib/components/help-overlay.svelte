@@ -20,19 +20,19 @@
     </div>
     <div class="display no-border"></div>
     <div class="pack-select element">
-      <div class="help-text">select a pack</div>
+      <div class="help-text"><i>select a pack</i></div>
     </div>
     <div class="samples element">
-      <div class="help-text">select a sample</div>
+      <div class="help-text"><i>select a sample</i></div>
     </div>
     <div class="selected-sample-settings element">
-      <div class="help-text">selected-sample effects</div>
+      <div class="help-text"><i>per-sample effects</i></div>
     </div>
     <div class="sequencer element">
-      <div class="help-text">selected-sample sequencer</div>
+      <div class="help-text"><i>per-sample sequencer</i></div>
     </div>
     <div class="transport-and-main-settings element">
-      <div class="help-text">stop/start, main-channel effects, bpm</div>
+      <div class="help-text"><i>stop/start, main-channel effects, bpm</i></div>
     </div>
   </div>
 </div>
@@ -53,13 +53,15 @@
     width: 100%;
     height: 100%;
     display: grid;
-    grid-template-rows: 1fr 1.5fr 1fr 4fr 2fr 2fr 2fr;
+    grid-template-rows: 1fr 1.2fr 1fr 4fr 2fr 2fr 2fr;
     padding: 0.4%;
+    gap: 0.4%;
   }
 
   .element {
     border: 3px solid var(--user-colour);
     border-radius: var(--border-radius);
+    border-style: dashed;
     color: var(--user-colour);
     background-color: var(--black-or-white);
     gap: var(--spacing);
@@ -69,6 +71,7 @@
   }
 
   .help-text {
+    font-family: var(--font-text);
     grid-column: 1 / -1;
     font-size: 2rem;
   }

@@ -1,16 +1,14 @@
 <!--display.svelte -->
 <script lang="ts">
   import type { AudioChain } from '$lib/audio/audio-chain.svelte'
+  import type { Sample } from '$lib/audio/audio-models.svelte'
 
   interface Props {
     audio_chain: AudioChain
-    // children: any
+    selected_sample: Sample | undefined
   }
 
-  // use children props (and uncomment @render below) to send text to display
-  // let { audio_chain, children }: Props = $props()
-
-  let { audio_chain }: Props = $props()
+  let { audio_chain, selected_sample }: Props = $props()
   let canvas: HTMLCanvasElement
   let analysis_values: Float32Array | Float32Array[] = $state([])
 
@@ -110,8 +108,19 @@
 </script>
 
 <div class="display">
-  <!-- {@render children()} -->
-  <canvas bind:this={canvas}></canvas>
+  <div
+    class="messages"
+    style="visibility: {!selected_sample ? 'visible' : 'hidden'}"
+  >
+    <div class="select-sample-message text-small">
+      <i>pick a sound</i>
+      <div class="select-sample-message-emoji emoji-small">👇</div>
+    </div>
+  </div>
+  <canvas
+    bind:this={canvas}
+    style="visibility: {selected_sample ? 'visible' : 'hidden'}"
+  ></canvas>
 </div>
 
 <style>
@@ -120,6 +129,22 @@
     width: 100%;
     height: auto;
     background: transparent;
+  }
+
+  .messages {
+    display: grid;
+    place-items: center;
+  }
+
+  .select-sample-message {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    z-index: 1;
+  }
+
+  .select-sample-message-emoji {
+    font-size: 2rem;
   }
 
   canvas {

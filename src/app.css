@@ -5,7 +5,7 @@
   --border-radius: 14px;
   --border-weight: 5px;
 
-  --user-colour: oklch(0.8 0.2 250);
+  --user-colour: oklch(100 0 0);
   --black-or-white: oklch(0 0 0);
 
   --font-emoji: 'Noto Emoji';
@@ -21,6 +21,7 @@
 * {
   color: var(--user-colour);
   background-color: var(--black-or-white);
+  filter: blur(0.27px);
 }
 
 /* RESET */
@@ -34,8 +35,21 @@
 * {
   margin: 0;
   padding: 0;
+  /* hides the default cursor */
+  cursor: none;
   /* disables double tap to zoom */
   touch-action: manipulation;
+}
+
+html,
+body,
+*,
+*:hover,
+button,
+a,
+[onclick],
+[role='button'] {
+  cursor: none !important;
 }
 
 html,
@@ -66,7 +80,7 @@ blockquote {
   overflow-wrap: break-word;
 }
 
-/* Global class and element styles */
+/* Global classes and styled elements */
 
 button {
   background: transparent;

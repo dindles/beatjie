@@ -60,6 +60,7 @@
     }
   })
 
+  // this is how we apply reactive state to the global styles
   $effect(() => {
     document.documentElement.style.setProperty('--user-colour', user_colour)
     document.documentElement.style.setProperty(

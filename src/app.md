@@ -2,35 +2,32 @@
 
 ## v1.0
 
-- first screen colour
+- clicks in second house and adjacent bass
 
-- custom cursor
+- custom cursor issues
 
-- help overlay toggle
+  - need to tilt
+  - need to remove after vids
 
-- get rid of pack-select fingers, click on pack icons or swipe
-
-- should be able to undo deletion of sequence
-
-- videos: d&b, usual test house w/ scream
-
-- clear sequence button
-
-- adjust sample volumes
-
-- custom cursor
-
-- font subsetting? https://fontfaceobserver.com/?
+- delete must delete all sample and main effect settings
 
 - todos and console.logs
 
 - deploy
 
-- video
+- videos: d&b, usual test house w/ scream
 
 ## 1.1
 
 - color/sequence persists between sessions
+
+- get rid of pack-select fingers, click on pack icons or swipe
+
+- font subsetting? https://fontfaceobserver.com/?
+
+- undo sequence deletion
+
+- adjust sample volumes
 
 - keyboard control
 
@@ -43,8 +40,8 @@
 
 ## 2.0
 
-- sign in, save sequences
 - share sequences
+- sign in, save sequences
 
 ## 3.0
 
