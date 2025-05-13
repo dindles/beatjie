@@ -49,7 +49,7 @@
     ctx.strokeStyle = getComputedStyle(document.documentElement)
       .getPropertyValue('--user-colour')
       .trim()
-    ctx.lineWidth = dim * 0.06
+    ctx.lineWidth = dim * 0.08
 
     if (!analysis_values || analysis_values.length === 0) return
 
@@ -108,19 +108,16 @@
 </script>
 
 <div class="display">
-  <div
-    class="messages"
-    style="visibility: {!selected_sample ? 'visible' : 'hidden'}"
-  >
-    <div class="select-sample-message text-small">
-      <i>pick a sound</i>
-      <div class="select-sample-message-emoji emoji-small">👇</div>
+  {#if !selected_sample}
+    <div class="messages">
+      <div class="select-sample-message text-small">
+        <div class="select-sample-message-emoji emoji-small">👇</div>
+        <i>pick a sound</i>
+        <div class="select-sample-message-emoji emoji-small">👇</div>
+      </div>
     </div>
-  </div>
-  <canvas
-    bind:this={canvas}
-    style="visibility: {selected_sample ? 'visible' : 'hidden'}"
-  ></canvas>
+  {/if}
+  <canvas bind:this={canvas} class:hidden={!selected_sample}></canvas>
 </div>
 
 <style>
@@ -128,7 +125,6 @@
     position: relative;
     width: 100%;
     height: auto;
-    background: transparent;
   }
 
   .messages {
@@ -145,6 +141,10 @@
 
   .select-sample-message-emoji {
     font-size: 2rem;
+  }
+
+  .hidden {
+    display: none;
   }
 
   canvas {
