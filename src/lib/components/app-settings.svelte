@@ -60,7 +60,7 @@
     }
   })
 
-  // this is how we apply reactive state to the global styles
+  // this is the piping that lets us apply reactive state to the app.css styles
   $effect(() => {
     document.documentElement.style.setProperty('--user-colour', user_colour)
     document.documentElement.style.setProperty(

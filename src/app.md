@@ -2,14 +2,9 @@
 
 ## v1.0
 
-- clicks in second house and adjacent bass
+- clicks in second house and adjacent bass and Wilhelm
 
-- custom cursor issues
-
-  - need to tilt
-  - need to remove after vids
-
-- delete must delete all sample and main effect settings
+- delete must reset all sample and main effect settings
 
 - todos and console.logs
 

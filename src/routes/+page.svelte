@@ -124,9 +124,8 @@
   })
 </script>
 
-<!-- todo i expect there's a more elegant, type-driven solution to state management -->
-
 <Cursor />
+
 <main>
   <div class="app border">
     {#if app_state['fonts-loading']}

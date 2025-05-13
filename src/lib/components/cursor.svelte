@@ -3,6 +3,7 @@
   let cursorY = $state(0)
   let visible = $state(false)
   let is_clicked = $state(false)
+  let use_difference = $state(true)
 
   function updateCursor(e: MouseEvent) {
     if (!visible) {
@@ -26,6 +27,22 @@
     document.addEventListener('mousedown', handleMouseDown)
     document.addEventListener('mouseup', handleMouseUp)
 
+    // the following checks the current theme and adjusts the cursor mix-blend-mode to preserve visibility
+    const checkTheme = () => {
+      const blackOrWhite = getComputedStyle(document.documentElement)
+        .getPropertyValue('--black-or-white')
+        .trim()
+      use_difference = blackOrWhite.includes('0 0 0')
+    }
+
+    const observer = new MutationObserver(checkTheme)
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['style'],
+    })
+
+    checkTheme()
+
     cursorX = window.innerWidth / 2
     cursorY = window.innerHeight / 2
     visible = true
@@ -35,6 +52,7 @@
       document.removeEventListener('mousemove', updateCursor)
       document.removeEventListener('mousedown', handleMouseDown)
       document.removeEventListener('mouseup', handleMouseUp)
+      observer.disconnect()
     }
   })
 </script>
@@ -46,6 +64,7 @@
     top: {cursorY}px; 
     opacity: {visible ? 1 : 0};
     transform: translate(-30%, -10%) scale({is_clicked ? 0.97 : 1});
+    mix-blend-mode: {use_difference ? 'difference' : 'multiply'};
   "
 >
   👆
@@ -67,6 +86,5 @@
       top 0.04s linear,
       transform 0.1s ease;
     background-color: transparent;
-    mix-blend-mode: difference;
   }
 </style>
