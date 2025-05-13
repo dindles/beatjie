@@ -20,7 +20,6 @@
   import AudioLoadingMessage from '$lib/components/audio-loading-message.svelte'
   import HelpOverlay from '$lib/components/help-overlay.svelte'
   import AppSettings from '$lib/components/app-settings.svelte'
-  import UserActivityPrompt from '$lib/components/user-activity-prompt.svelte'
   import Display from '$lib/components/display.svelte'
   import Samples from '$lib/components/samples.svelte'
   import SelectedSampleSettings from '$lib/components/selected-sample-settings.svelte'
@@ -140,7 +139,12 @@
       {#if help_overlay_active}
         <HelpOverlay bind:help_overlay_active />
       {/if}
-      <AppSettings bind:help_overlay_active {audio_sequencer} {samples} />
+      <AppSettings
+        bind:help_overlay_active
+        {audio_chain}
+        {audio_sequencer}
+        {samples}
+      />
       <Display {audio_chain} {selected_sample} />
       <Samples {packs} {samples} {audio_engine} bind:selected_sample />
       <SelectedSampleSettings {selected_sample} {pitches} {audio_chain} />

@@ -3,16 +3,19 @@
   import * as Tone from 'tone'
   import type { Sample } from '$lib/audio/audio-models.svelte'
   import type { AudioSequencer } from '$lib/audio/audio-sequencer.svelte'
+  import type { AudioChain } from '$lib/audio/audio-chain.svelte'
 
   interface Props {
     help_overlay_active: boolean
     audio_sequencer: AudioSequencer
+    audio_chain: AudioChain
     samples: Sample[]
   }
 
   let {
     help_overlay_active = $bindable(),
     audio_sequencer,
+    audio_chain,
     samples,
   }: Props = $props()
 
@@ -31,6 +34,11 @@
 
     samples.forEach((sample: Sample) => {
       sample.sequence = new Array(sample.sequence.length).fill(false)
+      sample.pitch = 'C2'
+      audio_chain.toggleSampleDelay(sample, false)
+      audio_chain.toggleSampleReverb(sample, false)
+      sample.delay_is_active = false
+      sample.reverb_is_active = false
     })
 
     audio_sequencer.makeSequences(samples)

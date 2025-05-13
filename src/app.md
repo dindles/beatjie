@@ -2,10 +2,6 @@
 
 ## v1.0
 
-- clicks in second house and adjacent bass and Wilhelm
-
-- delete must reset all sample and main effect settings
-
 - todos and console.logs
 
 - deploy
