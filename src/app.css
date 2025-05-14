@@ -16,12 +16,13 @@
   --emoji-sequencer: clamp(1.1rem, 2.3vmin, 4rem);
   --text-small: clamp(1rem, 4vmin, 2.4rem);
   --text-display: clamp(1rem, 2.4vmin, 2.4rem);
+  --text-logo: clamp(2rem, 6.2vmin, 8rem);
 }
 
 * {
   color: var(--user-colour);
   background-color: var(--black-or-white);
-  filter: blur(0.27px);
+  /* filter: blur(0.07px); */
 }
 
 /* RESET */
@@ -36,7 +37,7 @@
   margin: 0;
   padding: 0;
   /* hides the default cursor */
-  cursor: none;
+  /* cursor: none; */
   /* disables double tap to zoom */
   touch-action: manipulation;
 }
@@ -49,7 +50,7 @@ button,
 a,
 [onclick],
 [role='button'] {
-  cursor: none !important;
+  /* cursor: none !important; */
 }
 
 html,
@@ -110,6 +111,11 @@ button {
   font-family: var(--font-emoji);
   font-size: var(--emoji-small);
   font-weight: 900;
+}
+
+.text-logo {
+  font-family: var(--font-text);
+  font-size: var(--text-logo);
 }
 
 .text-small {

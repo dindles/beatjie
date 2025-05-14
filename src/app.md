@@ -6,8 +6,6 @@
 
 - todos and console.logs
 
-- favicon, meta shit
-
 - deploy
 
 - videos: d&b, usual test house w/ scream

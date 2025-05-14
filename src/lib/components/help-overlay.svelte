@@ -18,7 +18,14 @@
         >
       </div>
     </div>
-    <div class="display no-border"></div>
+    <div class="display no-border">
+      <div class="help-text overview">
+        <p>tap samples. each sample has its own sequencer and effects.</p>
+        <div class="button-indicator">
+          <p>here's a map</p>
+        </div>
+      </div>
+    </div>
     <div class="pack-select element">
       <div class="help-text"><i>select a pack</i></div>
     </div>
@@ -73,17 +80,29 @@
   .help-text {
     font-family: var(--font-text);
     grid-column: 1 / -1;
-    font-size: 2rem;
+    font-size: var(--text-small);
+  }
+
+  .overview {
+    font-size: var(--font-text);
+    text-align: center;
+  }
+
+  .button-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .app-settings-help-toggle-container {
     width: 100%;
-    padding: 1rem;
     display: flex;
   }
 
   .help-toggle {
     margin-left: auto;
+    margin-top: 0.5rem;
+    margin-right: 0.5rem;
   }
 
   .no-border {

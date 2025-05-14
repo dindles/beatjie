@@ -48,7 +48,7 @@
     visible = true
 
     return () => {
-      document.documentElement.style.cursor = ''
+      // document.documentElement.style.cursor = ''
       document.removeEventListener('mousemove', updateCursor)
       document.removeEventListener('mousedown', handleMouseDown)
       document.removeEventListener('mouseup', handleMouseUp)

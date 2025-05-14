@@ -125,7 +125,9 @@
 </script>
 
 <Meta />
-<Cursor />
+
+<!-- if disabling, also disable the  -->
+<!-- <Cursor /> -->
 
 <main>
   <div class="app border">
@@ -164,7 +166,7 @@
   }
 
   .app {
-    cursor: none;
+    /* cursor: none; */
     position: relative;
     grid-template-rows: auto auto 1fr auto auto;
     display: grid;

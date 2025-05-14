@@ -108,7 +108,7 @@
 </script>
 
 <div class="display">
-  {#if !selected_sample}
+  <!-- {#if !selected_sample}
     <div class="messages">
       <div class="select-sample-message text-small">
         <div class="select-sample-message-emoji emoji-small">👇</div>
@@ -116,7 +116,7 @@
         <div class="select-sample-message-emoji emoji-small">👇</div>
       </div>
     </div>
-  {/if}
+  {/if} -->
   <canvas bind:this={canvas} class:hidden={!selected_sample}></canvas>
 </div>
 
