@@ -27,7 +27,7 @@
     document.addEventListener('mousedown', handleMouseDown)
     document.addEventListener('mouseup', handleMouseUp)
 
-    // the following checks the current theme and adjusts the cursor mix-blend-mode to preserve visibility
+    // checks the current theme and adjusts the cursor mix-blend-mode to preserve visibility
     const checkTheme = () => {
       const blackOrWhite = getComputedStyle(document.documentElement)
         .getPropertyValue('--black-or-white')

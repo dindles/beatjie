@@ -13,6 +13,7 @@
   import { AudioSequencer } from '$lib/audio/audio-sequencer.svelte'
 
   // === Svelte components
+  import Meta from '$lib/components/meta.svelte'
   import Cursor from '$lib/components/cursor.svelte'
   import FontLoadingMessage from '$lib/components/font-loading-message.svelte'
   import AudioContextPrompt from '$lib/components/audio-context-prompt.svelte'
@@ -123,6 +124,7 @@
   })
 </script>
 
+<Meta />
 <Cursor />
 
 <main>

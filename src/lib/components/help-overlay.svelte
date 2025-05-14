@@ -26,13 +26,13 @@
       <div class="help-text"><i>select a sample</i></div>
     </div>
     <div class="selected-sample-settings element">
-      <div class="help-text"><i>per-sample effects</i></div>
+      <div class="help-text"><i>per-sample fx</i></div>
     </div>
     <div class="sequencer element">
       <div class="help-text"><i>per-sample sequencer</i></div>
     </div>
     <div class="transport-and-main-settings element">
-      <div class="help-text"><i>stop/start, main-channel effects, bpm</i></div>
+      <div class="help-text"><i>play/stop, main-channel fx, bpm</i></div>
     </div>
   </div>
 </div>

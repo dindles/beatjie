@@ -2,7 +2,11 @@
 
 ## v1.0
 
+- check mobile yikes
+
 - todos and console.logs
+
+- favicon, meta shit
 
 - deploy
 
