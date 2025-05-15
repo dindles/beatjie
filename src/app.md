@@ -2,7 +2,11 @@
 
 ## v1.0
 
-- check mobile yikes
+- get rid of pack-select fingers, click on pack icons or swipe
+
+- toggle sample preview
+
+- check mobile
 
 - todos and console.logs
 
@@ -13,8 +17,6 @@
 ## 1.1
 
 - color/sequence persists between sessions
-
-- get rid of pack-select fingers, click on pack icons or swipe
 
 - font subsetting? https://fontfaceobserver.com/?
 
@@ -30,13 +32,3 @@
 - visualiser
   - add toggles between waveform and fft?
   - threlte?
-
-## 2.0
-
-- share sequences
-- sign in, save sequences
-
-## 3.0
-
-- update with new packs
-- upload your bars as audio, share them with others

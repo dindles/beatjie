@@ -36,8 +36,6 @@
 * {
   margin: 0;
   padding: 0;
-  /* hides the default cursor */
-  /* cursor: none; */
   /* disables double tap to zoom */
   touch-action: manipulation;
 }
@@ -86,7 +84,7 @@ blockquote {
 button {
   background: transparent;
   border: none;
-  cursor: pointer;
+  /* cursor: pointer; */
   padding: 0;
   aspect-ratio: 1;
   display: grid;

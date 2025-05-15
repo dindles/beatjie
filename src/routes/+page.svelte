@@ -126,7 +126,6 @@
 
 <Meta />
 
-<!-- if disabling, also disable the  -->
 <!-- <Cursor /> -->
 
 <main>

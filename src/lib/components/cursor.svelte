@@ -22,7 +22,7 @@
   }
 
   $effect(() => {
-    document.documentElement.style.cursor = 'none'
+    // document.documentElement.style.cursor = 'none'
     document.addEventListener('mousemove', updateCursor)
     document.addEventListener('mousedown', handleMouseDown)
     document.addEventListener('mouseup', handleMouseUp)
