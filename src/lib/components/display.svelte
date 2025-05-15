@@ -1,4 +1,3 @@
-<!--display.svelte -->
 <script lang="ts">
   import type { AudioChain } from '$lib/audio/audio-chain.svelte'
   import type { Sample } from '$lib/audio/audio-models.svelte'

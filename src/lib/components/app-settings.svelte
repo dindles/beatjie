@@ -1,4 +1,3 @@
-<!-- app-settings.svelte -->
 <script lang="ts">
   import * as Tone from 'tone'
   import type { Sample } from '$lib/audio/audio-models.svelte'

@@ -1,4 +1,3 @@
-<!-- bpm-selector.svelte -->
 <script lang="ts">
   import type { AudioSequencer } from '$lib/audio/audio-sequencer.svelte'
 

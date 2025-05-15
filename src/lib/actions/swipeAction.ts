@@ -1,4 +1,3 @@
-// src/lib/actions/swipeAction.ts
 interface SwipeActionOptions {
   onSwipeLeft: () => void
   onSwipeRight: () => void

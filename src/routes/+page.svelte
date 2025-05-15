@@ -1,4 +1,3 @@
-<!-- +page.svelte -->
 <script lang="ts">
   // === IMPORTS ==============================
 
