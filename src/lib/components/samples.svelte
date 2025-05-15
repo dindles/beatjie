@@ -71,7 +71,7 @@
   function handleTouchEnd() {
     if (!is_swiping) return
 
-    const minSwipeDistance = 50 // minimum distance to register as a swipe
+    const minSwipeDistance = 100 // minimum distance to register as a swipe
     const swipeDistance = touch_end_x - touch_start_x
 
     if (Math.abs(swipeDistance) > minSwipeDistance) {
@@ -102,9 +102,25 @@
       animating = false
     }, 350) // match this with transition duration
   }
+
+  function togglePreview() {
+    preview_samples_active = !preview_samples_active
+  }
 </script>
 
-<PackSelector {packs} {samples} bind:selected_pack_index />
+<div class="pack-selector-and-preview-toggle">
+  <PackSelector {packs} {samples} bind:selected_pack_index />
+
+  <button
+    class="preview-toggle emoji-small"
+    onclick={togglePreview}
+    aria-label={preview_samples_active
+      ? 'Disable sample preview'
+      : 'Enable sample preview'}
+  >
+    {preview_samples_active ? '🎧' : '🚫'}
+  </button>
+</div>
 
 <div
   class="pack-container"
@@ -147,6 +163,11 @@
 </div>
 
 <style>
+  .pack-selector-and-preview-toggle {
+    display: flex;
+    justify-content: space-between;
+  }
+
   .pack-container {
     width: 100%;
     overflow: hidden;

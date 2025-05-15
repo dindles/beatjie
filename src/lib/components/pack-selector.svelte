@@ -34,23 +34,29 @@
 
 <style>
   .pack-select {
-    display: grid;
-    place-items: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
   }
 
   .pack-indicators {
     display: flex;
     gap: var(--spacing);
-    justify-content: center;
+    justify-content: flex-start;
   }
 
   .pack-indicator {
     aspect-ratio: 1;
-    height: 1.2em;
+    height: 2.2em;
     transition: all 0.1s ease;
   }
 
   .pack-indicator.playing {
     transform: scale(1.1);
+  }
+
+  .preview-toggle {
+    margin-left: auto;
   }
 </style>
