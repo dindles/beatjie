@@ -1,4 +1,3 @@
-<!-- Samples.svelte -->
 <script lang="ts">
   import * as Tone from 'tone'
   import type { Packs, Sample } from '$lib/audio/audio-models.svelte'
@@ -6,6 +5,7 @@
   import { AudioEngine } from '$lib/audio/audio-engine.svelte'
   import { cubicOut } from 'svelte/easing'
   import { fly } from 'svelte/transition'
+  import { swipe } from '$lib/actions/swipeAction'
 
   interface Props {
     packs: Packs
@@ -24,10 +24,6 @@
   let selected_pack_index: number = $state(
     Math.floor(Math.random() * packs.length)
   )
-
-  let touch_start_x = $state(0)
-  let touch_end_x = $state(0)
-  let is_swiping = $state(false)
 
   let slide_direction = $state<-1 | 1>(1)
   let animating = $state(false)
@@ -58,38 +54,11 @@
     }
   }
 
-  function handleTouchStart(e: TouchEvent) {
-    touch_start_x = e.touches[0].clientX
-    is_swiping = true
-  }
-
-  function handleTouchMove(e: TouchEvent) {
-    if (!is_swiping) return
-    touch_end_x = e.touches[0].clientX
-  }
-
-  function handleTouchEnd() {
-    if (!is_swiping) return
-
-    const minSwipeDistance = 100 // minimum distance to register as a swipe
-    const swipeDistance = touch_end_x - touch_start_x
-
-    if (Math.abs(swipeDistance) > minSwipeDistance) {
-      if (swipeDistance > 0) {
-        changePack('prev')
-      } else {
-        changePack('next')
-      }
-    }
-
-    is_swiping = false
-  }
-
   function changePack(direction: 'prev' | 'next') {
     if (animating) return
 
     animating = true
-    slide_direction = direction === 'prev' ? 1 : -1
+    slide_direction = direction === 'prev' ? 1 : -1 // prev swipes content from left (positive x)
 
     const newIndex =
       direction === 'prev'
@@ -100,7 +69,7 @@
 
     setTimeout(() => {
       animating = false
-    }, 350) // match this with transition duration
+    }, 250)
   }
 
   function togglePreview() {
@@ -124,24 +93,25 @@
 
 <div
   class="pack-container"
-  ontouchstart={handleTouchStart}
-  ontouchmove={handleTouchMove}
-  ontouchend={handleTouchEnd}
+  use:swipe={{
+    onSwipeLeft: () => changePack('next'),
+    onSwipeRight: () => changePack('prev'),
+  }}
 >
   <div class="pack-animation-container">
     {#key selected_pack_index}
       <div
         class="pack"
         in:fly={{
-          duration: 300,
+          duration: 250,
           easing: cubicOut,
-          x: slide_direction * 300,
+          x: slide_direction * -300,
           y: 0,
         }}
         out:fly={{
-          duration: 150,
+          duration: 120,
           easing: cubicOut,
-          x: slide_direction * -300,
+          x: slide_direction * 300,
           y: 0,
         }}
       >
@@ -152,6 +122,9 @@
               class:active={sample.id === selected_sample?.id}
               class:playing={sample.is_playing}
               onclick={() => handleSampleClick(getSampleByID(sample.id))}
+              ontouchstart={(e) => {
+                e.stopPropagation()
+              }}
             >
               {sample.emoji}
             </button>
@@ -166,6 +139,8 @@
   .pack-selector-and-preview-toggle {
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    width: 100%;
   }
 
   .pack-container {
@@ -173,6 +148,8 @@
     overflow: hidden;
     touch-action: pan-y;
     height: 100%;
+    position: relative;
+    -webkit-tap-highlight-color: transparent;
   }
 
   .pack-animation-container {
@@ -190,5 +167,9 @@
     top: 0;
     left: 0;
     right: 0;
+  }
+
+  .preview-toggle {
+    margin-left: auto;
   }
 </style>
