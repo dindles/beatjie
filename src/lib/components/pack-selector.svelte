@@ -11,50 +11,31 @@
     selected_pack_index: number
   } = $props()
 
-  function selectPack(direction: 'prev' | 'next' | 'random') {
-    switch (direction) {
-      case 'prev':
-        selected_pack_index =
-          (selected_pack_index - 1 + packs.length) % packs.length
-        break
-      case 'next':
-        selected_pack_index = (selected_pack_index + 1) % packs.length
-        break
-      case 'random':
-        selected_pack_index = Math.floor(Math.random() * packs.length)
-        break
-    }
+  function selectPack(index: number) {
+    selected_pack_index = index
   }
 </script>
 
 <div class="pack-select">
-  <button
-    class="pack-select-prev emoji-small"
-    onclick={() => selectPack('prev')}>👈</button
-  >
   <div class="pack-indicators">
     {#each packs as pack, index}
-      <div
+      <button
         class="pack-indicator border"
         class:active={index === selected_pack_index}
         class:playing={samples.some(
           (sample) => sample.pack === pack.name && sample.is_playing
         )}
-      ></div>
+        onclick={() => selectPack(index)}
+        aria-label={pack.name}
+      ></button>
     {/each}
   </div>
-  <button
-    class="pack-select-next emoji-small"
-    onclick={() => selectPack('next')}>👉</button
-  >
 </div>
 
 <style>
   .pack-select {
     display: grid;
-    grid-template-columns: auto 1fr auto;
     place-items: center;
-    gap: var(--spacing);
   }
 
   .pack-indicators {
