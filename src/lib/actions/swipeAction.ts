@@ -40,7 +40,7 @@ export function swipe(node: HTMLElement, options: SwipeActionOptions) {
   node.addEventListener('touchstart', handleTouchStart, { passive: true })
   node.addEventListener('touchmove', handleTouchMove, { passive: true })
   node.addEventListener('touchend', handleTouchEnd, { passive: true })
-  node.addEventListener('touchcancel', handleTouchEnd, { passive: true }) // Handle cancellation too
+  node.addEventListener('touchcancel', handleTouchEnd, { passive: true })
 
   return {
     destroy() {

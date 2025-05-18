@@ -155,18 +155,12 @@
   .pack-animation-container {
     position: relative;
     width: 100%;
-    min-height: 300px;
   }
 
   .pack {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: var(--spacing);
-    width: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
   }
 
   .preview-toggle {

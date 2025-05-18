@@ -55,8 +55,4 @@
   .pack-indicator.playing {
     transform: scale(1.1);
   }
-
-  .preview-toggle {
-    margin-left: auto;
-  }
 </style>

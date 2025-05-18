@@ -67,14 +67,14 @@
     🎵
   </button>
   <button
-    class="emoji-large"
+    class="emoji-large delay"
     class:active={selected_sample?.delay_is_active}
     onclick={toggleSampleDelay}
   >
     🪞
   </button>
   <button
-    class="emoji-large"
+    class="emoji-large reverb"
     class:active={selected_sample?.reverb_is_active}
     onclick={toggleSampleReverb}
   >
@@ -95,5 +95,14 @@
     display: grid;
     place-items: center;
     transition: transform 0.3s ease;
+    background-color: transparent;
+  }
+
+  .delay {
+    border-radius: 4px;
+  }
+
+  .reverb {
+    border-radius: 4px;
   }
 </style>
