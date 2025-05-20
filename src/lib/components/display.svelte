@@ -118,6 +118,7 @@
 
   canvas {
     aspect-ratio: 8/1;
+    width: 100%;
     display: block;
   }
 </style>

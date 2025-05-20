@@ -169,7 +169,7 @@
     grid-template-rows: auto auto 1fr auto auto;
     display: grid;
     min-height: 90vmin;
-    aspect-ratio: 8/13;
+    aspect-ratio: 8/13.3;
     overflow: hidden;
     padding: 0.4%;
   }
