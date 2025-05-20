@@ -18,7 +18,7 @@
 
 <div class="transport-and-main-settings">
   <div class="transport">
-    <button class="emoji-large" onclick={() => toggleSeqPlayback()}
+    <button class="emoji-large border" onclick={() => toggleSeqPlayback()}
       >{audio_sequencer.is_playing ? '⏹' : '▶'}</button
     >
   </div>

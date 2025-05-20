@@ -98,49 +98,49 @@
     onSwipeRight: () => changePack('prev'),
   }}
 >
-  <div class="pack-animation-container">
-    {#key selected_pack_index}
-      <div
-        class="pack"
-        in:fly={{
-          duration: 250,
-          easing: cubicOut,
-          x: slide_direction * -300,
-          y: 0,
-        }}
-        out:fly={{
-          duration: 120,
-          easing: cubicOut,
-          x: slide_direction * 300,
-          y: 0,
-        }}
-      >
-        {#each samples as sample: Sample}
-          {#if sample && sample.pack === packs[selected_pack_index].name}
-            <button
-              class="sample border emoji-large"
-              class:active={sample.id === selected_sample?.id}
-              class:playing={sample.is_playing}
-              onclick={() => handleSampleClick(getSampleByID(sample.id))}
-              ontouchstart={(e) => {
-                e.stopPropagation()
-              }}
-            >
-              {sample.emoji}
-            </button>
-          {/if}
-        {/each}
-      </div>
-    {/key}
-  </div>
+  {#key selected_pack_index}
+    <div
+      class="pack"
+      in:fly={{
+        duration: 250,
+        easing: cubicOut,
+        x: slide_direction * -300,
+        y: 0,
+      }}
+      out:fly={{
+        duration: 120,
+        easing: cubicOut,
+        x: slide_direction * 300,
+        y: 0,
+      }}
+    >
+      {#each samples as sample: Sample}
+        {#if sample && sample.pack === packs[selected_pack_index].name}
+          <button
+            class="sample border emoji-large"
+            class:active={sample.id === selected_sample?.id}
+            class:playing={sample.is_playing}
+            onclick={() => handleSampleClick(getSampleByID(sample.id))}
+            ontouchstart={(e) => {
+              e.stopPropagation()
+            }}
+          >
+            {sample.emoji}
+          </button>
+        {/if}
+      {/each}
+    </div>
+  {/key}
 </div>
 
 <style>
   .pack-selector-and-preview-toggle {
     display: flex;
+    aspect-ratio: 8/1;
     justify-content: space-between;
     align-items: center;
     width: 100%;
+    margin-top: auto;
   }
 
   .preview-toggle {
@@ -148,17 +148,13 @@
   }
 
   .pack-container {
+    aspect-ratio: 2/1;
     width: 100%;
     overflow: hidden;
     touch-action: pan-y;
     height: 100%;
     position: relative;
     -webkit-tap-highlight-color: transparent;
-  }
-
-  .pack-animation-container {
-    position: relative;
-    width: 100%;
   }
 
   .pack {
