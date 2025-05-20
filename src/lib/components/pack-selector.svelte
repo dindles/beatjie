@@ -48,7 +48,7 @@
 
   .pack-indicator {
     aspect-ratio: 1;
-    height: 2.2em;
+    height: 3em;
     transition: all 0.1s ease;
   }
 

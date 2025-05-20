@@ -107,48 +107,17 @@
 </script>
 
 <div class="display">
-  <!-- {#if !selected_sample}
-    <div class="messages">
-      <div class="select-sample-message text-small">
-        <div class="select-sample-message-emoji emoji-small">👇</div>
-        <i>pick a sound</i>
-        <div class="select-sample-message-emoji emoji-small">👇</div>
-      </div>
-    </div>
-  {/if} -->
-  <canvas bind:this={canvas} class:hidden={!selected_sample}></canvas>
+  <canvas bind:this={canvas}></canvas>
 </div>
 
 <style>
   .display {
     position: relative;
-    width: 100%;
-    height: auto;
-  }
-
-  .messages {
-    display: grid;
-    place-items: center;
-  }
-
-  .select-sample-message {
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-    z-index: 1;
-  }
-
-  .select-sample-message-emoji {
-    font-size: 2rem;
-  }
-
-  .hidden {
-    display: none;
+    aspect-ratio: 8/1;
   }
 
   canvas {
-    width: 100%;
-    aspect-ratio: 4/0.5;
+    aspect-ratio: 8/1;
     display: block;
   }
 </style>

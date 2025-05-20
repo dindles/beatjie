@@ -143,6 +143,10 @@
     width: 100%;
   }
 
+  .preview-toggle {
+    margin-left: auto;
+  }
+
   .pack-container {
     width: 100%;
     overflow: hidden;
@@ -161,9 +165,5 @@
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: var(--spacing);
-  }
-
-  .preview-toggle {
-    margin-left: auto;
   }
 </style>
