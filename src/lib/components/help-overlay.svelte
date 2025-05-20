@@ -20,10 +20,10 @@
     </div>
     <div class="display no-border">
       <div class="help-text overview">
-        <p>tap samples. each sample has its own sequencer and effects.</p>
-        <div class="button-indicator">
-          <p>here's a map</p>
-        </div>
+        <ul>
+          <li>tap samples</li>
+          <li>each sample has its own sequencer and effects</li>
+        </ul>
       </div>
     </div>
     <div class="pack-select element">
