@@ -40,17 +40,6 @@
 }
 
 html,
-body,
-*,
-*:hover,
-button,
-a,
-[onclick],
-[role='button'] {
-  /* cursor: none !important; */
-}
-
-html,
 body {
   height: 100%;
 }
