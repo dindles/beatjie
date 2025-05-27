@@ -7,11 +7,11 @@
   import { packs } from '$lib/data/audio-packs'
 
   // === Audio types & classes
-  import { Sample } from '$lib/audio/audio-models.svelte'
-  import { AudioEngine } from '$lib/audio/audio-engine.svelte'
-  import { AudioDataToCode } from '$lib/audio/audio-data-to-code.svelte'
-  import { AudioChain, type ChainConfig } from '$lib/audio/audio-chain.svelte'
-  import { AudioSequencer } from '$lib/audio/audio-sequencer.svelte'
+  import { Sample } from '$lib/classes/audio-models.svelte'
+  import { AudioEngine } from '$lib/classes/audio-engine.svelte'
+  import { AudioDataToCode } from '$lib/classes/audio-data-to-code.svelte'
+  import { AudioChain, type ChainConfig } from '$lib/classes/audio-chain.svelte'
+  import { AudioSequencer } from '$lib/classes/audio-sequencer.svelte'
 
   // === Svelte components
   import Meta from '$lib/components/meta.svelte'

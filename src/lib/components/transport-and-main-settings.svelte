@@ -1,8 +1,8 @@
 <!-- transport-and-main-settings.svelte -->
 <script lang="ts">
   import BPMSelector from '$lib/components/bpm-selector.svelte'
-  import type { AudioSequencer } from '$lib/audio/audio-sequencer.svelte'
-  import type { AudioChain } from '$lib/audio/audio-chain.svelte'
+  import type { AudioSequencer } from '$lib/classes/audio-sequencer.svelte'
+  import type { AudioChain } from '$lib/classes/audio-chain.svelte'
 
   interface Props {
     audio_sequencer: AudioSequencer

@@ -1,8 +1,8 @@
 <script lang="ts">
   import * as Tone from 'tone'
-  import type { Packs, Sample } from '$lib/audio/audio-models.svelte'
+  import type { Packs, Sample } from '$lib/classes/audio-models.svelte'
   import PackSelector from '$lib/components/pack-selector.svelte'
-  import { AudioEngine } from '$lib/audio/audio-engine.svelte'
+  import { AudioEngine } from '$lib/classes/audio-engine.svelte'
   import { cubicOut } from 'svelte/easing'
   import { fly } from 'svelte/transition'
   import { swipe } from '$lib/actions/swipeAction'

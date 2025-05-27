@@ -1,8 +1,8 @@
 <script lang="ts">
   import * as Tone from 'tone'
-  import type { Sample } from '$lib/audio/audio-models.svelte'
-  import type { AudioSequencer } from '$lib/audio/audio-sequencer.svelte'
-  import type { AudioChain } from '$lib/audio/audio-chain.svelte'
+  import type { Sample } from '$lib/classes/audio-models.svelte'
+  import type { AudioSequencer } from '$lib/classes/audio-sequencer.svelte'
+  import type { AudioChain } from '$lib/classes/audio-chain.svelte'
 
   interface Props {
     help_overlay_active: boolean

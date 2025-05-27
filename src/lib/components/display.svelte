@@ -1,6 +1,6 @@
 <script lang="ts">
-  import type { AudioChain } from '$lib/audio/audio-chain.svelte'
-  import type { Sample } from '$lib/audio/audio-models.svelte'
+  import type { AudioChain } from '$lib/classes/audio-chain.svelte'
+  import type { Sample } from '$lib/classes/audio-models.svelte'
 
   interface Props {
     audio_chain: AudioChain

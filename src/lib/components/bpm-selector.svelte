@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { AudioSequencer } from '$lib/audio/audio-sequencer.svelte'
+  import type { AudioSequencer } from '$lib/classes/audio-sequencer.svelte'
 
   interface Props {
     audio_sequencer: AudioSequencer
