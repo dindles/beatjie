@@ -12,6 +12,7 @@
     samples: Sample[]
     audio_engine: AudioEngine
     selected_sample: Sample | undefined
+    selected_pack_index?: number
   }
 
   let {
@@ -19,11 +20,8 @@
     samples,
     audio_engine,
     selected_sample = $bindable(),
+    selected_pack_index = $bindable(0),
   }: Props = $props()
-
-  let selected_pack_index: number = $state(
-    Math.floor(Math.random() * packs.length)
-  )
 
   let slide_direction = $state<-1 | 1>(1)
   let animating = $state(false)

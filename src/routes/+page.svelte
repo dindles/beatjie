@@ -1,6 +1,8 @@
 <script lang="ts">
   // === IMPORTS ==============================
 
+  import * as Tone from 'tone'
+
   // === Data
   import { packs } from '$lib/data/audio-packs'
 
@@ -68,10 +70,47 @@
   })
 
   let help_overlay_active = $state(false)
+  let selected_pack_index: number = $state(
+    Math.floor(Math.random() * packs.length)
+  )
 
-  // === LIFECYCLE ================================
+  // === KEYBOARD EVENTS ========================
 
-  // === State
+  const key_map: Record<string, number> = {
+    q: 0,
+    w: 1,
+    e: 2,
+    r: 3,
+    a: 4,
+    s: 5,
+    d: 6,
+    f: 7,
+  }
+
+  function handle_keydown(event: KeyboardEvent) {
+    if (event.key === 'Escape') {
+      help_overlay_active = false
+    }
+    if (event.key === ' ') {
+      event.preventDefault()
+      audio_sequencer.togglePlayback()
+    }
+
+    const sample_index = key_map[event.key.toLowerCase()]
+    if (sample_index !== undefined) {
+      const visible_samples = samples.filter(
+        (s) => s.pack === packs[selected_pack_index].name
+      )
+      const sample = visible_samples[sample_index]
+      if (sample) {
+        sample.play(Tone.now())
+        selected_sample = sample
+      }
+    }
+  }
+
+  // === LIFECYCLE ==============================
+
   $effect(() => {
     if (typeof document !== 'undefined') {
       document.fonts.ready.then(() => {
@@ -127,6 +166,8 @@
 
 <!-- <Cursor /> -->
 
+<svelte:window onkeydown={handle_keydown} />
+
 <main>
   <div class="app border">
     {#if app_state['fonts-loading']}
@@ -148,7 +189,13 @@
         {samples}
       />
       <Display {audio_chain} {selected_sample} />
-      <Samples {packs} {samples} {audio_engine} bind:selected_sample />
+      <Samples
+        {packs}
+        {samples}
+        {audio_engine}
+        bind:selected_sample
+        bind:selected_pack_index
+      />
       <SelectedSampleSettings {selected_sample} {pitches} {audio_chain} />
       <Sequencer {samples} {selected_sample} {audio_sequencer} />
       <TransportAndMainSettings {audio_sequencer} {audio_chain} />
