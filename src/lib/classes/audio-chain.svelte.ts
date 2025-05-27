@@ -1,5 +1,5 @@
 import * as Tone from 'tone'
-import type { Sample } from '$lib/audio/audio-models.svelte'
+import type { Sample } from '$lib/classes/audio-models.svelte'
 
 export interface ChainConfig {
   readonly highpass_freq: number

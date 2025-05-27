@@ -18,10 +18,13 @@
     samples,
   }: Props = $props()
 
+  const available_hues = [50, 100, 150, 200, 250, 300]
   let hue_emoji_rotation = $state(0)
   let user_lightness = $state(0.9) // 0 - 1
   const CHROMA = 0.2 // 0 - 0.4
-  let user_hue = $state(250) // 0 - 360
+  let user_hue = $state(
+    available_hues[Math.floor(Math.random() * available_hues.length)]
+  )
   let user_colour = $derived(`oklch(${user_lightness} ${CHROMA} ${user_hue})`)
   let black_or_white = $state('oklch(0 0 0)')
   let theme: 'light' | 'dark' = $state('light')
