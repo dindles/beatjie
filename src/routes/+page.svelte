@@ -205,7 +205,7 @@
 
 <style>
   main {
-    min-height: 100vh;
+    min-height: 100%;
     display: grid;
     place-items: center;
   }
@@ -215,7 +215,7 @@
     position: relative;
     grid-template-rows: auto auto 1fr auto auto;
     display: grid;
-    min-height: 90vmin;
+    min-height: 600px;
     aspect-ratio: 8/14;
     overflow: hidden;
     padding: 0.4%;
