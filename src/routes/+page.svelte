@@ -213,7 +213,7 @@
   .app {
     /* cursor: none; */
     position: relative;
-    grid-template-rows: auto auto 1fr auto auto;
+    /* grid-template-rows: auto auto 1fr auto auto; */
     display: grid;
     min-height: 600px;
     aspect-ratio: 8/14;
