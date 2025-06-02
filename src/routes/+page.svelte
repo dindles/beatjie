@@ -205,7 +205,7 @@
 
 <style>
   main {
-    min-height: 100%;
+    height: 100%;
     display: grid;
     place-items: center;
   }
@@ -216,6 +216,8 @@
     display: grid;
     min-width: 360px;
     min-height: 630px;
+    max-height: 100vh;
+    max-width: 100vw;
     overflow: hidden;
     padding: 0.4%;
   }
