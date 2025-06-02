@@ -88,12 +88,6 @@
     text-align: center;
   }
 
-  .button-indicator {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
   .app-settings-help-toggle-container {
     width: 100%;
     display: flex;

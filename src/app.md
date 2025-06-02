@@ -2,21 +2,26 @@
 
 ## v1.0
 
-- get rid of pack-select fingers, click on pack icons or swipe
+- check mobile 🤬
 
-- toggle sample preview
+mobile layout in production issue
 
-- check mobile
+reproducible:
+chrome, safari and brave iphone se
+
+tried, without success:
+removing 90vh in +page.svelte styles
+removing aspect-ratio in +page.svelte styles
+changing font display type (block/swap)
+removing clamps from font sizing in app.css
 
 - todos and console.logs
-
-- deploy
 
 - videos: d&b, usual test house w/ scream
 
 ## 1.1
 
-- color/sequence persists between sessions
+- color/sequences persist between sessions
 
 - font subsetting? https://fontfaceobserver.com/?
 
