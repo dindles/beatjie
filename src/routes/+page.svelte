@@ -214,8 +214,8 @@
     /* cursor: none; */
     position: relative;
     display: grid;
-    min-height: 600px;
-    aspect-ratio: 8/14;
+    min-width: 360px;
+    min-height: 630px;
     overflow: hidden;
     padding: 0.4%;
   }

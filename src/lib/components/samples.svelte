@@ -138,7 +138,6 @@
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    margin-top: auto;
   }
 
   .preview-toggle {
