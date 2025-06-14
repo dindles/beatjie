@@ -21,7 +21,7 @@
 * {
   color: var(--user-colour);
   background-color: var(--black-or-white);
-  /* filter: blur(0.07px); */
+  filter: blur(0.07px);
 }
 
 /* RESET */

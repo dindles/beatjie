@@ -28,6 +28,26 @@
 
   let preview_samples_active: boolean = $state(true)
 
+  let previous_pack_index = $state(selected_pack_index)
+
+  $effect(() => {
+    if (previous_pack_index !== selected_pack_index) {
+      // Determine direction based on index change
+      const diff = selected_pack_index - previous_pack_index
+
+      // Handle wrap-around cases
+      if (Math.abs(diff) > packs.length / 2) {
+        // Wrapped around - reverse the direction
+        slide_direction = diff > 0 ? 1 : -1
+      } else {
+        // Normal case
+        slide_direction = diff > 0 ? -1 : 1
+      }
+
+      previous_pack_index = selected_pack_index
+    }
+  })
+
   function getSampleByID(sample_id: number) {
     return samples.find((s: Sample) => s.id === sample_id)
   }
@@ -102,13 +122,35 @@
       in:fly={{
         duration: 250,
         easing: cubicOut,
-        x: slide_direction * -300,
+        x: (() => {
+          const diff = selected_pack_index - previous_pack_index
+          const direction =
+            Math.abs(diff) > packs.length / 2
+              ? diff > 0
+                ? 1
+                : -1 // wrapped
+              : diff > 0
+                ? -1
+                : 1 // normal
+          return direction * -300
+        })(),
         y: 0,
       }}
       out:fly={{
         duration: 120,
         easing: cubicOut,
-        x: slide_direction * 300,
+        x: (() => {
+          const diff = selected_pack_index - previous_pack_index
+          const direction =
+            Math.abs(diff) > packs.length / 2
+              ? diff > 0
+                ? 1
+                : -1
+              : diff > 0
+                ? -1
+                : 1
+          return direction * 300
+        })(),
         y: 0,
       }}
     >
@@ -145,16 +187,17 @@
   }
 
   .pack-container {
+    position: relative;
     aspect-ratio: 2/1;
-    width: 100%;
     overflow: hidden;
     touch-action: pan-y;
     height: 100%;
-    position: relative;
     -webkit-tap-highlight-color: transparent;
   }
 
   .pack {
+    top: 0;
+    left: 0;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: var(--spacing);
