@@ -50,6 +50,7 @@
     aspect-ratio: 1;
     height: 2.2em;
     transition: all 0.1s ease;
+    border-radius: 6px;
   }
 
   .pack-indicator.playing {

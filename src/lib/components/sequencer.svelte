@@ -72,5 +72,6 @@
   .step {
     display: grid;
     place-items: center;
+    border-radius: 6px;
   }
 </style>
