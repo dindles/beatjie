@@ -25,7 +25,6 @@
 }
 
 /* RESET */
-
 *,
 *::before,
 *::after {
@@ -67,7 +66,7 @@ blockquote {
   overflow-wrap: break-word;
 }
 
-/* Global classes and styled elements */
+/* global elements & classes */
 
 button {
   background: transparent;
