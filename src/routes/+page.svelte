@@ -24,7 +24,6 @@
   import AppSettings from '$lib/components/app-settings.svelte'
   import Display from '$lib/components/display.svelte'
   import Samples from '$lib/components/samples.svelte'
-  import SelectedSampleSettings from '$lib/components/selected-sample-settings.svelte'
   import Sequencer from '$lib/components/sequencer.svelte'
   import TransportAndMainSettings from '$lib/components/transport-and-main-settings.svelte'
 
@@ -190,13 +189,14 @@
       />
       <Display {audio_chain} {selected_sample} />
       <Samples
+        {pitches}
         {packs}
         {samples}
         {audio_engine}
+        {audio_chain}
         bind:selected_sample
         bind:selected_pack_index
       />
-      <SelectedSampleSettings {selected_sample} {pitches} {audio_chain} />
       <Sequencer {samples} {selected_sample} {audio_sequencer} />
       <TransportAndMainSettings {audio_sequencer} {audio_chain} />
     {/if}
@@ -213,12 +213,11 @@
   .app {
     /* cursor: none; */
     position: relative;
-    display: grid;
     min-width: 360px;
-    min-height: 630px;
-    max-height: 100vh;
     max-width: 100vw;
+    min-height: 600px;
+    max-height: 100vh;
     overflow: hidden;
-    padding: 0.4%;
+    padding: 0.7%;
   }
 </style>

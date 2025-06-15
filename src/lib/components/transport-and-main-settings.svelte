@@ -50,7 +50,7 @@
     grid-template-columns: repeat(4, 1fr);
     gap: var(--spacing);
     margin-top: 0.4em;
-    margin-bottom: 0.4em;
+    margin-bottom: 0.2em;
   }
 
   .transport {

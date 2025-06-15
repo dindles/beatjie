@@ -21,8 +21,8 @@
     <div class="display no-border">
       <div class="help-text overview">
         <ul>
-          <li>tap samples</li>
-          <li>each sample has its own sequencer and effects</li>
+          <li>tap the samples.</li>
+          <li>each sample has its own <i>sequencer</i> and <i>effects</i>.</li>
         </ul>
       </div>
     </div>
@@ -84,7 +84,7 @@
   }
 
   .overview {
-    font-size: var(--font-text);
+    font-size: clamp(0.8rem, 3vmin, 2.4rem);
     text-align: center;
   }
 

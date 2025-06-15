@@ -111,13 +111,8 @@
 </div>
 
 <style>
-  .display {
-    position: relative;
-    aspect-ratio: 8/1;
-  }
-
   canvas {
-    aspect-ratio: 8/1.4;
+    aspect-ratio: 8/1.2;
     width: 100%;
     display: block;
   }
