@@ -2,48 +2,11 @@
 
 ## v1.0
 
-- check mobile 🤬
+- disco also swaps theme
 
-mobile layout in production issue
+- keyboard: 1, 2, 3, 4 change packs
 
-- development app appears correctly on mobile and desktop
-- production app build appears correctly on desktop
-- production app flickers continuously on mobile, seemingly alternating small and large (overflowing screen) elements
-
-i've already tried the following without resolving the issue:
-
-- removing 90vh in +page.svelte styles
-- removing aspect-ratio in +page.svelte styles
-- changing font display type (block/swap)
-- replacing --emoji-large: clamp(2.8rem, 8vmin, 6rem); etc. with --emoji-large: 1rem etc.
-- adding
-  @media (max-width: 768px) {
-
-  - {
-    -webkit-transform: translateZ(0);
-    -webkit-backface-visibility: hidden;
-    -webkit-perspective: 1000;
-    }
-
-  body {
-  -webkit-font-smoothing: antialiased;
-  -webkit-tap-highlight-color: transparent;
-  }
-  }
-
-@media (max-width: 768px) and (hover: none) {
-
-- {
-  animation: none !important;
-  transition: none !important;
-  }
-  }
-  to app.css
-
-nb: here's a clue. when i added max-height and max-width to +page.svelte, the app border _and the delete sequences button conformed_, but the other content continued to jump in size and flicker.
-
-reproducible:
-chrome, safari and brave iphone se
+- issue: layout shifts when bpm hits 200. i don't want to think about this.
 
 - todos and console.logs
 
@@ -57,12 +20,9 @@ chrome, safari and brave iphone se
 
 - undo sequence deletion
 
+- keyboard control help
+
 - adjust sample volumes
-
-- keyboard control
-
-  - space to start/stop transport
-  - asdf, jkl; to play samples
 
 - visualiser
   - add toggles between waveform and fft?

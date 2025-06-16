@@ -214,9 +214,9 @@
     /* cursor: none; */
     position: relative;
     min-width: 360px;
-    max-width: 100vw;
+    max-width: 98vw;
     min-height: 600px;
-    max-height: 100vh;
+    max-height: 88vh;
     overflow: hidden;
     padding: 0.7%;
   }
