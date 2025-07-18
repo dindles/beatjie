@@ -5,6 +5,7 @@ import { Sample } from '$lib/classes/audio-models.svelte'
 export class AudioDataToCode {
   #buffers_are_loaded: boolean = $state(false)
   #error_state: string | null = null
+
   async processPacks(packs: Packs): Promise<Sample[]> {
     try {
       const buffers = await this.makeBuffers(packs)
@@ -21,14 +22,20 @@ export class AudioDataToCode {
     }
   }
 
-  private makeBuffers(packs: Packs): Promise<Tone.ToneAudioBuffers> {
+  private async makeBuffers(packs: Packs): Promise<Tone.ToneAudioBuffers> {
     const urls: Record<string, string> = {}
     packs.forEach((pack) => {
       pack.samples.forEach((sample) => {
         urls[sample.id.toString()] = sample.url
       })
     })
-    return Promise.resolve(new Tone.ToneAudioBuffers(urls))
+
+    const buffers = new Tone.ToneAudioBuffers(urls)
+
+    // Wait for all buffers to actually load
+    await Tone.ToneAudioBuffer.loaded()
+
+    return buffers
   }
 
   private makeSamples(packs: Packs): Sample[] {
