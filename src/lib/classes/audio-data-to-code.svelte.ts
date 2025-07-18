@@ -32,7 +32,6 @@ export class AudioDataToCode {
 
     const buffers = new Tone.ToneAudioBuffers(urls)
 
-    // Wait for all buffers to actually load
     await Tone.ToneAudioBuffer.loaded()
 
     return buffers
