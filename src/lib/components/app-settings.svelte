@@ -65,6 +65,7 @@
     if (disco_toggle) {
       const interval = Tone.getTransport().scheduleRepeat(() => {
         changeHue()
+        // changeTheme()
       }, '4n')
       return () => Tone.getTransport().clear(interval)
     }

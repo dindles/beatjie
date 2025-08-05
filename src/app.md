@@ -4,9 +4,9 @@
 
 - add swing
 
-- disco also swaps theme
-
 - keyboard: 1, 2, 3, 4 change packs
+
+- color/sequences persist between sessions
 
 - issue: layout shifts when bpm hits 200. i don't want to think about this.
 
@@ -15,8 +15,6 @@
 - videos: d&b, usual test house w/ scream
 
 ## 1.1
-
-- color/sequences persist between sessions
 
 - font subsetting? https://fontfaceobserver.com/?
 
