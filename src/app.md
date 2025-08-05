@@ -2,6 +2,8 @@
 
 ## v1.0
 
+- add swing
+
 - disco also swaps theme
 
 - keyboard: 1, 2, 3, 4 change packs
