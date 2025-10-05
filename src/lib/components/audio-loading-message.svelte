@@ -1,5 +1,5 @@
 <div class="audio-loading">
-  <p class="text-small audio-loading-message">loading audio...</p>
+  <p class="text-small audio-loading-message">loading...</p>
 </div>
 
 <style>

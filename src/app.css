@@ -72,6 +72,7 @@ button {
   background: transparent;
   border: none;
   /* cursor: pointer; */
+  cursor: none;
   padding: 0;
   aspect-ratio: 1;
   display: grid;

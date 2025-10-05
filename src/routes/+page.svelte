@@ -163,7 +163,7 @@
 
 <Meta />
 
-<!-- <Cursor /> -->
+<Cursor />
 
 <svelte:window onkeydown={handle_keydown} />
 
@@ -211,7 +211,7 @@
   }
 
   .app {
-    /* cursor: none; */
+    cursor: none;
     position: relative;
     min-width: 360px;
     max-width: 98vw;

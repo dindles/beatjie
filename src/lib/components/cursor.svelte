@@ -22,7 +22,7 @@
   }
 
   $effect(() => {
-    // document.documentElement.style.cursor = 'none'
+    document.documentElement.style.cursor = 'none'
     document.addEventListener('mousemove', updateCursor)
     document.addEventListener('mousedown', handleMouseDown)
     document.addEventListener('mouseup', handleMouseUp)
@@ -48,7 +48,7 @@
     visible = true
 
     return () => {
-      // document.documentElement.style.cursor = ''
+      document.documentElement.style.cursor = ''
       document.removeEventListener('mousemove', updateCursor)
       document.removeEventListener('mousedown', handleMouseDown)
       document.removeEventListener('mouseup', handleMouseUp)

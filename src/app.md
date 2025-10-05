@@ -8,13 +8,13 @@
 
 - color/sequences persist between sessions
 
-- issue: layout shifts when bpm hits 200. i don't want to think about this.
+- issue: layout shifts when bpm hits 200 in prod. i don't want to think about this.
 
 - todos and console.logs
 
-- videos: d&b, usual test house w/ scream
+- videos: d&b, usual test house w/ scream. reinstate cursor.
 
-## 1.1
+## 1.2
 
 - font subsetting? https://fontfaceobserver.com/?
 
