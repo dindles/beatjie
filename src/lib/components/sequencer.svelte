@@ -48,7 +48,7 @@
       <div
         class="placeholder-step border"
         class:active={index === audio_sequencer.active_step_index}
-        onmouseenter={() => feedback_state.showTooltip('select sample')}
+        onmouseenter={() => feedback_state.showTooltip('!select sample')}
         onmouseleave={() => feedback_state.clear()}
         role="button"
         tabindex="-1"

@@ -104,6 +104,13 @@
       audio_sequencer.togglePlayback();
     }
 
+    // Pack selection with numbers 1-4
+    const pack_number = parseInt(event.key);
+    if (pack_number >= 1 && pack_number <= 4) {
+      selected_pack_index = pack_number - 1;
+      return;
+    }
+
     const sample_index = key_map[event.key.toLowerCase()];
     if (sample_index !== undefined) {
       const visible_samples = samples.filter((s) => s.pack === packs[selected_pack_index].name);
