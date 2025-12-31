@@ -254,11 +254,12 @@
         {samples}
         {audio_engine}
         {audio_chain}
+        {feedback_state}
         bind:selected_sample
         bind:selected_pack_index
       />
-      <Sequencer {samples} {selected_sample} {audio_sequencer} />
-      <TransportAndMainSettings {audio_sequencer} {audio_chain} />
+      <Sequencer {samples} {selected_sample} {audio_sequencer} {feedback_state} />
+      <TransportAndMainSettings {audio_sequencer} {audio_chain} {feedback_state} />
     {/if}
   </div>
 </main>

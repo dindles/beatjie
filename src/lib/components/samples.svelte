@@ -1,6 +1,7 @@
 <script lang="ts">
   import * as Tone from 'tone';
   import type { Packs, Sample } from '$lib/classes/audio-models.svelte';
+  import type { FeedbackState } from '$lib/utils/feedback-state.svelte';
   import PackSelector from '$lib/components/pack-selector.svelte';
   import { AudioEngine } from '$lib/classes/audio-engine.svelte';
   import { AudioChain } from '$lib/classes/audio-chain.svelte';
@@ -18,6 +19,7 @@
     audio_chain: AudioChain;
     selected_sample: Sample | undefined;
     selected_pack_index?: number;
+    feedback_state: FeedbackState;
   }
 
   let {
@@ -27,7 +29,8 @@
     audio_engine,
     audio_chain,
     selected_sample = $bindable(),
-    selected_pack_index = $bindable(0)
+    selected_pack_index = $bindable(0),
+    feedback_state
   }: Props = $props();
 
   let _slide_direction = $state<-1 | 1>(1);
@@ -104,12 +107,14 @@
 
 <div class="packs-container">
   <div class="pack-selector-and-preview-toggle">
-    <PackSelector {packs} {samples} bind:selected_pack_index />
+    <PackSelector {packs} {samples} {feedback_state} bind:selected_pack_index />
 
     <button
       class="preview-toggle emoji-small"
+      onmouseenter={() => feedback_state.showTooltip('sample preview')}
+      onmouseleave={() => feedback_state.clear()}
       onclick={togglePreview}
-      aria-label={preview_samples_active ? 'Disable sample preview' : 'Enable sample preview'}
+      aria-label={preview_samples_active ? 'disable sample preview' : 'enable sample preview'}
     >
       {preview_samples_active ? '🎧' : '🚫'}
     </button>
@@ -160,6 +165,8 @@
               class="sample border emoji-large"
               class:active={sample.id === selected_sample?.id}
               class:playing={sample.is_playing}
+              onmouseenter={() => feedback_state.showTooltip('sample select')}
+              onmouseleave={() => feedback_state.clear()}
               onclick={() => handleSampleClick(getSampleByID(sample.id))}
               ontouchstart={(e) => {
                 e.stopPropagation();
@@ -172,7 +179,7 @@
       </div>
     {/key}
   </div>
-  <SelectedSampleSettings {selected_sample} {pitches} {audio_chain} />
+  <SelectedSampleSettings {selected_sample} {pitches} {audio_chain} {feedback_state} />
 </div>
 
 <style>

@@ -1,14 +1,16 @@
 <script lang="ts">
   import type { Sample } from '$lib/classes/audio-models.svelte';
   import type { AudioChain } from '$lib/classes/audio-chain.svelte';
+  import type { FeedbackState } from '$lib/utils/feedback-state.svelte';
 
   type Props = {
     selected_sample: Sample | undefined;
     pitches: string[];
     audio_chain: AudioChain;
+    feedback_state: FeedbackState;
   };
 
-  let { selected_sample, pitches, audio_chain }: Props = $props();
+  let { selected_sample, pitches, audio_chain, feedback_state }: Props = $props();
 
   let pitch_emoji_rotation = $derived.by(() => {
     if (!selected_sample) return 0;
@@ -48,12 +50,19 @@
 </script>
 
 <div class="selected-sample-settings">
-  <button class="emoji-large" onclick={() => toggleSampleMute()}
-    >{selected_sample?.is_muted ? '🔇' : '🔊'}</button
+  <button
+    class="emoji-large"
+    onmouseenter={() => feedback_state.showTooltip('sample mute')}
+    onmouseleave={() => feedback_state.clear()}
+    onclick={() => toggleSampleMute()}
   >
+    {selected_sample?.is_muted ? '🔇' : '🔊'}
+  </button>
   <button
     class="selected-sample-pitch emoji-large"
     style="transform: rotate({pitch_emoji_rotation}deg)"
+    onmouseenter={() => feedback_state.showTooltip('sample pitch')}
+    onmouseleave={() => feedback_state.clear()}
     onclick={() => {
       loopSamplePitch();
     }}
@@ -63,6 +72,8 @@
   <button
     class="emoji-large delay"
     class:active={selected_sample?.delay_is_active}
+    onmouseenter={() => feedback_state.showTooltip('sample echo')}
+    onmouseleave={() => feedback_state.clear()}
     onclick={toggleSampleDelay}
   >
     🪞
@@ -70,6 +81,8 @@
   <button
     class="emoji-large reverb"
     class:active={selected_sample?.reverb_is_active}
+    onmouseenter={() => feedback_state.showTooltip('sample reverb')}
+    onmouseleave={() => feedback_state.clear()}
     onclick={toggleSampleReverb}
   >
     😶‍🌫️

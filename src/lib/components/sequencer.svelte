@@ -2,14 +2,16 @@
 <script lang="ts">
   import type { Sample } from '$lib/classes/audio-models.svelte';
   import type { AudioSequencer } from '$lib/classes/audio-sequencer.svelte';
+  import type { FeedbackState } from '$lib/utils/feedback-state.svelte';
 
   interface Props {
     samples: Sample[];
     selected_sample: Sample | undefined;
     audio_sequencer: AudioSequencer;
+    feedback_state: FeedbackState;
   }
 
-  let { samples: _samples, selected_sample, audio_sequencer }: Props = $props();
+  let { samples: _samples, selected_sample, audio_sequencer, feedback_state }: Props = $props();
 
   function handleSeqClick(sample: Sample, step_index: number) {
     sample.sequence[step_index] = !sample.sequence[step_index];
@@ -25,6 +27,11 @@
       <button
         class="step border emoji-sequencer"
         class:active={index === audio_sequencer.active_step_index}
+        onmouseenter={() =>
+          feedback_state.showTooltip(
+            selected_sample.sequence[index] ? 'remove sample from pattern' : 'add sample to pattern'
+          )}
+        onmouseleave={() => feedback_state.clear()}
         onclick={() => handleSeqClick(selected_sample, index)}
         onkeydown={() => handleSeqClick(selected_sample, index)}
       >
@@ -41,6 +48,10 @@
       <div
         class="placeholder-step border"
         class:active={index === audio_sequencer.active_step_index}
+        onmouseenter={() => feedback_state.showTooltip('select sample')}
+        onmouseleave={() => feedback_state.clear()}
+        role="button"
+        tabindex="-1"
       ></div>
     {/each}
   {/if}

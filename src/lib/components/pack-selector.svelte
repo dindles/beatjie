@@ -1,14 +1,18 @@
 <!-- PackSelector.svelte -->
 <script lang="ts">
   import type { Packs, Sample } from '$lib/classes/audio-models.svelte';
+  import type { FeedbackState } from '$lib/utils/feedback-state.svelte';
+
   let {
     packs,
     samples,
-    selected_pack_index = $bindable()
+    selected_pack_index = $bindable(),
+    feedback_state
   }: {
     packs: Packs;
     samples: Sample[];
     selected_pack_index: number;
+    feedback_state: FeedbackState;
   } = $props();
 
   function selectPack(index: number) {
@@ -23,6 +27,8 @@
         class="pack-indicator border"
         class:active={index === selected_pack_index}
         class:playing={samples.some((sample) => sample.pack === pack.name && sample.is_playing)}
+        onmouseenter={() => feedback_state.showTooltip('pack select')}
+        onmouseleave={() => feedback_state.clear()}
         onclick={() => selectPack(index)}
         aria-label={pack.name}
       ></button>

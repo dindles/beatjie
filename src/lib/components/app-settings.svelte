@@ -135,7 +135,7 @@
 <div class="controls-container">
   <button
     class="delete emoji-small"
-    onmouseenter={() => feedback_state.showTooltip('Delete all sequences')}
+    onmouseenter={() => feedback_state.showTooltip('pattern delete')}
     onmouseleave={() => feedback_state.clear()}
     onclick={deleteSequences}
   >
@@ -146,7 +146,7 @@
     <button
       class="hue-control emoji-small"
       style="transform: rotate({hue_emoji_rotation}deg)"
-      onmouseenter={() => feedback_state.showTooltip('Change colour')}
+      onmouseenter={() => feedback_state.showTooltip('colour')}
       onmouseleave={() => feedback_state.clear()}
       onclick={() => {
         hue_emoji_rotation += 90;
@@ -157,7 +157,7 @@
     </button>
     <button
       class="light-dark emoji-small"
-      onmouseenter={() => feedback_state.showTooltip('Change theme')}
+      onmouseenter={() => feedback_state.showTooltip('theme')}
       onmouseleave={() => feedback_state.clear()}
       onclick={changeTheme}
     >
@@ -165,7 +165,7 @@
     </button>
     <button
       class="emoji-small disco-ball {disco_toggle ? 'active' : ''}"
-      onmouseenter={() => feedback_state.showTooltip('Disco mode')}
+      onmouseenter={() => feedback_state.showTooltip('disco mode')}
       onmouseleave={() => feedback_state.clear()}
       onclick={toggleDisco}
     >
@@ -176,7 +176,7 @@
   <div class="right-controls">
     <button
       class="share emoji-small"
-      onmouseenter={() => feedback_state.showTooltip('Share pattern via URL')}
+      onmouseenter={() => feedback_state.showTooltip('share pattern via URL')}
       onmouseleave={() => feedback_state.clear()}
       onclick={handleSharePattern}
     >
@@ -185,7 +185,7 @@
 
     <button
       class="emoji-small"
-      onmouseenter={() => feedback_state.showTooltip('Show help')}
+      onmouseenter={() => feedback_state.showTooltip('show help')}
       onmouseleave={() => feedback_state.clear()}
       onclick={() => {
         help_overlay_active = !help_overlay_active;
