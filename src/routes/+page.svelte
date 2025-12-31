@@ -27,6 +27,13 @@
   import Sequencer from '$lib/components/sequencer.svelte'
   import TransportAndMainSettings from '$lib/components/transport-and-main-settings.svelte'
 
+  // === Utils
+  import {
+    loadColorSettings,
+    getDefaultColorSettings,
+    applyColorSettingsToDOM
+  } from '$lib/utils/color-storage'
+
   // === VARIABLES ============================
 
   // === Audio
@@ -113,6 +120,10 @@
   $effect(() => {
     if (typeof document !== 'undefined') {
       document.fonts.ready.then(() => {
+        // Load and apply saved color settings before showing audio prompt
+        const savedColors = loadColorSettings() ?? getDefaultColorSettings()
+        applyColorSettingsToDOM(savedColors)
+
         app_state['fonts-loading'] = false
         console.log('fonts loaded')
         app_state['audio-prompt'] = true

@@ -3,6 +3,7 @@
   import type { Sample } from '$lib/classes/audio-models.svelte'
   import type { AudioSequencer } from '$lib/classes/audio-sequencer.svelte'
   import type { AudioChain } from '$lib/classes/audio-chain.svelte'
+  import { saveColorSettings, loadColorSettings } from '$lib/utils/color-storage'
 
   interface Props {
     help_overlay_active: boolean
@@ -30,6 +31,21 @@
   let theme: 'light' | 'dark' = $state('light')
   let disco_toggle = $state(false)
 
+  // Load saved color settings on mount
+  let initialized = false
+  $effect(() => {
+    if (!initialized) {
+      initialized = true
+      const saved = loadColorSettings()
+      if (saved) {
+        user_hue = saved.hue
+        user_lightness = saved.lightness
+        theme = saved.theme
+        black_or_white = theme === 'light' ? 'oklch(0 0 0)' : 'oklch(1 0 0)'
+      }
+    }
+  })
+
   function deleteSequences() {
     audio_sequencer.stopPlayback()
     audio_sequencer.is_playing = false
@@ -49,16 +65,22 @@
   function changeHue() {
     user_hue = user_hue + 50
     if (user_hue > 300) user_hue = 50
+    saveColorSettings({ hue: user_hue, lightness: user_lightness, theme })
   }
 
   function changeTheme() {
     user_lightness = user_lightness === 0.9 ? 0.5 : 0.9
     theme = theme === 'light' ? 'dark' : 'light'
     black_or_white = theme === 'light' ? 'oklch(0 0 0)' : 'oklch(1 0 0)'
+    saveColorSettings({ hue: user_hue, lightness: user_lightness, theme })
   }
 
   function toggleDisco() {
     disco_toggle = !disco_toggle
+    // Save color state when turning disco mode off
+    if (!disco_toggle) {
+      saveColorSettings({ hue: user_hue, lightness: user_lightness, theme })
+    }
   }
 
   $effect(() => {
