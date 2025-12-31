@@ -2,11 +2,14 @@
 
 ## v1.0
 
-- add swing
+- sharing via url
+
+- overview/tutorial video
+  [] final layout - change ? to cog, add share icon
 
 - keyboard: 1, 2, 3, 4 change packs
 
-- color/sequences persist between sessions
+- add swing
 
 - issue: layout shifts when bpm hits 200 in prod. i don't want to think about this.
 

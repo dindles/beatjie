@@ -4,19 +4,22 @@
   import type { AudioSequencer } from '$lib/classes/audio-sequencer.svelte';
   import type { AudioChain } from '$lib/classes/audio-chain.svelte';
   import { saveColorSettings, loadColorSettings } from '$lib/utils/color-storage';
+  import { serializePattern, createShareURL } from '$lib/utils/pattern-sharing';
 
   interface Props {
     help_overlay_active: boolean;
     audio_sequencer: AudioSequencer;
     audio_chain: AudioChain;
     samples: Sample[];
+    selected_pack_index: number;
   }
 
   let {
     help_overlay_active = $bindable(),
     audio_sequencer,
     audio_chain,
-    samples
+    samples,
+    selected_pack_index
   }: Props = $props();
 
   const available_hues = [30, 90, 140, 200, 280, 330];
@@ -33,6 +36,10 @@
   let black_or_white = $state('oklch(0 0 0)');
   let theme: 'light' | 'dark' = $state('light');
   let disco_toggle = $state(false);
+
+  // Share state
+  let share_feedback = $state<'idle' | 'copying' | 'success' | 'error'>('idle');
+  let share_feedback_message = $state('');
 
   // Load saved color settings on mount
   let initialized = false;
@@ -81,9 +88,50 @@
 
   function toggleDisco() {
     disco_toggle = !disco_toggle;
-    // Save color state when turning disco mode off
+    // Save colour state when turning disco mode off
     if (!disco_toggle) {
       saveColorSettings({ hue: user_hue, lightness: user_lightness, theme });
+    }
+  }
+
+  async function handleSharePattern() {
+    try {
+      share_feedback = 'copying';
+
+      // Get current BPM
+      const current_bpm = audio_sequencer.getBPM();
+
+      // Serialise current state
+      const pattern_data = serializePattern(
+        current_bpm,
+        selected_pack_index,
+        audio_chain,
+        samples
+      );
+
+      // Create shareable URL
+      const share_url = createShareURL(pattern_data);
+
+      // Copy to clipboard
+      await navigator.clipboard.writeText(share_url);
+
+      share_feedback = 'success';
+      share_feedback_message = 'URL copied!';
+
+      // Reset feedback after 2 seconds
+      setTimeout(() => {
+        share_feedback = 'idle';
+        share_feedback_message = '';
+      }, 2000);
+    } catch (error) {
+      console.error('Failed to share pattern:', error);
+      share_feedback = 'error';
+      share_feedback_message = 'Failed to copy';
+
+      setTimeout(() => {
+        share_feedback = 'idle';
+        share_feedback_message = '';
+      }, 2000);
     }
   }
 
@@ -124,7 +172,27 @@
     >
   </div>
 
-  <div class="help-toggle">
+  <div class="right-controls">
+    <button
+      class="share emoji-small"
+      onclick={handleSharePattern}
+      disabled={share_feedback === 'copying'}
+      title="Share pattern via URL"
+    >
+      {#if share_feedback === 'copying'}
+        ⏳
+      {:else if share_feedback === 'success'}
+        ✅
+      {:else if share_feedback === 'error'}
+        ❌
+      {:else}
+        🔗
+      {/if}
+    </button>
+    {#if share_feedback_message}
+      <span class="share-feedback">{share_feedback_message}</span>
+    {/if}
+
     <button
       class="emoji-small"
       onclick={() => {
@@ -164,8 +232,35 @@
     transition: transform 0.3s ease;
   }
 
-  .help-toggle {
+  .right-controls {
     margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    position: relative;
+  }
+
+  .share:disabled {
+    opacity: 0.6;
+    cursor: wait;
+  }
+
+  .share-feedback {
+    position: absolute;
+    right: 0;
+    top: -1.5rem;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    animation: fadeIn 0.2s ease;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 
   .disco-ball {

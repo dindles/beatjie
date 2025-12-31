@@ -21,15 +21,11 @@
     display: grid;
     place-content: center;
     text-align: center;
+    gap: 1em;
   }
 
   .audio-context-prompt button {
     display: inline-block;
-  }
-
-  .audio-context-prompt {
-    display: grid;
-    gap: 1em;
   }
 
   .audio-context-prompt div {

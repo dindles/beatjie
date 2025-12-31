@@ -33,6 +33,7 @@
     getDefaultColorSettings,
     applyColorSettingsToDOM
   } from '$lib/utils/color-storage';
+  import { getPatternFromURL, type PatternData } from '$lib/utils/pattern-sharing';
 
   // === VARIABLES ============================
 
@@ -57,6 +58,7 @@
 
   let samples: Sample[] = $state([]);
   let selected_sample: Sample | undefined = $state(undefined);
+  let pending_pattern_data: PatternData | null = $state(null);
 
   // === State
   interface AppState {
@@ -116,9 +118,17 @@
   $effect(() => {
     if (typeof document !== 'undefined') {
       document.fonts.ready.then(() => {
+        // Try to load pattern from URL first
+        pending_pattern_data = getPatternFromURL();
+
         // Load and apply saved color settings before showing audio prompt
         const saved_colors = loadColorSettings() ?? getDefaultColorSettings();
         applyColorSettingsToDOM(saved_colors);
+
+        // Override random pack selection if pattern exists
+        if (pending_pattern_data) {
+          selected_pack_index = pending_pattern_data.selected_pack_index;
+        }
 
         app_state['fonts-loading'] = false;
         console.log('fonts loaded');
@@ -151,6 +161,45 @@
     }
   });
 
+  // Apply pattern from URL after app is ready
+  $effect(() => {
+    if (app_state['app-ready'] && pending_pattern_data) {
+      applyPatternToState(pending_pattern_data);
+      pending_pattern_data = null; // Clear to prevent re-application
+    }
+  });
+
+  function applyPatternToState(pattern: PatternData) {
+    // Set BPM
+    audio_sequencer.setBPM(pattern.bpm);
+
+    // Set main effects
+    audio_chain.toggleMainHighPass(pattern.main_highpass);
+    audio_chain.toggleMainDistortion(pattern.main_distortion);
+
+    // Apply sample states
+    pattern.samples.forEach((sample_data) => {
+      const sample = samples.find((s) => s.id === sample_data.id);
+      if (!sample) return;
+
+      sample.sequence = [...sample_data.sequence]; // Copy array
+      sample.pitch = sample_data.pitch as any;
+      sample.delay_is_active = sample_data.delay_active;
+      sample.reverb_is_active = sample_data.reverb_active;
+      sample.is_muted = sample_data.muted;
+
+      // Apply effects through audio chain
+      audio_chain.toggleSampleDelay(sample, sample_data.delay_active);
+      audio_chain.toggleSampleReverb(sample, sample_data.reverb_active);
+      audio_chain.toggleSampleMute(sample, sample_data.muted);
+    });
+
+    // Rebuild sequences with new pattern
+    audio_sequencer.makeSequences(samples);
+
+    console.log('Pattern loaded from URL');
+  }
+
   // === Load data
   async function audioDataToCode() {
     samples = await audio_data_to_code.processPacks(packs);
@@ -175,7 +224,7 @@
 <svelte:window onkeydown={handleKeydown} />
 
 <main>
-  <div class="app border">
+  <div class="app" class:border={app_state['app-ready']}>
     {#if app_state['fonts-loading']}
       <FontLoadingMessage />
     {:else if app_state['audio-prompt']}
@@ -188,7 +237,13 @@
       {#if help_overlay_active}
         <HelpOverlay bind:help_overlay_active />
       {/if}
-      <AppSettings bind:help_overlay_active {audio_chain} {audio_sequencer} {samples} />
+      <AppSettings
+        bind:help_overlay_active
+        {audio_chain}
+        {audio_sequencer}
+        {samples}
+        {selected_pack_index}
+      />
       <Display {audio_chain} {selected_sample} />
       <Samples
         {pitches}
