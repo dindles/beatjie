@@ -102,12 +102,7 @@
       const current_bpm = audio_sequencer.getBPM();
 
       // Serialise current state
-      const pattern_data = serializePattern(
-        current_bpm,
-        selected_pack_index,
-        audio_chain,
-        samples
-      );
+      const pattern_data = serializePattern(current_bpm, selected_pack_index, audio_chain, samples);
 
       // Create shareable URL
       const share_url = createShareURL(pattern_data);
@@ -116,7 +111,7 @@
       await navigator.clipboard.writeText(share_url);
 
       share_feedback = 'success';
-      share_feedback_message = 'URL copied!';
+      share_feedback_message = 'URL copied';
 
       // Reset feedback after 2 seconds
       setTimeout(() => {
@@ -248,7 +243,7 @@
   .share-feedback {
     position: absolute;
     right: 0;
-    top: -1.5rem;
+    bottom: -1.5rem;
     font-size: 0.8rem;
     white-space: nowrap;
     animation: fadeIn 0.2s ease;
