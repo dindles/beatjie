@@ -164,7 +164,7 @@
   });
 
   $effect(() => {
-    if (app_state['audio-loading'] && audio_data_to_code.buffersAreLoaded()) {
+    if (app_state['audio-loading'] && audio_data_to_code.buffersAreLoaded() && samples.length > 0) {
       app_state['audio-loading'] = false;
       app_state['app-ready'] = true;
     }
@@ -179,6 +179,25 @@
   });
 
   function applyPatternToState(pattern: PatternData) {
+    console.log('=== APPLY PATTERN DEBUG ===');
+    console.log('Pattern samples:', pattern.samples.length);
+    console.log(
+      'Samples with active steps:',
+      pattern.samples.filter((s) => s.sequence.some(Boolean)).length
+    );
+
+    // Check what we're trying to apply
+    pattern.samples.forEach((sample_data) => {
+      const activeSteps = sample_data.sequence.filter(Boolean).length;
+      if (activeSteps > 0) {
+        console.log(
+          `Pattern has sample ${sample_data.id}: ${activeSteps} steps, pitch=${sample_data.pitch}`
+        );
+      }
+    });
+
+    console.log('Available samples in app:', samples.length);
+
     // Set BPM
     audio_sequencer.setBPM(pattern.bpm);
 
@@ -191,7 +210,7 @@
       const sample = samples.find((s) => s.id === sample_data.id);
       if (!sample) return;
 
-      sample.sequence = [...sample_data.sequence]; // Copy array
+      sample.sequence = [...sample_data.sequence];
       sample.pitch = sample_data.pitch as any;
       sample.delay_is_active = sample_data.delay_active;
       sample.reverb_is_active = sample_data.reverb_active;

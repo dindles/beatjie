@@ -95,14 +95,28 @@
 
   async function handleSharePattern() {
     try {
-      // Get current BPM
       const current_bpm = audio_sequencer.getBPM();
 
-      // Serialise current state
+      // DEBUG: Check samples before serialization
+      console.log('=== SERIALIZE DEBUG ===');
+      console.log('Total samples:', samples.length);
+      samples.forEach((s) => {
+        const activeSteps = s.sequence.filter(Boolean).length;
+        if (activeSteps > 0) {
+          console.log(`Sample ${s.id} (${s.emoji}): ${activeSteps} active steps, pitch=${s.pitch}`);
+        }
+      });
+
       const pattern_data = serializePattern(current_bpm, selected_pack_index, audio_chain, samples);
 
-      // Create shareable URL
+      console.log('Serialized pattern samples:', pattern_data.samples.length);
+      console.log(
+        'Samples with sequences:',
+        pattern_data.samples.filter((s) => s.sequence.some(Boolean)).length
+      );
+
       const share_url = createShareURL(pattern_data);
+      console.log('URL length:', share_url.length);
 
       // Copy to clipboard
       await navigator.clipboard.writeText(share_url);
