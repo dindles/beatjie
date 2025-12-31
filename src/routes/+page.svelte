@@ -34,6 +34,7 @@
     applyColorSettingsToDOM
   } from '$lib/utils/color-storage';
   import { getPatternFromURL, type PatternData } from '$lib/utils/pattern-sharing';
+  import { FeedbackState } from '$lib/utils/feedback-state.svelte';
 
   // === VARIABLES ============================
 
@@ -55,6 +56,7 @@
   let audio_data_to_code = new AudioDataToCode();
   let audio_chain = new AudioChain(chain_config);
   let audio_sequencer = new AudioSequencer();
+  let feedback_state = new FeedbackState();
 
   let samples: Sample[] = $state([]);
   let selected_sample: Sample | undefined = $state(undefined);
@@ -243,8 +245,9 @@
         {audio_sequencer}
         {samples}
         {selected_pack_index}
+        {feedback_state}
       />
-      <Display {audio_chain} {selected_sample} />
+      <Display {audio_chain} {selected_sample} {feedback_state} />
       <Samples
         {pitches}
         {packs}

@@ -3,6 +3,7 @@
   import type { Sample } from '$lib/classes/audio-models.svelte';
   import type { AudioSequencer } from '$lib/classes/audio-sequencer.svelte';
   import type { AudioChain } from '$lib/classes/audio-chain.svelte';
+  import type { FeedbackState } from '$lib/utils/feedback-state.svelte';
   import { saveColorSettings, loadColorSettings } from '$lib/utils/color-storage';
   import { serializePattern, createShareURL } from '$lib/utils/pattern-sharing';
 
@@ -12,6 +13,7 @@
     audio_chain: AudioChain;
     samples: Sample[];
     selected_pack_index: number;
+    feedback_state: FeedbackState;
   }
 
   let {
@@ -19,7 +21,8 @@
     audio_sequencer,
     audio_chain,
     samples,
-    selected_pack_index
+    selected_pack_index,
+    feedback_state
   }: Props = $props();
 
   const available_hues = [30, 90, 140, 200, 280, 330];
@@ -36,10 +39,6 @@
   let black_or_white = $state('oklch(0 0 0)');
   let theme: 'light' | 'dark' = $state('light');
   let disco_toggle = $state(false);
-
-  // Share state
-  let share_feedback = $state<'idle' | 'copying' | 'success' | 'error'>('idle');
-  let share_feedback_message = $state('');
 
   // Load saved color settings on mount
   let initialized = false;
@@ -96,8 +95,6 @@
 
   async function handleSharePattern() {
     try {
-      share_feedback = 'copying';
-
       // Get current BPM
       const current_bpm = audio_sequencer.getBPM();
 
@@ -110,23 +107,11 @@
       // Copy to clipboard
       await navigator.clipboard.writeText(share_url);
 
-      share_feedback = 'success';
-      share_feedback_message = 'URL copied';
-
-      // Reset feedback after 2 seconds
-      setTimeout(() => {
-        share_feedback = 'idle';
-        share_feedback_message = '';
-      }, 2000);
+      // Show confirmation via global feedback
+      feedback_state.showConfirmation('URL copied');
     } catch (error) {
       console.error('Failed to share pattern:', error);
-      share_feedback = 'error';
-      share_feedback_message = 'Failed to copy';
-
-      setTimeout(() => {
-        share_feedback = 'idle';
-        share_feedback_message = '';
-      }, 2000);
+      feedback_state.showConfirmation('Failed to copy');
     }
   }
 
@@ -148,52 +133,66 @@
 </script>
 
 <div class="controls-container">
-  <button class="delete emoji-small" onclick={deleteSequences}>🗑</button>
+  <button
+    class="delete emoji-small"
+    onmouseenter={() => feedback_state.showTooltip('Delete all sequences')}
+    onmouseleave={() => feedback_state.clear()}
+    onclick={deleteSequences}
+  >
+    🗑
+  </button>
 
   <div class="color-controls">
     <button
       class="hue-control emoji-small"
       style="transform: rotate({hue_emoji_rotation}deg)"
+      onmouseenter={() => feedback_state.showTooltip('Change colour')}
+      onmouseleave={() => feedback_state.clear()}
       onclick={() => {
         hue_emoji_rotation += 90;
         changeHue();
-      }}>🎨</button
+      }}
     >
-    <button class="light-dark emoji-small" onclick={changeTheme}>
+      🎨
+    </button>
+    <button
+      class="light-dark emoji-small"
+      onmouseenter={() => feedback_state.showTooltip('Change theme')}
+      onmouseleave={() => feedback_state.clear()}
+      onclick={changeTheme}
+    >
       {theme === 'light' ? '🤩' : '😎'}
     </button>
-    <button class="emoji-small disco-ball {disco_toggle ? 'active' : ''}" onclick={toggleDisco}
-      >🪩</button
+    <button
+      class="emoji-small disco-ball {disco_toggle ? 'active' : ''}"
+      onmouseenter={() => feedback_state.showTooltip('Disco mode')}
+      onmouseleave={() => feedback_state.clear()}
+      onclick={toggleDisco}
     >
+      🪩
+    </button>
   </div>
 
   <div class="right-controls">
     <button
       class="share emoji-small"
+      onmouseenter={() => feedback_state.showTooltip('Share pattern via URL')}
+      onmouseleave={() => feedback_state.clear()}
       onclick={handleSharePattern}
-      disabled={share_feedback === 'copying'}
-      title="Share pattern via URL"
     >
-      {#if share_feedback === 'copying'}
-        ⏳
-      {:else if share_feedback === 'success'}
-        ✅
-      {:else if share_feedback === 'error'}
-        ❌
-      {:else}
-        🔗
-      {/if}
+      🔗
     </button>
-    {#if share_feedback_message}
-      <span class="share-feedback">{share_feedback_message}</span>
-    {/if}
 
     <button
       class="emoji-small"
+      onmouseenter={() => feedback_state.showTooltip('Show help')}
+      onmouseleave={() => feedback_state.clear()}
       onclick={() => {
         help_overlay_active = !help_overlay_active;
-      }}>❓</button
+      }}
     >
+      ❓
+    </button>
   </div>
 </div>
 
@@ -232,30 +231,6 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    position: relative;
-  }
-
-  .share:disabled {
-    opacity: 0.6;
-    cursor: wait;
-  }
-
-  .share-feedback {
-    position: absolute;
-    right: 0;
-    bottom: -1.5rem;
-    font-size: 0.8rem;
-    white-space: nowrap;
-    animation: fadeIn 0.2s ease;
-  }
-
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
   }
 
   .disco-ball {

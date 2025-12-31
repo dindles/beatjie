@@ -1,13 +1,16 @@
 <script lang="ts">
   import type { AudioChain } from '$lib/classes/audio-chain.svelte';
   import type { Sample } from '$lib/classes/audio-models.svelte';
+  import type { FeedbackState } from '$lib/utils/feedback-state.svelte';
+  import GlobalFeedback from '$lib/components/global-feedback.svelte';
 
   interface Props {
     audio_chain: AudioChain;
     selected_sample: Sample | undefined;
+    feedback_state: FeedbackState;
   }
 
-  let { audio_chain, selected_sample: _selected_sample }: Props = $props();
+  let { audio_chain, selected_sample: _selected_sample, feedback_state }: Props = $props();
   let canvas: HTMLCanvasElement;
   let analysis_values: Float32Array | Float32Array[] = $state([]);
 
@@ -102,9 +105,14 @@
 
 <div class="display">
   <canvas bind:this={canvas}></canvas>
+  <GlobalFeedback {feedback_state} />
 </div>
 
 <style>
+  .display {
+    position: relative;
+  }
+
   canvas {
     aspect-ratio: 8/1.2;
     width: 100%;
