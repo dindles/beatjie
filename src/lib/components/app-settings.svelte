@@ -19,12 +19,17 @@
     samples
   }: Props = $props();
 
-  const available_hues = [50, 100, 150, 200, 250, 300];
+  const available_hues = [30, 90, 140, 200, 280, 330];
+
+  function calculateChroma(lightness: number): number {
+    return 0.15 + 0.1 * (1 - Math.abs(lightness - 0.5) * 2);
+  }
+
   let hue_emoji_rotation = $state(0);
   let user_lightness = $state(0.9); // 0 - 1
-  const CHROMA = 0.2; // 0 - 0.4
   let user_hue = $state(available_hues[Math.floor(Math.random() * available_hues.length)]);
-  let user_colour = $derived(`oklch(${user_lightness} ${CHROMA} ${user_hue})`);
+  let chroma = $derived(calculateChroma(user_lightness));
+  let user_colour = $derived(`oklch(${user_lightness} ${chroma} ${user_hue})`);
   let black_or_white = $state('oklch(0 0 0)');
   let theme: 'light' | 'dark' = $state('light');
   let disco_toggle = $state(false);
@@ -61,8 +66,9 @@
   }
 
   function changeHue() {
-    user_hue = user_hue + 50;
-    if (user_hue > 300) user_hue = 50;
+    const current_index = available_hues.indexOf(user_hue);
+    const next_index = (current_index + 1) % available_hues.length;
+    user_hue = available_hues[next_index];
     saveColorSettings({ hue: user_hue, lightness: user_lightness, theme });
   }
 

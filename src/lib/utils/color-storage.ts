@@ -5,7 +5,12 @@ export interface ColorSettings {
 }
 
 const STORAGE_KEY = 'beatjie-color-settings';
-const AVAILABLE_HUES = [50, 100, 150, 200, 250, 300];
+const AVAILABLE_HUES = [30, 90, 140, 200, 280, 330];
+
+function calculateChroma(lightness: number): number {
+  // Peak chroma at mid-lightness, lower at extremes for better harmony
+  return 0.15 + 0.1 * (1 - Math.abs(lightness - 0.5) * 2);
+}
 
 export function getDefaultColorSettings(): ColorSettings {
   return {
@@ -70,8 +75,8 @@ export function loadColorSettings(): ColorSettings | null {
 export function applyColorSettingsToDOM(settings: ColorSettings): void {
   if (typeof document === 'undefined') return;
 
-  const CHROMA = 0.2;
-  const user_colour = `oklch(${settings.lightness} ${CHROMA} ${settings.hue})`;
+  const chroma = calculateChroma(settings.lightness);
+  const user_colour = `oklch(${settings.lightness} ${chroma} ${settings.hue})`;
   const black_or_white = settings.theme === 'light' ? 'oklch(0 0 0)' : 'oklch(1 0 0)';
 
   document.documentElement.style.setProperty('--user-colour', user_colour);
