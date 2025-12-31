@@ -1,30 +1,28 @@
 <!-- PackSelector.svelte -->
 <script lang="ts">
-  import type { Packs, Sample } from '$lib/classes/audio-models.svelte'
+  import type { Packs, Sample } from '$lib/classes/audio-models.svelte';
   let {
     packs,
     samples,
-    selected_pack_index = $bindable(),
+    selected_pack_index = $bindable()
   }: {
-    packs: Packs
-    samples: Sample[]
-    selected_pack_index: number
-  } = $props()
+    packs: Packs;
+    samples: Sample[];
+    selected_pack_index: number;
+  } = $props();
 
   function selectPack(index: number) {
-    selected_pack_index = index
+    selected_pack_index = index;
   }
 </script>
 
 <div class="pack-select">
   <div class="pack-indicators">
-    {#each packs as pack, index}
+    {#each packs as pack, index (pack.name)}
       <button
         class="pack-indicator border"
         class:active={index === selected_pack_index}
-        class:playing={samples.some(
-          (sample) => sample.pack === pack.name && sample.is_playing
-        )}
+        class:playing={samples.some((sample) => sample.pack === pack.name && sample.is_playing)}
         onclick={() => selectPack(index)}
         aria-label={pack.name}
       ></button>

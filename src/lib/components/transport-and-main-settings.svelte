@@ -1,18 +1,18 @@
 <!-- transport-and-main-settings.svelte -->
 <script lang="ts">
-  import BPMSelector from '$lib/components/bpm-selector.svelte'
-  import type { AudioSequencer } from '$lib/classes/audio-sequencer.svelte'
-  import type { AudioChain } from '$lib/classes/audio-chain.svelte'
+  import BPMSelector from '$lib/components/bpm-selector.svelte';
+  import type { AudioSequencer } from '$lib/classes/audio-sequencer.svelte';
+  import type { AudioChain } from '$lib/classes/audio-chain.svelte';
 
   interface Props {
-    audio_sequencer: AudioSequencer
-    audio_chain: AudioChain
+    audio_sequencer: AudioSequencer;
+    audio_chain: AudioChain;
   }
 
-  let { audio_sequencer, audio_chain }: Props = $props()
+  let { audio_sequencer, audio_chain }: Props = $props();
 
   async function toggleSeqPlayback() {
-    await audio_sequencer.togglePlayback()
+    await audio_sequencer.togglePlayback();
   }
 </script>
 
@@ -26,16 +26,13 @@
   <div class="main-settings">
     <button
       class="emoji-large border"
-      onclick={() =>
-        audio_chain.toggleMainHighPass(!audio_chain.mainIsHighPassed)}
+      onclick={() => audio_chain.toggleMainHighPass(!audio_chain.mainIsHighPassed)}
       class:active={audio_chain.mainIsHighPassed}>🫴</button
     >
     <button
       class:active={audio_chain.mainIsDistorted}
       class="emoji-large border"
-      onclick={() =>
-        audio_chain.toggleMainDistortion(!audio_chain.mainIsDistorted)}
-      >💥</button
+      onclick={() => audio_chain.toggleMainDistortion(!audio_chain.mainIsDistorted)}>💥</button
     >
 
     <div class="bpm-control border">

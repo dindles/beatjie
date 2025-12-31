@@ -1,53 +1,53 @@
 <script lang="ts">
-  import type { AudioSequencer } from '$lib/classes/audio-sequencer.svelte'
+  import type { AudioSequencer } from '$lib/classes/audio-sequencer.svelte';
 
   interface Props {
-    audio_sequencer: AudioSequencer
+    audio_sequencer: AudioSequencer;
   }
 
-  let { audio_sequencer }: Props = $props()
+  let { audio_sequencer }: Props = $props();
 
-  const MIN_BPM = 60
-  const MAX_BPM = 200
-  const DRAG_SENSITIVITY = 0.5
+  const MIN_BPM = 60;
+  const MAX_BPM = 200;
+  const DRAG_SENSITIVITY = 0.5;
 
-  let isDragging = $state(false)
-  let dragStartY = $state(0)
-  let startBPM = $state(0)
+  let is_dragging = $state(false);
+  let drag_start_y = $state(0);
+  let start_bpm = $state(0);
 
   function constrainBPM(value: number): number {
-    return Math.min(MAX_BPM, Math.max(MIN_BPM, value))
+    return Math.min(MAX_BPM, Math.max(MIN_BPM, value));
   }
 
-  function updateBPM(newBPM: number) {
-    const constrained = constrainBPM(newBPM)
+  function updateBPM(new_bpm: number) {
+    const constrained = constrainBPM(new_bpm);
     if (constrained !== audio_sequencer.getBPM()) {
-      audio_sequencer.setBPM(constrained)
+      audio_sequencer.setBPM(constrained);
     }
   }
 
   function handleWheel(e: WheelEvent) {
-    e.preventDefault()
-    updateBPM(audio_sequencer.getBPM() + Math.sign(e.deltaY) * -1)
+    e.preventDefault();
+    updateBPM(audio_sequencer.getBPM() + Math.sign(e.deltaY) * -1);
   }
 
   function handlePointerDown(e: PointerEvent) {
-    isDragging = true
-    dragStartY = e.clientY
-    startBPM = audio_sequencer.getBPM()
-    ;(e.target as HTMLElement).setPointerCapture(e.pointerId)
+    is_dragging = true;
+    drag_start_y = e.clientY;
+    start_bpm = audio_sequencer.getBPM();
+    (e.target as HTMLElement).setPointerCapture(e.pointerId);
   }
 
   function handlePointerMove(e: PointerEvent) {
-    if (!isDragging) return
-    const dragDelta = dragStartY - e.clientY
-    updateBPM(startBPM + Math.round(dragDelta * DRAG_SENSITIVITY))
+    if (!is_dragging) return;
+    const drag_delta = drag_start_y - e.clientY;
+    updateBPM(start_bpm + Math.round(drag_delta * DRAG_SENSITIVITY));
   }
 
   function handlePointerUp(e: PointerEvent) {
-    if (!isDragging) return
-    isDragging = false
-    ;(e.target as HTMLElement).releasePointerCapture(e.pointerId)
+    if (!is_dragging) return;
+    is_dragging = false;
+    (e.target as HTMLElement).releasePointerCapture(e.pointerId);
   }
 </script>
 

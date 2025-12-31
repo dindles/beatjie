@@ -1,106 +1,101 @@
 <script lang="ts">
-  import * as Tone from 'tone'
-  import type { Sample } from '$lib/classes/audio-models.svelte'
-  import type { AudioSequencer } from '$lib/classes/audio-sequencer.svelte'
-  import type { AudioChain } from '$lib/classes/audio-chain.svelte'
-  import { saveColorSettings, loadColorSettings } from '$lib/utils/color-storage'
+  import * as Tone from 'tone';
+  import type { Sample } from '$lib/classes/audio-models.svelte';
+  import type { AudioSequencer } from '$lib/classes/audio-sequencer.svelte';
+  import type { AudioChain } from '$lib/classes/audio-chain.svelte';
+  import { saveColorSettings, loadColorSettings } from '$lib/utils/color-storage';
 
   interface Props {
-    help_overlay_active: boolean
-    audio_sequencer: AudioSequencer
-    audio_chain: AudioChain
-    samples: Sample[]
+    help_overlay_active: boolean;
+    audio_sequencer: AudioSequencer;
+    audio_chain: AudioChain;
+    samples: Sample[];
   }
 
   let {
     help_overlay_active = $bindable(),
     audio_sequencer,
     audio_chain,
-    samples,
-  }: Props = $props()
+    samples
+  }: Props = $props();
 
-  const available_hues = [50, 100, 150, 200, 250, 300]
-  let hue_emoji_rotation = $state(0)
-  let user_lightness = $state(0.9) // 0 - 1
-  const CHROMA = 0.2 // 0 - 0.4
-  let user_hue = $state(
-    available_hues[Math.floor(Math.random() * available_hues.length)]
-  )
-  let user_colour = $derived(`oklch(${user_lightness} ${CHROMA} ${user_hue})`)
-  let black_or_white = $state('oklch(0 0 0)')
-  let theme: 'light' | 'dark' = $state('light')
-  let disco_toggle = $state(false)
+  const available_hues = [50, 100, 150, 200, 250, 300];
+  let hue_emoji_rotation = $state(0);
+  let user_lightness = $state(0.9); // 0 - 1
+  const CHROMA = 0.2; // 0 - 0.4
+  let user_hue = $state(available_hues[Math.floor(Math.random() * available_hues.length)]);
+  let user_colour = $derived(`oklch(${user_lightness} ${CHROMA} ${user_hue})`);
+  let black_or_white = $state('oklch(0 0 0)');
+  let theme: 'light' | 'dark' = $state('light');
+  let disco_toggle = $state(false);
 
   // Load saved color settings on mount
-  let initialized = false
+  let initialized = false;
   $effect(() => {
     if (!initialized) {
-      initialized = true
-      const saved = loadColorSettings()
+      initialized = true;
+      const saved = loadColorSettings();
       if (saved) {
-        user_hue = saved.hue
-        user_lightness = saved.lightness
-        theme = saved.theme
-        black_or_white = theme === 'light' ? 'oklch(0 0 0)' : 'oklch(1 0 0)'
+        user_hue = saved.hue;
+        user_lightness = saved.lightness;
+        theme = saved.theme;
+        black_or_white = theme === 'light' ? 'oklch(0 0 0)' : 'oklch(1 0 0)';
       }
     }
-  })
+  });
 
   function deleteSequences() {
-    audio_sequencer.stopPlayback()
-    audio_sequencer.is_playing = false
+    audio_sequencer.stopPlayback();
+    audio_sequencer.is_playing = false;
 
     samples.forEach((sample: Sample) => {
-      sample.sequence = new Array(sample.sequence.length).fill(false)
-      sample.pitch = 'C2'
-      audio_chain.toggleSampleDelay(sample, false)
-      audio_chain.toggleSampleReverb(sample, false)
-      sample.delay_is_active = false
-      sample.reverb_is_active = false
-    })
+      sample.sequence = new Array(sample.sequence.length).fill(false);
+      sample.pitch = 'C2';
+      audio_chain.toggleSampleDelay(sample, false);
+      audio_chain.toggleSampleReverb(sample, false);
+      sample.delay_is_active = false;
+      sample.reverb_is_active = false;
+    });
 
-    audio_sequencer.makeSequences(samples)
+    audio_sequencer.makeSequences(samples);
   }
 
   function changeHue() {
-    user_hue = user_hue + 50
-    if (user_hue > 300) user_hue = 50
-    saveColorSettings({ hue: user_hue, lightness: user_lightness, theme })
+    user_hue = user_hue + 50;
+    if (user_hue > 300) user_hue = 50;
+    saveColorSettings({ hue: user_hue, lightness: user_lightness, theme });
   }
 
   function changeTheme() {
-    user_lightness = user_lightness === 0.9 ? 0.5 : 0.9
-    theme = theme === 'light' ? 'dark' : 'light'
-    black_or_white = theme === 'light' ? 'oklch(0 0 0)' : 'oklch(1 0 0)'
-    saveColorSettings({ hue: user_hue, lightness: user_lightness, theme })
+    user_lightness = user_lightness === 0.9 ? 0.5 : 0.9;
+    theme = theme === 'light' ? 'dark' : 'light';
+    black_or_white = theme === 'light' ? 'oklch(0 0 0)' : 'oklch(1 0 0)';
+    saveColorSettings({ hue: user_hue, lightness: user_lightness, theme });
   }
 
   function toggleDisco() {
-    disco_toggle = !disco_toggle
+    disco_toggle = !disco_toggle;
     // Save color state when turning disco mode off
     if (!disco_toggle) {
-      saveColorSettings({ hue: user_hue, lightness: user_lightness, theme })
+      saveColorSettings({ hue: user_hue, lightness: user_lightness, theme });
     }
   }
 
   $effect(() => {
     if (disco_toggle) {
       const interval = Tone.getTransport().scheduleRepeat(() => {
-        changeHue()
+        changeHue();
         // changeTheme()
-      }, '4n')
-      return () => Tone.getTransport().clear(interval)
+      }, '4n');
+      return () => Tone.getTransport().clear(interval);
     }
-  })
+  });
 
   // this is the piping that lets us apply reactive state to the app.css styles
   $effect(() => {
-    document.documentElement.style.setProperty('--user-colour', user_colour)
-    document.documentElement.style.setProperty(
-      '--black-or-white',
-      black_or_white
-    )
-  })
+    document.documentElement.style.setProperty('--user-colour', user_colour);
+    document.documentElement.style.setProperty('--black-or-white', black_or_white);
+  });
 </script>
 
 <div class="controls-container">
@@ -111,16 +106,15 @@
       class="hue-control emoji-small"
       style="transform: rotate({hue_emoji_rotation}deg)"
       onclick={() => {
-        hue_emoji_rotation += 90
-        changeHue()
+        hue_emoji_rotation += 90;
+        changeHue();
       }}>🎨</button
     >
     <button class="light-dark emoji-small" onclick={changeTheme}>
       {theme === 'light' ? '🤩' : '😎'}
     </button>
-    <button
-      class="emoji-small disco-ball {disco_toggle ? 'active' : ''}"
-      onclick={toggleDisco}>🪩</button
+    <button class="emoji-small disco-ball {disco_toggle ? 'active' : ''}" onclick={toggleDisco}
+      >🪩</button
     >
   </div>
 
@@ -128,7 +122,7 @@
     <button
       class="emoji-small"
       onclick={() => {
-        help_overlay_active = !help_overlay_active
+        help_overlay_active = !help_overlay_active;
       }}>❓</button
     >
   </div>

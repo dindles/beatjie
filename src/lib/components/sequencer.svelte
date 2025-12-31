@@ -1,27 +1,27 @@
 <!-- sequencer.svelte -->
 <script lang="ts">
-  import type { Sample } from '$lib/classes/audio-models.svelte'
-  import type { AudioSequencer } from '$lib/classes/audio-sequencer.svelte'
+  import type { Sample } from '$lib/classes/audio-models.svelte';
+  import type { AudioSequencer } from '$lib/classes/audio-sequencer.svelte';
 
   interface Props {
-    samples: Sample[]
-    selected_sample: Sample | undefined
-    audio_sequencer: AudioSequencer
+    samples: Sample[];
+    selected_sample: Sample | undefined;
+    audio_sequencer: AudioSequencer;
   }
 
-  let { samples, selected_sample, audio_sequencer }: Props = $props()
+  let { samples: _samples, selected_sample, audio_sequencer }: Props = $props();
 
   function handleSeqClick(sample: Sample, step_index: number) {
-    sample.sequence[step_index] = !sample.sequence[step_index]
+    sample.sequence[step_index] = !sample.sequence[step_index];
   }
 
   // Create an array of 16 items to represent the sequencer steps
-  const sequencerSteps = Array(16).fill(null)
+  const SEQUENCER_STEPS = Array(16).fill(null);
 </script>
 
 <div class="sequencer">
   {#if selected_sample}
-    {#each sequencerSteps as _, index}
+    {#each SEQUENCER_STEPS as _, index (index)}
       <button
         class="step border emoji-sequencer"
         class:active={index === audio_sequencer.active_step_index}
@@ -37,7 +37,7 @@
     {/each}
   {:else}
     <!-- Display placeholder steps when no sample is selected -->
-    {#each sequencerSteps as _, index}
+    {#each SEQUENCER_STEPS as _, index (index)}
       <div
         class="placeholder-step border"
         class:active={index === audio_sequencer.active_step_index}

@@ -1,67 +1,67 @@
 <script lang="ts">
-  let cursorX = $state(0)
-  let cursorY = $state(0)
-  let visible = $state(false)
-  let is_clicked = $state(false)
-  let use_difference = $state(true)
+  let cursor_x = $state(0);
+  let cursor_y = $state(0);
+  let visible = $state(false);
+  let is_clicked = $state(false);
+  let use_difference = $state(true);
 
   function updateCursor(e: MouseEvent) {
     if (!visible) {
-      visible = true
+      visible = true;
     }
-    cursorX = e.clientX
-    cursorY = e.clientY
+    cursor_x = e.clientX;
+    cursor_y = e.clientY;
   }
 
   function handleMouseDown() {
-    is_clicked = true
+    is_clicked = true;
   }
 
   function handleMouseUp() {
-    is_clicked = false
+    is_clicked = false;
   }
 
   $effect(() => {
-    document.documentElement.style.cursor = 'none'
-    document.addEventListener('mousemove', updateCursor)
-    document.addEventListener('mousedown', handleMouseDown)
-    document.addEventListener('mouseup', handleMouseUp)
+    document.documentElement.style.cursor = 'none';
+    document.addEventListener('mousemove', updateCursor);
+    document.addEventListener('mousedown', handleMouseDown);
+    document.addEventListener('mouseup', handleMouseUp);
 
     // checks the current theme and adjusts the cursor mix-blend-mode to preserve visibility
-    const checkTheme = () => {
-      const blackOrWhite = getComputedStyle(document.documentElement)
+    const check_theme = () => {
+      const black_or_white = getComputedStyle(document.documentElement)
         .getPropertyValue('--black-or-white')
-        .trim()
-      use_difference = blackOrWhite.includes('0 0 0')
-    }
+        .trim();
+      use_difference = black_or_white.includes('0 0 0');
+    };
 
-    const observer = new MutationObserver(checkTheme)
+    const observer = new MutationObserver(check_theme);
     observer.observe(document.documentElement, {
       attributes: true,
-      attributeFilter: ['style'],
-    })
+      attributeFilter: ['style']
+    });
 
-    checkTheme()
+    check_theme();
 
-    cursorX = window.innerWidth / 2
-    cursorY = window.innerHeight / 2
-    visible = true
+    cursor_x = window.innerWidth / 2;
+    cursor_y = window.innerHeight / 2;
+    visible = true;
 
     return () => {
-      document.documentElement.style.cursor = ''
-      document.removeEventListener('mousemove', updateCursor)
-      document.removeEventListener('mousedown', handleMouseDown)
-      document.removeEventListener('mouseup', handleMouseUp)
-      observer.disconnect()
-    }
-  })
+      document.documentElement.style.cursor = '';
+      document.removeEventListener('mousemove', updateCursor);
+      document.removeEventListener('mousedown', handleMouseDown);
+      document.removeEventListener('mouseup', handleMouseUp);
+      observer.disconnect();
+    };
+  });
 </script>
 
 <div
   class="custom-cursor"
   style="
-    left: {cursorX}px; 
-    top: {cursorY}px; 
+    left: {cursor_x}px;
+    top: {cursor_y}px;
     opacity: {visible ? 1 : 0};
     transform: translate(-30%, -10%) scale({is_clicked ? 0.97 : 1});
     mix-blend-mode: {use_difference ? 'difference' : 'multiply'};

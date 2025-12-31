@@ -1,8 +1,8 @@
 <script lang="ts">
   interface Props {
-    help_overlay_active: boolean
+    help_overlay_active: boolean;
   }
-  let { help_overlay_active = $bindable() }: Props = $props()
+  let { help_overlay_active = $bindable() }: Props = $props();
 </script>
 
 <div class="help-overlay">
@@ -13,7 +13,7 @@
         <button
           class="emoji-small"
           onclick={() => {
-            help_overlay_active = false
+            help_overlay_active = false;
           }}>❌</button
         >
       </div>

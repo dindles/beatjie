@@ -1,5 +1,5 @@
 <script lang="ts">
-  let { handleAudioConfirm, handleAudioDeny } = $props()
+  let { handleAudioConfirm: handle_audio_confirm, handleAudioDeny: handle_audio_deny } = $props();
 </script>
 
 <div class="audio-context-prompt">
@@ -9,8 +9,8 @@
     this page <br />uses audio. <br />is that ok?
   </p>
   <div>
-    <button class="emoji-small" onclick={handleAudioConfirm}>👍</button>
-    <button class="emoji-small" onclick={handleAudioDeny}>👎</button>
+    <button class="emoji-small" onclick={handle_audio_confirm}>👍</button>
+    <button class="emoji-small" onclick={handle_audio_deny}>👎</button>
   </div>
 </div>
 

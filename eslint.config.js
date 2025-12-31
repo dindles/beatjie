@@ -27,7 +27,20 @@ export default [
         clearInterval: 'readonly',
         fetch: 'readonly',
         URL: 'readonly',
-        URLSearchParams: 'readonly'
+        URLSearchParams: 'readonly',
+        HTMLElement: 'readonly',
+        HTMLCanvasElement: 'readonly',
+        TouchEvent: 'readonly',
+        MouseEvent: 'readonly',
+        WheelEvent: 'readonly',
+        PointerEvent: 'readonly',
+        KeyboardEvent: 'readonly',
+        getComputedStyle: 'readonly',
+        requestAnimationFrame: 'readonly',
+        cancelAnimationFrame: 'readonly',
+        ResizeObserver: 'readonly',
+        MutationObserver: 'readonly',
+        localStorage: 'readonly'
       }
     },
     plugins: {
@@ -144,7 +157,8 @@ export default [
       'dist/**',
       '**/*.config.js',
       'vite.config.ts',
-      'svelte.config.js'
+      'svelte.config.js',
+      '**/*.svelte.ts' // Svelte 5 runes not fully supported by ESLint yet
     ]
   }
 ];

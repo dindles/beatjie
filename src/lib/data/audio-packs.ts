@@ -1,8 +1,8 @@
 // audio-packs.ts
-import { base } from '$app/paths'
-import type { Packs } from '$lib/classes/audio-models.svelte'
+import { base } from '$app/paths';
+import type { Packs } from '$lib/classes/audio-models.svelte';
 
-const audio_path = `${base}/audio`
+const audio_path = `${base}/audio`;
 
 export const packs: Packs = [
   {
@@ -15,8 +15,8 @@ export const packs: Packs = [
       { id: 4, emoji: '🧢', url: `${audio_path}/0/4_oh.mp3` },
       { id: 5, emoji: '👨', url: `${audio_path}/0/5_tom.mp3` },
       { id: 6, emoji: '🐮', url: `${audio_path}/0/6_cow.mp3` },
-      { id: 7, emoji: '👍', url: `${audio_path}/0/7_yeah.mp3` },
-    ],
+      { id: 7, emoji: '👍', url: `${audio_path}/0/7_yeah.mp3` }
+    ]
   },
   {
     name: '1',
@@ -28,8 +28,8 @@ export const packs: Packs = [
       { id: 12, emoji: '💥', url: `${audio_path}/1/4_crash.mp3` },
       { id: 13, emoji: '💧', url: `${audio_path}/1/5_droplet.mp3` },
       { id: 14, emoji: '🫨', url: `${audio_path}/1/6_spring.mp3` },
-      { id: 15, emoji: '💅', url: `${audio_path}/1/7_mhm.mp3` },
-    ],
+      { id: 15, emoji: '💅', url: `${audio_path}/1/7_mhm.mp3` }
+    ]
   },
   {
     name: '2',
@@ -41,8 +41,8 @@ export const packs: Packs = [
       { id: 20, emoji: '🎸', url: `${audio_path}/2/4_standup.mp3` },
       { id: 21, emoji: '🪈', url: `${audio_path}/2/5_flute.mp3` },
       { id: 22, emoji: '🚗', url: `${audio_path}/2/6_rhodes.mp3` },
-      { id: 23, emoji: '🧗', url: `${audio_path}/2/7_climb.mp3` },
-    ],
+      { id: 23, emoji: '🧗', url: `${audio_path}/2/7_climb.mp3` }
+    ]
   },
   {
     name: '3',
@@ -54,7 +54,7 @@ export const packs: Packs = [
       { id: 28, emoji: '🥂', url: `${audio_path}/3/4_tink.mp3` },
       { id: 29, emoji: '🐶', url: `${audio_path}/3/5_woof.mp3` },
       { id: 30, emoji: '🤫', url: `${audio_path}/3/6_shh.mp3` },
-      { id: 31, emoji: '😱', url: `${audio_path}/3/7_scream.mp3` },
-    ],
-  },
-]
+      { id: 31, emoji: '😱', url: `${audio_path}/3/7_scream.mp3` }
+    ]
+  }
+];

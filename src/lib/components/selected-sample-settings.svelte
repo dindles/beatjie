@@ -1,55 +1,49 @@
 <script lang="ts">
-  import type { Sample } from '$lib/classes/audio-models.svelte'
-  import type { AudioChain } from '$lib/classes/audio-chain.svelte'
+  import type { Sample } from '$lib/classes/audio-models.svelte';
+  import type { AudioChain } from '$lib/classes/audio-chain.svelte';
 
   type Props = {
-    selected_sample: Sample | undefined
-    pitches: string[]
-    audio_chain: AudioChain
-  }
+    selected_sample: Sample | undefined;
+    pitches: string[];
+    audio_chain: AudioChain;
+  };
 
-  let { selected_sample, pitches, audio_chain }: Props = $props()
+  let { selected_sample, pitches, audio_chain }: Props = $props();
 
   let pitch_emoji_rotation = $derived.by(() => {
-    if (!selected_sample) return 0
-    const pitchIndex = pitches.indexOf(selected_sample.pitch)
-    return pitchIndex * 90
-  })
+    if (!selected_sample) return 0;
+    const pitch_index = pitches.indexOf(selected_sample.pitch);
+    return pitch_index * 90;
+  });
 
   function loopSamplePitch() {
     if (!selected_sample) {
-      console.log('No sample selected')
-      return
+      console.log('No sample selected');
+      return;
     }
 
-    const currentIndex = pitches.indexOf(selected_sample.pitch)
-    const nextIndex = (currentIndex + 1) % pitches.length
+    const current_index = pitches.indexOf(selected_sample.pitch);
+    const next_index = (current_index + 1) % pitches.length;
     // hacky typescript business?
-    selected_sample.pitch = pitches[nextIndex] as typeof selected_sample.pitch
+    selected_sample.pitch = pitches[next_index] as typeof selected_sample.pitch;
   }
 
   function toggleSampleMute() {
-    if (!selected_sample) return
-    audio_chain.toggleSampleMute(selected_sample, !selected_sample.is_muted)
-    selected_sample.is_muted = !selected_sample.is_muted
+    if (!selected_sample) return;
+    audio_chain.toggleSampleMute(selected_sample, !selected_sample.is_muted);
+    selected_sample.is_muted = !selected_sample.is_muted;
   }
 
   function toggleSampleDelay() {
-    if (!selected_sample) return
-    audio_chain.toggleSampleDelay(
-      selected_sample,
-      !selected_sample.delay_is_active
-    )
-    selected_sample.delay_is_active = !selected_sample.delay_is_active
+    if (!selected_sample) return;
+    audio_chain.toggleSampleDelay(selected_sample, !selected_sample.delay_is_active);
+    selected_sample.delay_is_active = !selected_sample.delay_is_active;
   }
 
   function toggleSampleReverb() {
-    if (!selected_sample) return
-    audio_chain.toggleSampleReverb(
-      selected_sample,
-      !selected_sample.reverb_is_active
-    )
-    selected_sample.reverb_is_active = !selected_sample.reverb_is_active
+    if (!selected_sample) return;
+    audio_chain.toggleSampleReverb(selected_sample, !selected_sample.reverb_is_active);
+    selected_sample.reverb_is_active = !selected_sample.reverb_is_active;
   }
 </script>
 
@@ -61,7 +55,7 @@
     class="selected-sample-pitch emoji-large"
     style="transform: rotate({pitch_emoji_rotation}deg)"
     onclick={() => {
-      loopSamplePitch()
+      loopSamplePitch();
     }}
   >
     🎵
