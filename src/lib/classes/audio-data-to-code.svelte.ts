@@ -5,12 +5,13 @@ import { Sample } from '$lib/classes/audio-models.svelte';
 export class AudioDataToCode {
   #buffers_are_loaded: boolean = $state(false);
   #error_state: string | null = null;
+  #buffers: Tone.ToneAudioBuffers | null = null;
 
   async processPacks(packs: Packs): Promise<Sample[]> {
     try {
-      const buffers = await this.makeBuffers(packs);
+      this.#buffers = await this.makeBuffers(packs);
       const samples = this.makeSamples(packs);
-      const buffered_samples = this.setBuffers(samples, buffers);
+      const buffered_samples = this.setBuffers(samples, this.#buffers);
       this.#buffers_are_loaded = true;
       this.#error_state = null;
       return buffered_samples;
@@ -55,5 +56,13 @@ export class AudioDataToCode {
 
   getErrorState(): string | null {
     return this.#error_state;
+  }
+
+  dispose(): void {
+    if (this.#buffers) {
+      this.#buffers.dispose();
+      this.#buffers = null;
+    }
+    this.#buffers_are_loaded = false;
   }
 }

@@ -55,7 +55,7 @@
     }
   });
 
-  function deleteSequences() {
+  async function deleteSequences() {
     audio_sequencer.stopPlayback();
     audio_sequencer.is_playing = false;
 
@@ -68,7 +68,7 @@
       sample.reverb_is_active = false;
     });
 
-    audio_sequencer.makeSequences(samples);
+    await audio_sequencer.makeSequences(samples);
   }
 
   function changeHue() {

@@ -48,10 +48,12 @@ export class AudioChain {
 
   // Set up chaining for each sample
   async setChains(samples: Sample[]) {
-    samples.forEach(async (sample) => {
-      await sample.reverb.generate();
-      sample.sampler.chain(sample.channel, sample.delay, sample.reverb, this.#mainChannel);
-    });
+    await Promise.all(
+      samples.map(async (sample) => {
+        await sample.reverb.generate();
+        sample.sampler.chain(sample.channel, sample.delay, sample.reverb, this.#mainChannel);
+      })
+    );
   }
 
   toggleMainHighPass(enabled: boolean) {
@@ -85,17 +87,17 @@ export class AudioChain {
   }
 
   dispose(samples: Sample[]) {
+    // Dispose samples first (disconnect from main chain)
+    samples.forEach((sample) => {
+      sample.dispose();
+    });
+
+    // Then dispose main chain nodes
     this.#mainChannel.dispose();
     this.#mainFilterHP.dispose();
     this.#mainDistortion.dispose();
     this.#mainBitCrusher.dispose();
+    this.#mainCompressor.dispose();
     this.#mainAnalyser.dispose();
-
-    samples.forEach((sample) => {
-      sample.sampler.dispose();
-      sample.channel.dispose();
-      sample.delay.dispose();
-      sample.reverb.dispose();
-    });
   }
 }

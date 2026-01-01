@@ -15,8 +15,8 @@ export class AudioSequencer {
     this.#stepArray = [...Array(16).keys()];
   }
 
-  makeSequences(samples: Sample[]) {
-    this.dispose();
+  async makeSequences(samples: Sample[]) {
+    await this.dispose();
 
     this.#sequences = samples.map((sample) => {
       const seq = new Tone.Sequence(
@@ -45,7 +45,7 @@ export class AudioSequencer {
       this.active_step_index = 0;
       await this.startPlayback();
     } else {
-      this.stopPlayback();
+      await this.stopPlayback();
     }
   }
 
@@ -55,15 +55,16 @@ export class AudioSequencer {
       await Tone.start();
     }
 
-    Promise.all(this.#sequences.map((seq) => seq.start()));
+    await Promise.all(this.#sequences.map((seq) => seq.start()));
     this.#transport.start('+0.1');
     this.is_playing = true;
   }
 
-  stopPlayback() {
+  async stopPlayback() {
+    // Stop sequences first, THEN stop transport
+    await Promise.all(this.#sequences.map((seq) => seq.stop()));
     this.#transport.stop();
     this.is_playing = false;
-    Promise.all(this.#sequences.map((seq) => seq.stop()));
   }
 
   getBPM(): number {
@@ -75,8 +76,8 @@ export class AudioSequencer {
     this.#transport.bpm.value = new_bpm;
   }
 
-  dispose() {
-    Promise.all(this.#sequences.map((seq) => seq.dispose()));
+  async dispose() {
+    await Promise.all(this.#sequences.map((seq) => seq.dispose()));
     this.#sequences = [];
   }
 }
