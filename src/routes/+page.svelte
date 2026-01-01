@@ -155,7 +155,7 @@
   async function audioDataToCode() {
     samples = await audio_data_to_code.processPacks(packs);
     audio_chain.setChains(samples);
-    audio_sequencer.makeSequences(samples);
+    await audio_sequencer.makeSequences(samples);
   }
 
   // === Cleanup
@@ -163,6 +163,7 @@
     return () => {
       audio_sequencer.dispose();
       audio_chain.dispose(samples);
+      audio_data_to_code.dispose();
       audio_engine.dispose();
     };
   });

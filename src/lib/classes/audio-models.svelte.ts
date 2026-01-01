@@ -39,6 +39,7 @@ export class Sample {
   readonly #channel: Tone.Channel;
   readonly #delay: Tone.FeedbackDelay;
   readonly #reverb: Tone.Reverb;
+  #playingTimeouts: Set<number> = new Set();
 
   readonly id: number;
   readonly pack: string;
@@ -101,9 +102,23 @@ export class Sample {
     this.is_playing = true;
     this.#sampler.triggerAttack(this.pitch, time);
 
-    setTimeout(() => {
+    const timeoutId = setTimeout(() => {
       this.is_playing = false;
-    }, 100);
+      this.#playingTimeouts.delete(timeoutId);
+    }, 100) as unknown as number;
+    this.#playingTimeouts.add(timeoutId);
+  }
+
+  dispose(): void {
+    // Clear any pending timeouts
+    this.#playingTimeouts.forEach(clearTimeout);
+    this.#playingTimeouts.clear();
+
+    // Dispose Tone.js nodes
+    this.#sampler.dispose();
+    this.#channel.dispose();
+    this.#delay.dispose();
+    this.#reverb.dispose();
   }
 }
 
