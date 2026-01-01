@@ -95,13 +95,13 @@
     f: 7
   };
 
-  function handleKeydown(event: KeyboardEvent) {
+  async function handleKeydown(event: KeyboardEvent) {
     if (event.key === 'Escape') {
       help_overlay_active = false;
     }
     if (event.key === ' ') {
       event.preventDefault();
-      audio_sequencer.togglePlayback();
+      await audio_sequencer.togglePlayback();
     }
 
     // Pack selection with numbers 1-4

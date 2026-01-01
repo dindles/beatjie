@@ -55,16 +55,18 @@ export class AudioSequencer {
       await Tone.start();
     }
 
-    await Promise.all(this.#sequences.map((seq) => seq.start()));
+    await Promise.all(this.#sequences.map((seq) => seq.start(0)));
     this.#transport.start('+0.1');
     this.is_playing = true;
   }
 
   async stopPlayback() {
-    // Stop sequences first, THEN stop transport
-    await Promise.all(this.#sequences.map((seq) => seq.stop()));
-    this.#transport.stop();
     this.is_playing = false;
+    this.active_step_index = 0;
+    this.#transport.stop();
+    this.#transport.position = 0;
+    // Cancel sequences instead of stopping them
+    await Promise.all(this.#sequences.map((seq) => seq.cancel()));
   }
 
   getBPM(): number {

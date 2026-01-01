@@ -56,8 +56,7 @@
   });
 
   async function deleteSequences() {
-    audio_sequencer.stopPlayback();
-    audio_sequencer.is_playing = false;
+    await audio_sequencer.stopPlayback();
 
     samples.forEach((sample: Sample) => {
       sample.sequence = new Array(sample.sequence.length).fill(false);
