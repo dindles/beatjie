@@ -21,14 +21,16 @@
 </script>
 
 <div class="pack-select">
-  <div class="pack-indicators">
+  <div
+    class="pack-indicators"
+    onmouseenter={() => feedback_state.showTooltip('pack select')}
+    onmouseleave={() => feedback_state.clear()}
+  >
     {#each packs as pack, index (pack.name)}
       <button
         class="pack-indicator border"
         class:active={index === selected_pack_index}
         class:playing={samples.some((sample) => sample.pack === pack.name && sample.is_playing)}
-        onmouseenter={() => feedback_state.showTooltip('pack select')}
-        onmouseleave={() => feedback_state.clear()}
         onclick={() => selectPack(index)}
         aria-label={pack.name}
       ></button>

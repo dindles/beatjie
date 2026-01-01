@@ -15,12 +15,10 @@
 
   // === Svelte components
   import Meta from '$lib/components/meta.svelte';
-  import Cursor from '$lib/components/cursor.svelte';
   import FontLoadingMessage from '$lib/components/font-loading-message.svelte';
   import AudioContextPrompt from '$lib/components/audio-context-prompt.svelte';
   import AudioPromptDenied from '$lib/components/audio-prompt-denied.svelte';
   import AudioLoadingMessage from '$lib/components/audio-loading-message.svelte';
-  import HelpOverlay from '$lib/components/help-overlay.svelte';
   import AppSettings from '$lib/components/app-settings.svelte';
   import Display from '$lib/components/display.svelte';
   import Samples from '$lib/components/samples.svelte';
@@ -79,7 +77,6 @@
     'app-ready': false
   });
 
-  let help_overlay_active = $state(false);
   let selected_pack_index: number = $state(Math.floor(Math.random() * packs.length));
 
   // === KEYBOARD EVENTS ========================
@@ -96,9 +93,6 @@
   };
 
   async function handleKeydown(event: KeyboardEvent) {
-    if (event.key === 'Escape') {
-      help_overlay_active = false;
-    }
     if (event.key === ' ') {
       event.preventDefault();
       await audio_sequencer.togglePlayback();
@@ -248,8 +242,6 @@
 
 <Meta />
 
-<Cursor />
-
 <svelte:window onkeydown={handleKeydown} />
 
 <main>
@@ -263,11 +255,7 @@
     {:else if app_state['audio-loading']}
       <AudioLoadingMessage />
     {:else if app_state['app-ready']}
-      {#if help_overlay_active}
-        <HelpOverlay bind:help_overlay_active />
-      {/if}
       <AppSettings
-        bind:help_overlay_active
         {audio_chain}
         {audio_sequencer}
         {samples}
@@ -299,7 +287,6 @@
   }
 
   .app {
-    cursor: none;
     position: relative;
     min-width: 360px;
     max-width: 98vw;

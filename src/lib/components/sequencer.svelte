@@ -21,17 +21,17 @@
   const SEQUENCER_STEPS = Array(16).fill(null);
 </script>
 
-<div class="sequencer">
+<div
+  class="sequencer"
+  onmouseenter={() =>
+    feedback_state.showTooltip(selected_sample ? 'per-sample sequencer' : '!select sample')}
+  onmouseleave={() => feedback_state.clear()}
+>
   {#if selected_sample}
     {#each SEQUENCER_STEPS as _, index (index)}
       <button
         class="step border emoji-sequencer"
         class:active={index === audio_sequencer.active_step_index}
-        onmouseenter={() =>
-          feedback_state.showTooltip(
-            selected_sample.sequence[index] ? 'remove sample from pattern' : 'add sample to pattern'
-          )}
-        onmouseleave={() => feedback_state.clear()}
         onclick={() => handleSeqClick(selected_sample, index)}
         onkeydown={() => handleSeqClick(selected_sample, index)}
       >
@@ -48,8 +48,6 @@
       <div
         class="placeholder-step border"
         class:active={index === audio_sequencer.active_step_index}
-        onmouseenter={() => feedback_state.showTooltip('!select sample')}
-        onmouseleave={() => feedback_state.clear()}
         role="button"
         tabindex="-1"
       ></div>

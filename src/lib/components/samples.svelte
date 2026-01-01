@@ -130,6 +130,8 @@
     {#key selected_pack_index}
       <div
         class="pack"
+        onmouseenter={() => feedback_state.showTooltip('sample select')}
+        onmouseleave={() => feedback_state.clear()}
         in:fly={{
           duration: 250,
           easing: cubicOut,
@@ -165,8 +167,6 @@
               class="sample border emoji-large"
               class:active={sample.id === selected_sample?.id}
               class:playing={sample.is_playing}
-              onmouseenter={() => feedback_state.showTooltip('sample select')}
-              onmouseleave={() => feedback_state.clear()}
               onclick={() => handleSampleClick(getSampleByID(sample.id))}
               ontouchstart={(e) => {
                 e.stopPropagation();

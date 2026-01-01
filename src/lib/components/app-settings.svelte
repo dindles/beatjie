@@ -8,7 +8,6 @@
   import { serializePattern, createShareURL } from '$lib/utils/pattern-sharing';
 
   interface Props {
-    help_overlay_active: boolean;
     audio_sequencer: AudioSequencer;
     audio_chain: AudioChain;
     samples: Sample[];
@@ -17,7 +16,6 @@
   }
 
   let {
-    help_overlay_active = $bindable(),
     audio_sequencer,
     audio_chain,
     samples,
@@ -194,17 +192,6 @@
       onclick={handleSharePattern}
     >
       🔗
-    </button>
-
-    <button
-      class="emoji-small"
-      onmouseenter={() => feedback_state.showTooltip('show help')}
-      onmouseleave={() => feedback_state.clear()}
-      onclick={() => {
-        help_overlay_active = !help_overlay_active;
-      }}
-    >
-      ❓
     </button>
   </div>
 </div>

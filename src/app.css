@@ -71,8 +71,7 @@ blockquote {
 button {
   background: transparent;
   border: none;
-  /* cursor: pointer; */
-  cursor: none;
+  cursor: pointer;
   padding: 0;
   aspect-ratio: 1;
   display: grid;
