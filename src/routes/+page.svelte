@@ -33,6 +33,7 @@
   } from '$lib/utils/color-storage';
   import { getPatternFromURL, type PatternData } from '$lib/utils/pattern-sharing';
   import { FeedbackState } from '$lib/utils/feedback-state.svelte';
+  import { setDemoMode } from '$lib/utils/demo-mode.svelte';
 
   // === VARIABLES ============================
 
@@ -121,6 +122,14 @@
   $effect(() => {
     if (typeof document !== 'undefined') {
       document.fonts.ready.then(() => {
+        // Check for demo mode in URL
+        const url = new URL(window.location.href);
+        const isDemoMode = url.searchParams.get('demo') === 'true';
+        if (isDemoMode) {
+          setDemoMode(true);
+          selected_pack_index = 0; // Start with first pack in demo mode
+        }
+
         // Try to load pattern from URL first
         pending_pattern_data = getPatternFromURL();
 

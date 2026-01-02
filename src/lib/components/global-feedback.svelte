@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { FeedbackState } from '$lib/utils/feedback-state.svelte';
+  import { getDemoMode } from '$lib/utils/demo-mode.svelte';
 
   interface Props {
     feedback_state: FeedbackState;
@@ -8,7 +9,7 @@
   let { feedback_state }: Props = $props();
 </script>
 
-{#if feedback_state.is_visible}
+{#if feedback_state.is_visible && !getDemoMode()}
   <div class="global-feedback text-display">
     {feedback_state.message}
   </div>
