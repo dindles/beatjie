@@ -34,6 +34,8 @@
   import { getPatternFromURL, type PatternData } from '$lib/utils/pattern-sharing';
   import { FeedbackState } from '$lib/utils/feedback-state.svelte';
   import { setDemoMode } from '$lib/utils/demo-mode.svelte';
+  import { initDemoViz } from '$lib/utils/demo-viz.svelte';
+  import DemoOverlay from '$lib/components/demo-overlay.svelte';
 
   // === VARIABLES ============================
 
@@ -128,6 +130,7 @@
         if (isDemoMode) {
           setDemoMode(true);
           selected_pack_index = 0; // Start with first pack in demo mode
+          initDemoViz(); // Initialize window.demoViz API
         }
 
         // Try to load pattern from URL first
@@ -284,6 +287,7 @@
       />
       <Sequencer {samples} {selected_sample} {audio_sequencer} {feedback_state} />
       <TransportAndMainSettings {audio_sequencer} {audio_chain} {feedback_state} />
+      <DemoOverlay />
     {/if}
   </div>
 </main>

@@ -123,3 +123,20 @@ button {
   color: var(--user-colour);
   background-color: var(--black-or-white);
 }
+
+/* Demo visualization animations */
+@keyframes demo-pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.demo-pulse {
+  animation: demo-pulse var(--pulse-duration, 200ms) ease;
+}
