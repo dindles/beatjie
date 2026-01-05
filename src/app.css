@@ -90,12 +90,14 @@ button {
 .emoji-large {
   font-family: var(--font-emoji);
   font-size: var(--emoji-large);
+  font-variant-emoji: text;
 }
 
 .emoji-small {
   font-family: var(--font-emoji);
   font-size: var(--emoji-small);
   font-weight: 900;
+  font-variant-emoji: text;
 }
 
 .text-logo {
