@@ -2,14 +2,6 @@
 
 ## v1.0
 
-### shortcuts
-
-additional shortcuts:
-p for preview
-z,x,c,v for sample effects
-b,n for global effects
-up,down arrows for bpm
-
 ### intro screen
 
 add dindles.net link
