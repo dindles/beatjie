@@ -2,14 +2,6 @@
 
 ## v1.0
 
-### min width
-
-the min width is too wide, and on small 16:9 screens we're getting content cut off vertically
-
-### font scaling
-
-at 720:1280 fonts look too small
-
 ### shortcuts
 
 additional shortcuts:
