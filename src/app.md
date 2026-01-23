@@ -2,27 +2,42 @@
 
 ## v1.0
 
-- sharing via url
+### min wdith
 
-- overview/tutorial video
-  [] final layout - change ? to cog, add share icon
+the min width is too wide, and on small 16:9 screens we're getting content cut off vertically
 
-- add swing
+### font scaling
 
-- issue: layout shifts when bpm hits 200 in prod. i don't want to think about this.
+at 720:1280 fonts look too small
 
-- todos and console.logs
+### shortcuts
 
-## 1.2
+additional shortcuts:
+p for preview
+z,x,c,v for sample effects
+b,n for global effects
+up,down arrows for bpm
 
-- font subsetting? https://fontfaceobserver.com/?
+### intro screen
 
-- undo sequence deletion
+add dindles.net link
+add link to help screen, containing keyboard shortcuts and link to vid
 
-- keyboard control help
+### global effect
 
-- adjust sample volumes
+change distortion
 
-- visualiser
-  - add toggles between waveform and fft?
-  - threlte?
+### tutorial-video
+
+start on pack 1
+keyboard shortcut screen (with keyboard shortcut to trigger)
+pulse on click
+
+### todos & logs
+
+## v1.2
+
+### visualiser
+
+- add toggles between waveform and fft?
+- threlte?
