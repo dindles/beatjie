@@ -10,10 +10,10 @@
   --font-emoji: 'Noto Emoji';
   --font-text: 'Zen Dots', sans-serif;
 
-  --emoji-large: clamp(2.8rem, 8vmin, 6rem);
-  --emoji-small: clamp(1.4rem, 3.2vmin, 4rem);
-  --emoji-sequencer: clamp(1.1rem, 2.3vmin, 4rem);
-  --text-small: clamp(1rem, 4vmin, 2.4rem);
+  --emoji-large: clamp(3.2rem, 8vmin, 6rem);
+  --emoji-small: clamp(1.6rem, 3.2vmin, 4rem);
+  --emoji-sequencer: clamp(1.3rem, 2.3vmin, 4rem);
+  --text-small: clamp(1.2rem, 3.2vmin, 2.6rem);
   --text-display: clamp(1rem, 2.4vmin, 2.4rem);
   --text-logo: clamp(2rem, 6.2vmin, 8rem);
 }
@@ -90,12 +90,14 @@ button {
 .emoji-large {
   font-family: var(--font-emoji);
   font-size: var(--emoji-large);
+  font-variant-emoji: text;
 }
 
 .emoji-small {
   font-family: var(--font-emoji);
   font-size: var(--emoji-small);
   font-weight: 900;
+  font-variant-emoji: text;
 }
 
 .text-logo {

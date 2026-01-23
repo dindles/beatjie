@@ -2,27 +2,26 @@
 
 ## v1.0
 
-- sharing via url
+### global effect
 
-- overview/tutorial video
-  [] final layout - change ? to cog, add share icon
+change distortion
 
-- add swing
+### demo-mode
 
-- issue: layout shifts when bpm hits 200 in prod. i don't want to think about this.
+start on pack 1
+keyboard shortcut to trigger keyboard shortcut screen
+custom cursor
+pulse on click
 
-- todos and console.logs
+### intro screen
 
-## 1.2
+link to vid
 
-- font subsetting? https://fontfaceobserver.com/?
+### todos & logs
 
-- undo sequence deletion
+## v1.2
 
-- keyboard control help
+### visualiser
 
-- adjust sample volumes
-
-- visualiser
-  - add toggles between waveform and fft?
-  - threlte?
+- add toggles between waveform and fft?
+- threlte?

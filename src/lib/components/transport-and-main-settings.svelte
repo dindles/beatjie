@@ -83,4 +83,9 @@
     grid-template-columns: repeat(3, 1fr);
     gap: var(--spacing);
   }
+
+  .bpm-control {
+    aspect-ratio: 1;
+    height: 100%;
+  }
 </style>

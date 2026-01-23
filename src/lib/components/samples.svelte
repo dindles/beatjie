@@ -19,6 +19,7 @@
     audio_chain: AudioChain;
     selected_sample: Sample | undefined;
     selected_pack_index?: number;
+    preview_samples_active?: boolean;
     feedback_state: FeedbackState;
   }
 
@@ -30,13 +31,12 @@
     audio_chain,
     selected_sample = $bindable(),
     selected_pack_index = $bindable(0),
+    preview_samples_active = $bindable(true),
     feedback_state
   }: Props = $props();
 
   let _slide_direction = $state<-1 | 1>(1);
   let animating = $state(false);
-
-  let preview_samples_active: boolean = $state(true);
 
   let previous_pack_index = $state(selected_pack_index);
 
