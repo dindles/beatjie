@@ -2,6 +2,10 @@
 
 ## v1.0
 
+### keyboard shortcut screen
+
+list keyboard shortcuts as per shortcuts.md
+
 ### intro screen
 
 add dindles.net link
