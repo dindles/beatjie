@@ -59,6 +59,7 @@
   let samples: Sample[] = $state([]);
   let selected_sample: Sample | undefined = $state(undefined);
   let pending_pattern_data: PatternData | null = $state(null);
+  let preview_samples_active: boolean = $state(true);
 
   // === State
   interface AppState {
@@ -105,6 +106,7 @@
       return;
     }
 
+    // Sample selection with QWER/ASDF
     const sample_index = key_map[event.key.toLowerCase()];
     if (sample_index !== undefined) {
       const visible_samples = samples.filter((s) => s.pack === packs[selected_pack_index].name);
@@ -113,6 +115,55 @@
         sample.play(Tone.now());
         selected_sample = sample;
       }
+    }
+
+    // Preview toggle
+    if (event.key.toLowerCase() === 'p') {
+      preview_samples_active = !preview_samples_active;
+      return;
+    }
+
+    // Sample effects (z, x, c, v) - require selected_sample
+    if (selected_sample) {
+      switch (event.key.toLowerCase()) {
+        case 'z': // mute
+          audio_chain.toggleSampleMute(selected_sample, !selected_sample.is_muted);
+          selected_sample.is_muted = !selected_sample.is_muted;
+          break;
+        case 'x': // pitch cycle
+          const current_index = pitches.indexOf(selected_sample.pitch);
+          const next_index = (current_index + 1) % pitches.length;
+          selected_sample.pitch = pitches[next_index] as typeof selected_sample.pitch;
+          break;
+        case 'c': // delay
+          audio_chain.toggleSampleDelay(selected_sample, !selected_sample.delay_is_active);
+          selected_sample.delay_is_active = !selected_sample.delay_is_active;
+          break;
+        case 'v': // reverb
+          audio_chain.toggleSampleReverb(selected_sample, !selected_sample.reverb_is_active);
+          selected_sample.reverb_is_active = !selected_sample.reverb_is_active;
+          break;
+      }
+    }
+
+    // Global effects (b, n)
+    if (event.key.toLowerCase() === 'b') {
+      audio_chain.toggleMainHighPass(!audio_chain.mainIsHighPassed);
+    }
+    if (event.key.toLowerCase() === 'n') {
+      audio_chain.toggleMainDistortion(!audio_chain.mainIsDistorted);
+    }
+
+    // BPM (arrow keys)
+    if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      const new_bpm = Math.min(200, audio_sequencer.getBPM() + 1);
+      audio_sequencer.setBPM(new_bpm);
+    }
+    if (event.key === 'ArrowDown') {
+      event.preventDefault();
+      const new_bpm = Math.max(60, audio_sequencer.getBPM() - 1);
+      audio_sequencer.setBPM(new_bpm);
     }
   }
 
@@ -272,6 +323,7 @@
         {feedback_state}
         bind:selected_sample
         bind:selected_pack_index
+        bind:preview_samples_active
       />
       <Sequencer {samples} {selected_sample} {audio_sequencer} {feedback_state} />
       <TransportAndMainSettings {audio_sequencer} {audio_chain} {feedback_state} />
