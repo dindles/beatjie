@@ -2,7 +2,7 @@
 
 ## v1.0
 
-### min wdith
+### min width
 
 the min width is too wide, and on small 16:9 screens we're getting content cut off vertically
 
@@ -26,6 +26,8 @@ add link to help screen, containing keyboard shortcuts and link to vid
 ### global effect
 
 change distortion
+
+### merge dev to demo-mode
 
 ### tutorial-video
 
