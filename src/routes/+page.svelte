@@ -16,7 +16,7 @@
   // === Svelte components
   import Meta from '$lib/components/meta.svelte';
   import FontLoadingMessage from '$lib/components/font-loading-message.svelte';
-  import AudioContextPrompt from '$lib/components/audio-context-prompt.svelte';
+  import IntroAudioContextPrompt from '$lib/components/intro-audio-context-prompt.svelte';
   import AudioPromptDenied from '$lib/components/audio-prompt-denied.svelte';
   import AudioLoadingMessage from '$lib/components/audio-loading-message.svelte';
   import AppSettings from '$lib/components/app-settings.svelte';
@@ -300,7 +300,7 @@
     {#if app_state['fonts-loading']}
       <FontLoadingMessage />
     {:else if app_state['audio-prompt']}
-      <AudioContextPrompt {handleAudioConfirm} {handleAudioDeny} />
+      <IntroAudioContextPrompt {handleAudioConfirm} {handleAudioDeny} />
     {:else if app_state['audio-prompt-denied']}
       <AudioPromptDenied />
     {:else if app_state['audio-loading']}

@@ -15,13 +15,8 @@
     feedback_state: FeedbackState;
   }
 
-  let {
-    audio_sequencer,
-    audio_chain,
-    samples,
-    selected_pack_index,
-    feedback_state
-  }: Props = $props();
+  let { audio_sequencer, audio_chain, samples, selected_pack_index, feedback_state }: Props =
+    $props();
 
   const available_hues = [30, 90, 140, 200, 280, 330];
 
