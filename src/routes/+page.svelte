@@ -39,8 +39,8 @@
   // === Audio
   const chain_config: ChainConfig = $state({
     highpass_freq: 500,
-    distortion_init: 0.2,
-    distortion_amount: 1,
+    distortion_init: 0,
+    distortion_wet_amount: 0.8,
     analyser_resolution: 256,
     compressor_threshold: -6,
     compressor_attack: 0.05,

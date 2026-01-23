@@ -4,7 +4,7 @@ import type { Sample } from '$lib/classes/audio-models.svelte';
 export interface ChainConfig {
   readonly highpass_freq: number;
   readonly distortion_init: number;
-  readonly distortion_amount: number;
+  readonly distortion_wet_amount: number;
   readonly compressor_threshold: number;
   readonly compressor_attack: number;
   readonly compressor_release: number;
@@ -64,10 +64,10 @@ export class AudioChain {
   toggleMainDistortion(enabled: boolean) {
     this.mainIsDistorted = enabled;
     this.#mainDistortion.wet.value = enabled
-      ? this.config.distortion_amount
+      ? this.config.distortion_wet_amount
       : this.config.distortion_init;
-    this.#mainBitCrusher.wet.value = enabled ? 0.2 : 0;
-    this.#mainChannel.volume.value = enabled ? -6 : 0;
+    this.#mainBitCrusher.wet.value = enabled ? 0.4 : 0;
+    this.#mainChannel.volume.value = enabled ? -12 : 0;
   }
 
   toggleSampleDelay(sample: Sample, enabled: boolean) {
