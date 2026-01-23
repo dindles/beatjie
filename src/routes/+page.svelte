@@ -33,9 +33,7 @@
   } from '$lib/utils/color-storage';
   import { getPatternFromURL, type PatternData } from '$lib/utils/pattern-sharing';
   import { FeedbackState } from '$lib/utils/feedback-state.svelte';
-  import { setDemoMode } from '$lib/utils/demo-mode.svelte';
-  import { initDemoViz } from '$lib/utils/demo-viz.svelte';
-  import DemoOverlay from '$lib/components/demo-overlay.svelte';
+  import KeyboardShortcuts from '$lib/components/keyboard-shortcuts.svelte';
 
   // === VARIABLES ============================
 
@@ -63,6 +61,7 @@
   let selected_sample: Sample | undefined = $state(undefined);
   let pending_pattern_data: PatternData | null = $state(null);
   let preview_samples_active: boolean = $state(true);
+  let show_keyboard_shortcuts: boolean = $state(false);
 
   // === State
   interface AppState {
@@ -81,7 +80,7 @@
     'app-ready': false
   });
 
-  let selected_pack_index: number = $state(Math.floor(Math.random() * packs.length));
+  let selected_pack_index: number = $state(0); // Pack 0 for demo consistency
 
   // === KEYBOARD EVENTS ========================
 
@@ -123,6 +122,12 @@
     // Preview toggle
     if (event.key.toLowerCase() === 'p') {
       preview_samples_active = !preview_samples_active;
+      return;
+    }
+
+    // Keyboard shortcuts modal
+    if (event.key.toLowerCase() === 'k') {
+      show_keyboard_shortcuts = true;
       return;
     }
 
@@ -175,15 +180,6 @@
   $effect(() => {
     if (typeof document !== 'undefined') {
       document.fonts.ready.then(() => {
-        // Check for demo mode in URL
-        const url = new URL(window.location.href);
-        const isDemoMode = url.searchParams.get('demo') === 'true';
-        if (isDemoMode) {
-          setDemoMode(true);
-          selected_pack_index = 0; // Start with first pack in demo mode
-          initDemoViz(); // Initialize window.demoViz API
-        }
-
         // Try to load pattern from URL first
         pending_pattern_data = getPatternFromURL();
 
@@ -339,7 +335,9 @@
       />
       <Sequencer {samples} {selected_sample} {audio_sequencer} {feedback_state} />
       <TransportAndMainSettings {audio_sequencer} {audio_chain} {feedback_state} />
-      <DemoOverlay />
+      {#if show_keyboard_shortcuts}
+        <KeyboardShortcuts onclose={() => (show_keyboard_shortcuts = false)} />
+      {/if}
     {/if}
   </div>
 </main>

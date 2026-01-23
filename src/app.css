@@ -71,7 +71,6 @@ blockquote {
 button {
   background: transparent;
   border: none;
-  cursor: pointer;
   padding: 0;
   aspect-ratio: 1;
   display: grid;
@@ -124,6 +123,13 @@ button {
 .active.playing {
   color: var(--user-colour);
   background-color: var(--black-or-white);
+}
+
+/* Hide native cursor for custom cursor */
+*,
+*::before,
+*::after {
+  cursor: none !important;
 }
 
 /* Demo visualization animations */
