@@ -33,7 +33,7 @@
   } from '$lib/utils/color-storage';
   import { getPatternFromURL, type PatternData } from '$lib/utils/pattern-sharing';
   import { FeedbackState } from '$lib/utils/feedback-state.svelte';
-  import KeyboardShortcuts from '$lib/components/keyboard-shortcuts.svelte';
+  import PlurScreen from '$lib/components/plur-screen.svelte';
 
   // === VARIABLES ============================
 
@@ -61,7 +61,7 @@
   let selected_sample: Sample | undefined = $state(undefined);
   let pending_pattern_data: PatternData | null = $state(null);
   let preview_samples_active: boolean = $state(true);
-  let show_keyboard_shortcuts: boolean = $state(false);
+  let show_plur: boolean = $state(false);
 
   // === State
   interface AppState {
@@ -125,9 +125,9 @@
       return;
     }
 
-    // Keyboard shortcuts modal
+    // PLUR screen
     if (event.key.toLowerCase() === 'k') {
-      show_keyboard_shortcuts = true;
+      show_plur = true;
       return;
     }
 
@@ -335,8 +335,8 @@
       />
       <Sequencer {samples} {selected_sample} {audio_sequencer} {feedback_state} />
       <TransportAndMainSettings {audio_sequencer} {audio_chain} {feedback_state} />
-      {#if show_keyboard_shortcuts}
-        <KeyboardShortcuts onclose={() => (show_keyboard_shortcuts = false)} />
+      {#if show_plur}
+        <PlurScreen onclose={() => (show_plur = false)} />
       {/if}
     {/if}
   </div>

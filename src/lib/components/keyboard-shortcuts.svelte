@@ -1,32 +1,12 @@
 <script lang="ts">
-  import PlurScreen from './plur-screen.svelte';
-
   interface Props {
     onclose: () => void;
   }
 
   let { onclose }: Props = $props();
-  let show_plur: boolean = $state(false);
-
-  function handleKeydown(e: KeyboardEvent) {
-    if (e.key.toLowerCase() === 'k' && !show_plur) {
-      show_plur = true;
-    } else if (e.key === 'Escape') {
-      if (show_plur) {
-        show_plur = false;
-      } else {
-        onclose();
-      }
-    }
-  }
 </script>
 
-<svelte:window onkeydown={handleKeydown} />
-
-{#if show_plur}
-  <PlurScreen onclose={() => (show_plur = false)} />
-{:else}
-  <div class="keyboard-shortcuts border">
+<div class="keyboard-shortcuts border">
   <div class="header">
     <button class="close-btn emoji-small" onclick={onclose} aria-label="close"> ❌ </button>
   </div>
@@ -83,7 +63,6 @@
     </div>
   </div>
 </div>
-{/if}
 
 <style>
   .keyboard-shortcuts {
