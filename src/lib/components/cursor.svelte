@@ -73,7 +73,7 @@
 <style>
   .custom-cursor {
     font-family: var(--font-emoji);
-    font-size: 3rem;
+    font-size: 6rem;
     font-weight: 900;
     color: var(--user-colour);
     position: fixed;
