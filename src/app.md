@@ -2,20 +2,11 @@
 
 ## v1.0
 
-### global effect
-
-change distortion
-
-### demo-mode
-
-start on pack 1
-keyboard shortcut to trigger keyboard shortcut screen
-custom cursor
-pulse on click
-
 ### intro screen
 
 link to vid
+
+### polish
 
 ### todos & logs
 
@@ -25,3 +16,5 @@ link to vid
 
 - add toggles between waveform and fft?
 - threlte?
+
+### additional effects, use display to interact with effects
