@@ -1,13 +1,17 @@
 <script lang="ts">
   import KeyboardShortcuts from './keyboard-shortcuts.svelte';
+  import DemoVideo from './demo-video.svelte';
 
   let { handleAudioConfirm: handle_audio_confirm, handleAudioDeny: handle_audio_deny } = $props();
 
   let show_shortcuts = $state(false);
+  let show_video = $state(false);
 </script>
 
 {#if show_shortcuts}
   <KeyboardShortcuts onclose={() => (show_shortcuts = false)} />
+{:else if show_video}
+  <DemoVideo onclose={() => (show_video = false)} />
 {:else}
   <div class="intro-screen">
     <div class="audio-prompt">
@@ -22,6 +26,7 @@
 
     <div class="footer-links">
       <button class="link" onclick={() => (show_shortcuts = true)}> keyboard shortcuts </button>
+      <button class="link" onclick={() => (show_video = true)}> quick demo vid </button>
       <a class="link dindles-link" href="https://dindles.net" target="_blank" rel="noopener">
         <svg
           class="blob"
