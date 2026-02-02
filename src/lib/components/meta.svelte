@@ -1,13 +1,18 @@
-<meta name="description" content="little audio sequencer" />
+<meta name="description" content="web-based audio groovebox" />
 <meta name="keywords" content="audio, sequencer, beats, sampler" />
 <meta name="author" content="Dindles" />
-<meta name="Beatjie" content="make beats have fun" />
-<!-- * the 'og' in the following relates to the Open Graph -->
-<meta property="og:description" content="little audio sequencer" />
+<meta name="theme-color" content="#000000" />
+
+<!-- Open Graph -->
 <meta property="og:title" content="Beatjie" />
+<meta property="og:description" content="web-based audio groovebox" />
 <meta property="og:type" content="website" />
-<!-- todo: add image -->
-<meta property="og:image" content="" />
-<!-- todo: add url -->
-<meta property="og:url" content="https://..." />
+<meta property="og:url" content="https://dindles.net/beatjie" />
+<meta property="og:image" content="https://dindles.net/beatjie/og-image.png" />
 <meta property="og:locale" content="en_ZA" />
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Beatjie" />
+<meta name="twitter:description" content="web-based audio groovebox" />
+<meta name="twitter:image" content="https://dindles.net/beatjie/og-image.png" />

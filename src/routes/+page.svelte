@@ -185,7 +185,11 @@
         }
 
         app_state['fonts-loading'] = false;
-        console.log('fonts loaded');
+        console.log(
+          '%c🎵 Beatjie\n\n%cHave fun, make beats!\n\nSource: https://github.com/dindles/beatjie',
+          'font-size: 20px; font-weight: bold;',
+          'font-size: 12px; color: gray;'
+        );
         app_state['audio-prompt'] = true;
       });
     }
@@ -224,25 +228,6 @@
   });
 
   function applyPatternToState(pattern: PatternData) {
-    console.log('=== APPLY PATTERN DEBUG ===');
-    console.log('Pattern samples:', pattern.samples.length);
-    console.log(
-      'Samples with active steps:',
-      pattern.samples.filter((s) => s.sequence.some(Boolean)).length
-    );
-
-    // Check what we're trying to apply
-    pattern.samples.forEach((sample_data) => {
-      const activeSteps = sample_data.sequence.filter(Boolean).length;
-      if (activeSteps > 0) {
-        console.log(
-          `Pattern has sample ${sample_data.id}: ${activeSteps} steps, pitch=${sample_data.pitch}`
-        );
-      }
-    });
-
-    console.log('Available samples in app:', samples.length);
-
     // Set BPM
     audio_sequencer.setBPM(pattern.bpm);
 
@@ -269,8 +254,6 @@
 
     // Rebuild sequences with new pattern
     audio_sequencer.makeSequences(samples);
-
-    console.log('Pattern loaded from URL');
   }
 
   // === Load data
