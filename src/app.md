@@ -2,7 +2,13 @@
 
 ### v1.0
 
-#### URL shortening
+#### renames
+
+files and classes
+audio_chain - main_audio_bus
+audio-data-to-code - audio_loader
+
+#### base deprecated, use resolve https://svelte.dev/docs/kit/$app-paths#resolve
 
 #### todos & logs & reading
 

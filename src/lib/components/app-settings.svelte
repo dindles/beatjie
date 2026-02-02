@@ -1,6 +1,6 @@
 <script lang="ts">
   import * as Tone from 'tone';
-  import type { Sample } from '$lib/classes/audio-models.svelte';
+  import type { Sample } from '$lib/classes/sample.svelte';
   import type { AudioSequencer } from '$lib/classes/audio-sequencer.svelte';
   import type { AudioChain } from '$lib/classes/audio-chain.svelte';
   import type { FeedbackState } from '$lib/utils/feedback-state.svelte';

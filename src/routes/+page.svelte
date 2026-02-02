@@ -7,7 +7,7 @@
   import { packs } from '$lib/data/audio-packs';
 
   // === Audio types & classes
-  import { Sample } from '$lib/classes/audio-models.svelte';
+  import { Sample } from '$lib/classes/sample.svelte';
   import { AudioEngine } from '$lib/classes/audio-engine.svelte';
   import { AudioDataToCode } from '$lib/classes/audio-data-to-code.svelte';
   import { AudioChain, type ChainConfig } from '$lib/classes/audio-chain.svelte';

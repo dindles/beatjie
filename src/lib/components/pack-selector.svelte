@@ -1,6 +1,7 @@
 <!-- PackSelector.svelte -->
 <script lang="ts">
-  import type { Packs, Sample } from '$lib/classes/audio-models.svelte';
+  import type { Packs } from '$lib/types/audio';
+  import type { Sample } from '$lib/classes/sample.svelte';
   import type { FeedbackState } from '$lib/utils/feedback-state.svelte';
 
   let {

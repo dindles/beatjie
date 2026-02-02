@@ -1,5 +1,5 @@
 // pattern-sharing.ts
-import type { Sample } from '$lib/classes/audio-models.svelte';
+import type { Sample } from '$lib/classes/sample.svelte';
 import type { AudioChain } from '$lib/classes/audio-chain.svelte';
 import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from 'lz-string';
 

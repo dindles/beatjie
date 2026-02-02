@@ -1,6 +1,7 @@
 <script lang="ts">
   import * as Tone from 'tone';
-  import type { Packs, Sample } from '$lib/classes/audio-models.svelte';
+  import type { Packs } from '$lib/types/audio';
+  import type { Sample } from '$lib/classes/sample.svelte';
   import type { FeedbackState } from '$lib/utils/feedback-state.svelte';
   import PackSelector from '$lib/components/pack-selector.svelte';
   import { AudioEngine } from '$lib/classes/audio-engine.svelte';

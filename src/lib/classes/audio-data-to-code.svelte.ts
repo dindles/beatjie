@@ -1,6 +1,6 @@
 import * as Tone from 'tone';
-import type { Packs } from '$lib/classes/audio-models.svelte';
-import { Sample } from '$lib/classes/audio-models.svelte';
+import type { Packs } from '$lib/types/audio';
+import { Sample } from '$lib/classes/sample.svelte';
 
 export class AudioDataToCode {
   #buffers_are_loaded: boolean = $state(false);
