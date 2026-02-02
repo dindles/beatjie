@@ -9,8 +9,8 @@
 <svelte:window onkeydown={(e) => e.key === 'Escape' && onclose()} />
 
 <div class="plur-screen">
-  <div class="plur-content">
-    <p class="plur-text text-logo">p.l.u.r.</p>
+  <div class="beatjie-content">
+    <p class="beatjie-text text-logo">beatjie</p>
   </div>
   <a class="dindles-link" href="https://dindles.net" target="_blank" rel="noopener">
     <svg class="blob" viewBox="0 0 300 299" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -37,6 +37,9 @@
     </svg>
     dindles.net
   </a>
+  <div class="plur-content">
+    <p class="plur-text">p.l.u.r.</p>
+  </div>
 </div>
 
 <style>
@@ -49,14 +52,21 @@
     padding: 2rem 1rem;
   }
 
-  .plur-content {
+  .beatjie-content {
     flex: 1;
     display: grid;
     place-items: center;
   }
 
+  .beatjie-text {
+    font-family: var(--font-text);
+    text-align: center;
+    letter-spacing: 0.1em;
+  }
+
   .plur-text {
     font-family: var(--font-text);
+    font-size: clamp(0.7rem, 2vmin, 1rem);
     text-align: center;
     letter-spacing: 0.1em;
   }
