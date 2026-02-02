@@ -9,6 +9,20 @@ const MAX_PACK_INDEX = 3;
 const MAX_SAMPLE_ID = 31;
 const SEQUENCE_LENGTH = 16;
 
+// Defaults for omitting values during compression
+const SAMPLE_DEFAULTS = {
+  q: 0, // empty sequence
+  t: '0', // default pitch
+  e: false, // delay off
+  r: false, // reverb off
+  m: false // not muted
+};
+
+const PATTERN_DEFAULTS = {
+  h: false, // highpass off
+  d: false // distortion off
+};
+
 export interface PatternData {
   version: 1;
   bpm: number;
@@ -29,15 +43,15 @@ interface CompressedPatternData {
   v: 1;
   b: number;
   p: number;
-  h: boolean;
-  d: boolean;
+  h?: boolean; // optional, default false
+  d?: boolean; // optional, default false
   s: Array<{
     i: number;
-    q: number;
-    t: string;
-    e: boolean;
-    r: boolean;
-    m: boolean;
+    q?: number; // optional, default 0
+    t?: string; // optional, default '0'
+    e?: boolean; // optional, default false
+    r?: boolean; // optional, default false
+    m?: boolean; // optional, default false
   }>;
 }
 
@@ -86,43 +100,46 @@ export function serializePattern(
 }
 
 /**
- * Compress PatternData for URL encoding
+ * Compress PatternData for URL encoding (omits default values)
  */
 function compressPattern(pattern: PatternData): CompressedPatternData {
   return {
     v: pattern.version,
     b: pattern.bpm,
     p: pattern.selected_pack_index,
-    h: pattern.main_highpass,
-    d: pattern.main_distortion,
-    s: pattern.samples.map((sample) => ({
-      i: sample.id,
-      q: packSequence(sample.sequence),
-      t: sample.pitch,
-      e: sample.delay_active,
-      r: sample.reverb_active,
-      m: sample.muted
-    }))
+    ...(pattern.main_highpass && { h: true }),
+    ...(pattern.main_distortion && { d: true }),
+    s: pattern.samples.map((sample) => {
+      const q = packSequence(sample.sequence);
+      return {
+        i: sample.id,
+        ...(q !== SAMPLE_DEFAULTS.q && { q }),
+        ...(sample.pitch !== SAMPLE_DEFAULTS.t && { t: sample.pitch }),
+        ...(sample.delay_active && { e: true }),
+        ...(sample.reverb_active && { r: true }),
+        ...(sample.muted && { m: true })
+      };
+    })
   };
 }
 
 /**
- * Decompress PatternData from URL encoding
+ * Decompress PatternData from URL encoding (applies defaults)
  */
 function decompressPattern(compressed: CompressedPatternData): PatternData {
   return {
     version: compressed.v,
     bpm: compressed.b,
     selected_pack_index: compressed.p,
-    main_highpass: compressed.h,
-    main_distortion: compressed.d,
+    main_highpass: compressed.h ?? PATTERN_DEFAULTS.h,
+    main_distortion: compressed.d ?? PATTERN_DEFAULTS.d,
     samples: compressed.s.map((sample) => ({
       id: sample.i,
-      sequence: unpackSequence(sample.q),
-      pitch: sample.t,
-      delay_active: sample.e,
-      reverb_active: sample.r,
-      muted: sample.m
+      sequence: unpackSequence(sample.q ?? SAMPLE_DEFAULTS.q),
+      pitch: sample.t ?? SAMPLE_DEFAULTS.t,
+      delay_active: sample.e ?? SAMPLE_DEFAULTS.e,
+      reverb_active: sample.r ?? SAMPLE_DEFAULTS.r,
+      muted: sample.m ?? SAMPLE_DEFAULTS.m
     }))
   };
 }
@@ -276,7 +293,7 @@ export function decodePatternFromURL(encoded: string): PatternData | null {
 // === URL Helpers ===
 
 /**
- * Get pattern from current URL query parameters
+ * Get pattern from current URL hash fragment
  */
 export function getPatternFromURL(): PatternData | null {
   if (typeof window === 'undefined') {
@@ -284,14 +301,13 @@ export function getPatternFromURL(): PatternData | null {
   }
 
   try {
-    const params = new URLSearchParams(window.location.search);
-    const encoded = params.get('pattern');
+    const hash = window.location.hash.slice(1); // Remove leading #
 
-    if (!encoded) {
+    if (!hash) {
       return null;
     }
 
-    return decodePatternFromURL(encoded);
+    return decodePatternFromURL(hash);
   } catch (error) {
     console.error('Error getting pattern from URL:', error);
     return null;
@@ -304,5 +320,5 @@ export function getPatternFromURL(): PatternData | null {
 export function createShareURL(pattern: PatternData): string {
   const encoded = encodePatternToURL(pattern);
   const base_url = `${window.location.origin}${window.location.pathname}`;
-  return `${base_url}?pattern=${encoded}`;
+  return `${base_url}#${encoded}`;
 }
