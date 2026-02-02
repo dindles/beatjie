@@ -1,6 +1,7 @@
 // pattern-sharing.ts
 import type { Sample } from '$lib/classes/audio-models.svelte';
 import type { AudioChain } from '$lib/classes/audio-chain.svelte';
+import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from 'lz-string';
 
 const PATTERN_VERSION = 1;
 const MIN_BPM = 60;
@@ -248,18 +249,13 @@ export function deserializePattern(data: unknown): PatternData | null {
 // === URL Encoding ===
 
 /**
- * Encode PatternData to a base64url string
+ * Encode PatternData to an lz-string compressed URL-safe string
  */
 export function encodePatternToURL(pattern: PatternData): string {
   try {
     const compressed = compressPattern(pattern);
     const json = JSON.stringify(compressed);
-
-    // Convert to base64url (URL-safe variant)
-    const base64 = btoa(json);
-    const base64url = base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
-
-    return base64url;
+    return compressToEncodedURIComponent(json);
   } catch (error) {
     console.error('Error encoding pattern to URL:', error);
     throw error;
@@ -267,22 +263,14 @@ export function encodePatternToURL(pattern: PatternData): string {
 }
 
 /**
- * Decode a base64url string to PatternData
+ * Decode an lz-string compressed string to PatternData
  */
 export function decodePatternFromURL(encoded: string): PatternData | null {
   try {
-    // Convert from base64url to base64
-    let base64 = encoded.replace(/-/g, '+').replace(/_/g, '/');
-
-    // Add padding if needed
-    while (base64.length % 4) {
-      base64 += '=';
-    }
-
-    const json = atob(base64);
+    const json = decompressFromEncodedURIComponent(encoded);
+    if (!json) return null;
     const compressed = JSON.parse(json) as CompressedPatternData;
     const pattern = decompressPattern(compressed);
-
     return deserializePattern(pattern);
   } catch (error) {
     console.error('Error decoding pattern from URL:', error);
