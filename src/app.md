@@ -2,10 +2,6 @@
 
 ## v1.0
 
-### intro screen
-
-link to vid
-
 ### polish
 
 ### todos & logs
