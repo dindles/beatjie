@@ -186,7 +186,7 @@
 
         app_state['fonts-loading'] = false;
         console.log(
-          '%c🎵 Beatjie\n\n%cHave fun, make beats!\n\nSource: https://github.com/dindles/beatjie',
+          'beatjie\n\nhave fun, make beats!\n\nhttps://github.com/dindles/beatjie\n\nhttps://dindles.net',
           'font-size: 20px; font-weight: bold;',
           'font-size: 12px; color: gray;'
         );
