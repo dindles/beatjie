@@ -25,8 +25,12 @@
     </div>
 
     <div class="footer-links">
-      <button class="link" onclick={() => (show_shortcuts = true)}> keyboard shortcuts </button>
-      <button class="link" onclick={() => (show_video = true)}> quick demo vid </button>
+      <button class="link" onclick={() => (show_shortcuts = true)}>
+        <kbd>Q</kbd><kbd>W</kbd> shortcuts
+      </button>
+      <button class="link" onclick={() => (show_video = true)}>
+        <span class="play-icon">▶</span> demo vid
+      </button>
       <a class="link dindles-link" href="https://dindles.net" target="_blank" rel="noopener">
         <svg
           class="blob"
@@ -99,10 +103,28 @@
     opacity: 0.7;
     cursor: pointer;
     aspect-ratio: unset;
+    display: flex;
+    align-items: center;
+    gap: 0.3em;
   }
 
   .link:hover {
     opacity: 1;
+  }
+
+  .link kbd {
+    font-family: var(--font-text);
+    font-size: 0.85em;
+    border: 1.5px solid currentColor;
+    border-radius: 3px;
+    padding: 0 0.25em;
+    text-decoration: none;
+    margin-right: -0.15em;
+  }
+
+  .play-icon {
+    font-size: 0.9em;
+    text-decoration: none;
   }
 
   .dindles-link {
