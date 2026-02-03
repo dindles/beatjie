@@ -1,11 +1,11 @@
 <script lang="ts">
   import * as Tone from 'tone';
   import type { Packs } from '$lib/types/audio';
-  import type { Sample } from '$lib/classes/sample.svelte';
+  import type { Sample } from '$lib/audio-classes/sample.svelte';
   import type { FeedbackState } from '$lib/utils/feedback-state.svelte';
   import PackSelector from '$lib/components/pack-selector.svelte';
-  import { AudioEngine } from '$lib/classes/audio-engine.svelte';
-  import { AudioChain } from '$lib/classes/audio-chain.svelte';
+  import { AudioEngine } from '$lib/audio-classes/audio-engine.svelte';
+  import { AudioChain } from '$lib/audio-classes/audio-chain.svelte';
   import { cubicOut } from 'svelte/easing';
   import { fly } from 'svelte/transition';
   import { swipe } from '$lib/actions/swipeAction';

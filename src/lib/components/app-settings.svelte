@@ -1,8 +1,8 @@
 <script lang="ts">
   import * as Tone from 'tone';
-  import type { Sample } from '$lib/classes/sample.svelte';
-  import type { AudioSequencer } from '$lib/classes/audio-sequencer.svelte';
-  import type { AudioChain } from '$lib/classes/audio-chain.svelte';
+  import type { Sample } from '$lib/audio-classes/sample.svelte';
+  import type { AudioSequencer } from '$lib/audio-classes/audio-sequencer.svelte';
+  import type { AudioChain } from '$lib/audio-classes/audio-chain.svelte';
   import type { FeedbackState } from '$lib/utils/feedback-state.svelte';
   import { saveColorSettings, loadColorSettings } from '$lib/utils/color-storage';
   import { serializePattern, createShareURL } from '$lib/utils/pattern-sharing';

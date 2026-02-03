@@ -1,7 +1,7 @@
 <!-- sequencer.svelte -->
 <script lang="ts">
-  import type { Sample } from '$lib/classes/sample.svelte';
-  import type { AudioSequencer } from '$lib/classes/audio-sequencer.svelte';
+  import type { Sample } from '$lib/audio-classes/sample.svelte';
+  import type { AudioSequencer } from '$lib/audio-classes/audio-sequencer.svelte';
   import type { FeedbackState } from '$lib/utils/feedback-state.svelte';
 
   interface Props {
