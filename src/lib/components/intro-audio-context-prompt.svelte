@@ -131,6 +131,8 @@
     display: flex;
     align-items: center;
     gap: 0.4rem;
+    margin-top: 2rem;
+    font-size: 0.75em;
   }
 
   .blob {
