@@ -186,8 +186,8 @@
 
         app_state['fonts-loading'] = false;
         console.log(
-          '%cbeatjie\n\n%chave fun, make beats!\n\nhttps://github.com/dindles/beatjie\n\nhttps://dindles.net',
-          'font-size: 20px; font-weight: bold;',
+          '%cp.l.u.r.\n\n%chttps://github.com/dindles/beatjie\n\nhttps://dindles.net',
+          'font-size: 12px; font-weight: bold;',
           'font-size: 12px; color: gray;'
         );
         app_state['audio-prompt'] = true;
