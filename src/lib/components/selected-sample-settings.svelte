@@ -1,16 +1,16 @@
 <script lang="ts">
   import type { Sample } from '$lib/audio-classes/sample.svelte';
-  import type { AudioChain } from '$lib/audio-classes/audio-chain.svelte';
+  import type { MainAudioBus } from '$lib/audio-classes/main-audio-bus.svelte';
   import type { FeedbackState } from '$lib/utils/feedback-state.svelte';
 
   type Props = {
     selected_sample: Sample | undefined;
     pitches: string[];
-    audio_chain: AudioChain;
+    main_audio_bus: MainAudioBus;
     feedback_state: FeedbackState;
   };
 
-  let { selected_sample, pitches, audio_chain, feedback_state }: Props = $props();
+  let { selected_sample, pitches, main_audio_bus, feedback_state }: Props = $props();
 
   let pitch_emoji_rotation = $derived.by(() => {
     if (!selected_sample) return 0;
@@ -29,19 +29,19 @@
 
   function toggleSampleMute() {
     if (!selected_sample) return;
-    audio_chain.toggleSampleMute(selected_sample, !selected_sample.is_muted);
+    main_audio_bus.toggleSampleMute(selected_sample, !selected_sample.is_muted);
     selected_sample.is_muted = !selected_sample.is_muted;
   }
 
   function toggleSampleDelay() {
     if (!selected_sample) return;
-    audio_chain.toggleSampleDelay(selected_sample, !selected_sample.delay_is_active);
+    main_audio_bus.toggleSampleDelay(selected_sample, !selected_sample.delay_is_active);
     selected_sample.delay_is_active = !selected_sample.delay_is_active;
   }
 
   function toggleSampleReverb() {
     if (!selected_sample) return;
-    audio_chain.toggleSampleReverb(selected_sample, !selected_sample.reverb_is_active);
+    main_audio_bus.toggleSampleReverb(selected_sample, !selected_sample.reverb_is_active);
     selected_sample.reverb_is_active = !selected_sample.reverb_is_active;
   }
 </script>

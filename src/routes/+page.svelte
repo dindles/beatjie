@@ -9,8 +9,8 @@
   // === Audio types & classes
   import { Sample } from '$lib/audio-classes/sample.svelte';
   import { AudioEngine } from '$lib/audio-classes/audio-engine.svelte';
-  import { AudioDataToCode } from '$lib/audio-classes/audio-data-to-code.svelte';
-  import { AudioChain, type ChainConfig } from '$lib/audio-classes/audio-chain.svelte';
+  import { AudioLoader } from '$lib/audio-classes/audio-loader.svelte';
+  import { MainAudioBus, type MainAudioBusConfig } from '$lib/audio-classes/main-audio-bus.svelte';
   import { AudioSequencer } from '$lib/audio-classes/audio-sequencer.svelte';
 
   // === Svelte components
@@ -37,7 +37,7 @@
   // === VARIABLES ============================
 
   // === Audio
-  const chain_config: ChainConfig = $state({
+  const main_audio_bus_config: MainAudioBusConfig = $state({
     highpass_freq: 500,
     distortion_init: 0,
     distortion_wet_amount: 0.8,
@@ -51,8 +51,8 @@
   const pitches = ['C2', 'E2', 'F2', 'C1'];
 
   let audio_engine = new AudioEngine();
-  let audio_data_to_code = new AudioDataToCode();
-  let audio_chain = new AudioChain(chain_config);
+  let audio_loader = new AudioLoader();
+  let main_audio_bus = new MainAudioBus(main_audio_bus_config);
   let audio_sequencer = new AudioSequencer();
   let feedback_state = new FeedbackState();
 
@@ -127,7 +127,7 @@
     if (selected_sample) {
       switch (event.key.toLowerCase()) {
         case 'z': // mute
-          audio_chain.toggleSampleMute(selected_sample, !selected_sample.is_muted);
+          main_audio_bus.toggleSampleMute(selected_sample, !selected_sample.is_muted);
           selected_sample.is_muted = !selected_sample.is_muted;
           break;
         case 'x': // pitch cycle
@@ -136,11 +136,11 @@
           selected_sample.pitch = pitches[next_index] as typeof selected_sample.pitch;
           break;
         case 'c': // delay
-          audio_chain.toggleSampleDelay(selected_sample, !selected_sample.delay_is_active);
+          main_audio_bus.toggleSampleDelay(selected_sample, !selected_sample.delay_is_active);
           selected_sample.delay_is_active = !selected_sample.delay_is_active;
           break;
         case 'v': // reverb
-          audio_chain.toggleSampleReverb(selected_sample, !selected_sample.reverb_is_active);
+          main_audio_bus.toggleSampleReverb(selected_sample, !selected_sample.reverb_is_active);
           selected_sample.reverb_is_active = !selected_sample.reverb_is_active;
           break;
       }
@@ -148,10 +148,10 @@
 
     // Global effects (b, n)
     if (event.key.toLowerCase() === 'b') {
-      audio_chain.toggleMainHighPass(!audio_chain.mainIsHighPassed);
+      main_audio_bus.toggleMainHighPass(!main_audio_bus.mainIsHighPassed);
     }
     if (event.key.toLowerCase() === 'n') {
-      audio_chain.toggleMainDistortion(!audio_chain.mainIsDistorted);
+      main_audio_bus.toggleMainDistortion(!main_audio_bus.mainIsDistorted);
     }
 
     // BPM (arrow keys)
@@ -213,7 +213,7 @@
   });
 
   $effect(() => {
-    if (app_state['audio-loading'] && audio_data_to_code.buffersAreLoaded() && samples.length > 0) {
+    if (app_state['audio-loading'] && audio_loader.buffersAreLoaded() && samples.length > 0) {
       app_state['audio-loading'] = false;
       app_state['app-ready'] = true;
     }
@@ -232,8 +232,8 @@
     audio_sequencer.setBPM(pattern.bpm);
 
     // Set main effects
-    audio_chain.toggleMainHighPass(pattern.main_highpass);
-    audio_chain.toggleMainDistortion(pattern.main_distortion);
+    main_audio_bus.toggleMainHighPass(pattern.main_highpass);
+    main_audio_bus.toggleMainDistortion(pattern.main_distortion);
 
     // Apply sample states
     pattern.samples.forEach((sample_data) => {
@@ -247,9 +247,9 @@
       sample.is_muted = sample_data.muted;
 
       // Apply effects through audio chain
-      audio_chain.toggleSampleDelay(sample, sample_data.delay_active);
-      audio_chain.toggleSampleReverb(sample, sample_data.reverb_active);
-      audio_chain.toggleSampleMute(sample, sample_data.muted);
+      main_audio_bus.toggleSampleDelay(sample, sample_data.delay_active);
+      main_audio_bus.toggleSampleReverb(sample, sample_data.reverb_active);
+      main_audio_bus.toggleSampleMute(sample, sample_data.muted);
     });
 
     // Rebuild sequences with new pattern
@@ -258,8 +258,8 @@
 
   // === Load data
   async function audioDataToCode() {
-    samples = await audio_data_to_code.processPacks(packs);
-    audio_chain.setChains(samples);
+    samples = await audio_loader.processPacks(packs);
+    main_audio_bus.setChains(samples);
     await audio_sequencer.makeSequences(samples);
   }
 
@@ -267,8 +267,8 @@
   $effect(() => {
     return () => {
       audio_sequencer.dispose();
-      audio_chain.dispose(samples);
-      audio_data_to_code.dispose();
+      main_audio_bus.dispose(samples);
+      audio_loader.dispose();
       audio_engine.dispose();
     };
   });
@@ -290,26 +290,26 @@
       <AudioLoadingMessage />
     {:else if app_state['app-ready']}
       <AppSettings
-        {audio_chain}
+        {main_audio_bus}
         {audio_sequencer}
         {samples}
         {selected_pack_index}
         {feedback_state}
       />
-      <Display {audio_chain} {selected_sample} {feedback_state} />
+      <Display {main_audio_bus} {selected_sample} {feedback_state} />
       <Samples
         {pitches}
         {packs}
         {samples}
         {audio_engine}
-        {audio_chain}
+        {main_audio_bus}
         {feedback_state}
         bind:selected_sample
         bind:selected_pack_index
         bind:preview_samples_active
       />
       <Sequencer {samples} {selected_sample} {audio_sequencer} {feedback_state} />
-      <TransportAndMainSettings {audio_sequencer} {audio_chain} {feedback_state} />
+      <TransportAndMainSettings {audio_sequencer} {main_audio_bus} {feedback_state} />
     {/if}
   </div>
 </main>

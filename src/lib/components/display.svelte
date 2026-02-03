@@ -1,16 +1,16 @@
 <script lang="ts">
-  import type { AudioChain } from '$lib/audio-classes/audio-chain.svelte';
+  import type { MainAudioBus } from '$lib/audio-classes/main-audio-bus.svelte';
   import type { Sample } from '$lib/audio-classes/sample.svelte';
   import type { FeedbackState } from '$lib/utils/feedback-state.svelte';
   import GlobalFeedback from '$lib/components/global-feedback.svelte';
 
   interface Props {
-    audio_chain: AudioChain;
+    main_audio_bus: MainAudioBus;
     selected_sample: Sample | undefined;
     feedback_state: FeedbackState;
   }
 
-  let { audio_chain, selected_sample: _selected_sample, feedback_state }: Props = $props();
+  let { main_audio_bus, selected_sample: _selected_sample, feedback_state }: Props = $props();
   let canvas: HTMLCanvasElement;
   let analysis_values: Float32Array | Float32Array[] = $state([]);
 
@@ -25,7 +25,7 @@
 
   $effect(() => {
     function updateAnalysis() {
-      analysis_values = audio_chain.getAnalyserValues();
+      analysis_values = main_audio_bus.getAnalyserValues();
       requestAnimationFrame(updateAnalysis);
     }
 

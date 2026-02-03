@@ -2,20 +2,20 @@
   import * as Tone from 'tone';
   import type { Sample } from '$lib/audio-classes/sample.svelte';
   import type { AudioSequencer } from '$lib/audio-classes/audio-sequencer.svelte';
-  import type { AudioChain } from '$lib/audio-classes/audio-chain.svelte';
+  import type { MainAudioBus } from '$lib/audio-classes/main-audio-bus.svelte';
   import type { FeedbackState } from '$lib/utils/feedback-state.svelte';
   import { saveColorSettings, loadColorSettings } from '$lib/utils/color-storage';
   import { serializePattern, createShareURL } from '$lib/utils/pattern-sharing';
 
   interface Props {
     audio_sequencer: AudioSequencer;
-    audio_chain: AudioChain;
+    main_audio_bus: MainAudioBus;
     samples: Sample[];
     selected_pack_index: number;
     feedback_state: FeedbackState;
   }
 
-  let { audio_sequencer, audio_chain, samples, selected_pack_index, feedback_state }: Props =
+  let { audio_sequencer, main_audio_bus, samples, selected_pack_index, feedback_state }: Props =
     $props();
 
   const available_hues = [30, 90, 140, 200, 280, 330];
@@ -54,8 +54,8 @@
     samples.forEach((sample: Sample) => {
       sample.sequence = new Array(sample.sequence.length).fill(false);
       sample.pitch = 'C2';
-      audio_chain.toggleSampleDelay(sample, false);
-      audio_chain.toggleSampleReverb(sample, false);
+      main_audio_bus.toggleSampleDelay(sample, false);
+      main_audio_bus.toggleSampleReverb(sample, false);
       sample.delay_is_active = false;
       sample.reverb_is_active = false;
     });
@@ -88,7 +88,7 @@
   async function handleSharePattern() {
     try {
       const current_bpm = audio_sequencer.getBPM();
-      const pattern_data = serializePattern(current_bpm, selected_pack_index, audio_chain, samples);
+      const pattern_data = serializePattern(current_bpm, selected_pack_index, main_audio_bus, samples);
       const share_url = createShareURL(pattern_data);
 
       // Copy to clipboard

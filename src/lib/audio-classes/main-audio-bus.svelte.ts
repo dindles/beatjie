@@ -1,7 +1,7 @@
 import * as Tone from 'tone';
-import type { Sample } from '$lib/classes/sample.svelte';
+import type { Sample } from '$lib/audio-classes/sample.svelte';
 
-export interface ChainConfig {
+export interface MainAudioBusConfig {
   readonly highpass_freq: number;
   readonly distortion_init: number;
   readonly distortion_wet_amount: number;
@@ -12,7 +12,7 @@ export interface ChainConfig {
   readonly bit_crusher_bits: number;
 }
 
-export class AudioChain {
+export class MainAudioBus {
   #mainChannel: Tone.Channel;
   #mainFilterHP: Tone.Filter;
   mainIsHighPassed: boolean = $state(false);
@@ -22,7 +22,7 @@ export class AudioChain {
   #mainCompressor: Tone.Compressor;
   #mainAnalyser: Tone.Analyser;
 
-  constructor(private config: ChainConfig) {
+  constructor(private config: MainAudioBusConfig) {
     this.#mainChannel = new Tone.Channel(0);
     this.#mainFilterHP = new Tone.Filter(0, 'highpass');
     this.#mainDistortion = new Tone.Distortion();

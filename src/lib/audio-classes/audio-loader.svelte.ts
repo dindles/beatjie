@@ -2,7 +2,7 @@ import * as Tone from 'tone';
 import type { Packs } from '$lib/types/audio';
 import { Sample } from '$lib/audio-classes/sample.svelte';
 
-export class AudioDataToCode {
+export class AudioLoader {
   #buffers_are_loaded: boolean = $state(false);
   #error_state: string | null = null;
   #buffers: Tone.ToneAudioBuffers | null = null;

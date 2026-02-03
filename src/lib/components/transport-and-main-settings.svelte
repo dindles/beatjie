@@ -2,16 +2,16 @@
 <script lang="ts">
   import BPMSelector from '$lib/components/bpm-selector.svelte';
   import type { AudioSequencer } from '$lib/audio-classes/audio-sequencer.svelte';
-  import type { AudioChain } from '$lib/audio-classes/audio-chain.svelte';
+  import type { MainAudioBus } from '$lib/audio-classes/main-audio-bus.svelte';
   import type { FeedbackState } from '$lib/utils/feedback-state.svelte';
 
   interface Props {
     audio_sequencer: AudioSequencer;
-    audio_chain: AudioChain;
+    main_audio_bus: MainAudioBus;
     feedback_state: FeedbackState;
   }
 
-  let { audio_sequencer, audio_chain, feedback_state }: Props = $props();
+  let { audio_sequencer, main_audio_bus, feedback_state }: Props = $props();
 
   async function toggleSeqPlayback() {
     await audio_sequencer.togglePlayback();
@@ -34,19 +34,19 @@
   <div class="main-settings">
     <button
       class="emoji-large border"
-      class:active={audio_chain.mainIsHighPassed}
+      class:active={main_audio_bus.mainIsHighPassed}
       onmouseenter={() => feedback_state.showTooltip('pattern high-pass')}
       onmouseleave={() => feedback_state.clear()}
-      onclick={() => audio_chain.toggleMainHighPass(!audio_chain.mainIsHighPassed)}
+      onclick={() => main_audio_bus.toggleMainHighPass(!main_audio_bus.mainIsHighPassed)}
     >
       🫴
     </button>
     <button
       class="emoji-large border"
-      class:active={audio_chain.mainIsDistorted}
+      class:active={main_audio_bus.mainIsDistorted}
       onmouseenter={() => feedback_state.showTooltip('pattern distort')}
       onmouseleave={() => feedback_state.clear()}
-      onclick={() => audio_chain.toggleMainDistortion(!audio_chain.mainIsDistorted)}
+      onclick={() => main_audio_bus.toggleMainDistortion(!main_audio_bus.mainIsDistorted)}
     >
       💥
     </button>

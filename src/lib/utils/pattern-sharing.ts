@@ -1,6 +1,6 @@
 // pattern-sharing.ts
-import type { Sample } from '$lib/classes/sample.svelte';
-import type { AudioChain } from '$lib/classes/audio-chain.svelte';
+import type { Sample } from '$lib/audio-classes/sample.svelte';
+import type { MainAudioBus } from '$lib/audio-classes/main-audio-bus.svelte';
 import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from 'lz-string';
 
 const PATTERN_VERSION = 1;
@@ -80,15 +80,15 @@ function unpackSequence(packed: number): boolean[] {
 export function serializePattern(
   bpm: number,
   selected_pack_index: number,
-  audio_chain: AudioChain,
+  main_audio_bus: MainAudioBus,
   samples: Sample[]
 ): PatternData {
   return {
     version: PATTERN_VERSION,
     bpm,
     selected_pack_index,
-    main_highpass: audio_chain.mainIsHighPassed,
-    main_distortion: audio_chain.mainIsDistorted,
+    main_highpass: main_audio_bus.mainIsHighPassed,
+    main_distortion: main_audio_bus.mainIsDistorted,
     samples: samples.map((sample) => ({
       id: sample.id,
       sequence: [...sample.sequence],
