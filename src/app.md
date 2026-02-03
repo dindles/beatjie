@@ -8,11 +8,7 @@
 
 #### samples: mhmm -1db
 
-#### review extraneous, unused code
-
 #### todos & logs & reading
-
-#### polish 2
 
 ### v1.2
 
