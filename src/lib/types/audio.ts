@@ -1,14 +1,14 @@
 // audio.ts - Type definitions for the audio system
 
 export interface SampleHeader {
-	readonly id: number;
-	readonly emoji: string;
-	readonly url: string;
+  readonly id: number;
+  readonly emoji: string;
+  readonly url: string;
 }
 
 export interface Pack {
-	readonly name: string;
-	readonly samples: readonly SampleHeader[];
+  readonly name: string;
+  readonly samples: readonly SampleHeader[];
 }
 
 export type Packs = readonly Pack[];

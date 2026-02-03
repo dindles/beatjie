@@ -1,9 +1,5 @@
 {
   "permissions": {
-    "allow": [
-      "Bash(git stash:*)",
-      "Bash(git checkout:*)",
-      "Bash(npx svelte-check:*)"
-    ]
+    "allow": ["Bash(git stash:*)", "Bash(git checkout:*)", "Bash(npx svelte-check:*)"]
   }
 }

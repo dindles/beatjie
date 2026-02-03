@@ -166,11 +166,7 @@ export function deserializePattern(data: unknown): PatternData | null {
     }
 
     // Validate BPM
-    if (
-      typeof pattern.bpm !== 'number' ||
-      pattern.bpm < MIN_BPM ||
-      pattern.bpm > MAX_BPM
-    ) {
+    if (typeof pattern.bpm !== 'number' || pattern.bpm < MIN_BPM || pattern.bpm > MAX_BPM) {
       console.error(`Invalid BPM: ${pattern.bpm}`);
       return null;
     }

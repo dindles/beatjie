@@ -5,6 +5,7 @@
 
   // === Data
   import { packs } from '$lib/data/audio-packs';
+  import type { Note } from 'tone/build/esm/core/type/NoteUnits';
 
   // === Audio types & classes
   import { Sample } from '$lib/audio-classes/sample.svelte';
@@ -130,11 +131,13 @@
           main_audio_bus.toggleSampleMute(selected_sample, !selected_sample.is_muted);
           selected_sample.is_muted = !selected_sample.is_muted;
           break;
-        case 'x': // pitch cycle
+        case 'x': {
+          // pitch cycle
           const current_index = pitches.indexOf(selected_sample.pitch);
           const next_index = (current_index + 1) % pitches.length;
           selected_sample.pitch = pitches[next_index] as typeof selected_sample.pitch;
           break;
+        }
         case 'c': // delay
           main_audio_bus.toggleSampleDelay(selected_sample, !selected_sample.delay_is_active);
           selected_sample.delay_is_active = !selected_sample.delay_is_active;
@@ -241,7 +244,7 @@
       if (!sample) return;
 
       sample.sequence = [...sample_data.sequence];
-      sample.pitch = sample_data.pitch as any;
+      sample.pitch = sample_data.pitch as Note;
       sample.delay_is_active = sample_data.delay_active;
       sample.reverb_is_active = sample_data.reverb_active;
       sample.is_muted = sample_data.muted;

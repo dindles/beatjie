@@ -15,8 +15,7 @@
     feedback_state: FeedbackState;
   }
 
-  let { sequencer, main_audio_bus, samples, selected_pack_index, feedback_state }: Props =
-    $props();
+  let { sequencer, main_audio_bus, samples, selected_pack_index, feedback_state }: Props = $props();
 
   const available_hues = [30, 90, 140, 200, 280, 330];
 
@@ -88,7 +87,12 @@
   async function handleSharePattern() {
     try {
       const current_bpm = sequencer.getBPM();
-      const pattern_data = serializePattern(current_bpm, selected_pack_index, main_audio_bus, samples);
+      const pattern_data = serializePattern(
+        current_bpm,
+        selected_pack_index,
+        main_audio_bus,
+        samples
+      );
       const share_url = createShareURL(pattern_data);
 
       // Copy to clipboard
