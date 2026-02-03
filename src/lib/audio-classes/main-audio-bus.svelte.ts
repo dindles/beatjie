@@ -45,10 +45,6 @@ export class MainAudioBus {
     );
   }
 
-  get mainChannel(): Tone.Channel {
-    return this.#mainChannel;
-  }
-
   toggleMainHighPass(enabled: boolean) {
     this.mainIsHighPassed = enabled;
     this.#mainFilterHP.frequency.value = enabled ? this.config.highpass_freq : 0;
@@ -65,6 +61,10 @@ export class MainAudioBus {
 
   getAnalyserValues() {
     return this.#mainAnalyser.getValue();
+  }
+
+  get mainChannel(): Tone.Channel {
+    return this.#mainChannel;
   }
 
   dispose() {

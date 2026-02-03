@@ -50,6 +50,10 @@ export class AudioLoader {
     return samples;
   }
 
+  async connectSamplesToMainChannel(samples: Sample[], mainChannel: Tone.Channel): Promise<void> {
+    await Promise.all(samples.map((sample) => sample.connectToMainChannel(mainChannel)));
+  }
+
   buffersAreLoaded(): boolean {
     return this.#buffers_are_loaded;
   }

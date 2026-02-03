@@ -261,7 +261,7 @@
   // === Load data
   async function loadAndConfigureAudio() {
     samples = await audio_loader.processPacks(packs);
-    await Promise.all(samples.map((sample) => sample.connectToMainChannel(main_audio_bus.mainChannel)));
+    await audio_loader.connectSamplesToMainChannel(samples, main_audio_bus.mainChannel);
     await sequencer.makeSequences(samples);
   }
 

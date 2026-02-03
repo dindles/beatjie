@@ -106,11 +106,9 @@ export class Sample {
   }
 
   dispose(): void {
-    // Clear any pending timeouts
     this.#playingTimeouts.forEach(clearTimeout);
     this.#playingTimeouts.clear();
 
-    // Dispose Tone.js nodes
     this.#sampler.dispose();
     this.#channel.dispose();
     this.#delay.dispose();
