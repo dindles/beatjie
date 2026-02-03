@@ -5,7 +5,7 @@ export interface ColorSettings {
 }
 
 const STORAGE_KEY = 'beatjie-color-settings';
-const AVAILABLE_HUES = [30, 90, 140, 200, 280, 330];
+export const AVAILABLE_HUES = [30, 90, 140, 200, 280, 330];
 
 function calculateChroma(lightness: number): number {
   // Peak chroma at mid-lightness, lower at extremes for better harmony

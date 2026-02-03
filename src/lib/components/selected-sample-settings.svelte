@@ -23,7 +23,6 @@
 
     const current_index = pitches.indexOf(selected_sample.pitch);
     const next_index = (current_index + 1) % pitches.length;
-    // hacky typescript business?
     selected_sample.pitch = pitches[next_index] as typeof selected_sample.pitch;
   }
 

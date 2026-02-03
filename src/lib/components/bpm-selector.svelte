@@ -72,8 +72,7 @@
     padding: 0;
     width: 100%;
     aspect-ratio: 1;
-    /* cursor: ns-resize; */
-    cursor: none;
+    cursor: ns-resize;
     touch-action: none;
     user-select: none;
   }

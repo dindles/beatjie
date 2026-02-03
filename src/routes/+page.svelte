@@ -211,7 +211,9 @@
 
   $effect(() => {
     if (app_state['audio-loading']) {
-      audioDataToCode();
+      loadAndConfigureAudio().catch((error) => {
+        console.error('Failed to load audio data:', error);
+      });
     }
   });
 
@@ -260,7 +262,7 @@
   }
 
   // === Load data
-  async function audioDataToCode() {
+  async function loadAndConfigureAudio() {
     samples = await audio_loader.processPacks(packs);
     main_audio_bus.setChains(samples);
     await sequencer.makeSequences(samples);

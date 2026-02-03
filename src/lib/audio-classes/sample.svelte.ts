@@ -80,10 +80,10 @@ export class Sample {
     this.is_playing = true;
     this.#sampler.triggerAttack(this.pitch, time);
 
-    const timeoutId = setTimeout(() => {
+    const timeoutId = window.setTimeout(() => {
       this.is_playing = false;
       this.#playingTimeouts.delete(timeoutId);
-    }, 100) as unknown as number;
+    }, 100);
     this.#playingTimeouts.add(timeoutId);
   }
 

@@ -150,7 +150,7 @@ function decompressPattern(compressed: CompressedPatternData): PatternData {
 /**
  * Validate a PatternData object
  */
-export function deserializePattern(data: unknown): PatternData | null {
+function deserializePattern(data: unknown): PatternData | null {
   try {
     if (!data || typeof data !== 'object') {
       console.error('Pattern data is not an object');
@@ -247,7 +247,7 @@ export function deserializePattern(data: unknown): PatternData | null {
 /**
  * Encode PatternData to an lz-string compressed URL-safe string
  */
-export function encodePatternToURL(pattern: PatternData): string {
+function encodePatternToURL(pattern: PatternData): string {
   try {
     const compressed = compressPattern(pattern);
     const json = JSON.stringify(compressed);
@@ -261,7 +261,7 @@ export function encodePatternToURL(pattern: PatternData): string {
 /**
  * Decode an lz-string compressed string to PatternData
  */
-export function decodePatternFromURL(encoded: string): PatternData | null {
+function decodePatternFromURL(encoded: string): PatternData | null {
   try {
     const json = decompressFromEncodedURIComponent(encoded);
     if (!json) return null;

@@ -2,17 +2,13 @@
 
 ### v1.0
 
-#### base deprecated, use resolve https://svelte.dev/docs/kit/$app-paths#resolve
+#### samples: hut +3db
 
-#### aria alerts
+#### samples: 909 kick +1db, subbier
 
-#### make hut louder
-
-#### make 909 kick louder/subbier
+#### samples: mhmm -1db
 
 #### review extraneous, unused code
-
-#### linter?
 
 #### todos & logs & reading
 

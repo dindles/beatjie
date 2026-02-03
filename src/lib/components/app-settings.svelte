@@ -4,7 +4,7 @@
   import type { AudioSequencer } from '$lib/audio-classes/audio-sequencer.svelte';
   import type { MainAudioBus } from '$lib/audio-classes/main-audio-bus.svelte';
   import type { FeedbackState } from '$lib/utils/feedback-state.svelte';
-  import { saveColorSettings, loadColorSettings } from '$lib/utils/color-storage';
+  import { saveColorSettings, loadColorSettings, AVAILABLE_HUES } from '$lib/utils/color-storage';
   import { serializePattern, createShareURL } from '$lib/utils/pattern-sharing';
 
   interface Props {
@@ -17,15 +17,13 @@
 
   let { sequencer, main_audio_bus, samples, selected_pack_index, feedback_state }: Props = $props();
 
-  const available_hues = [30, 90, 140, 200, 280, 330];
-
   function calculateChroma(lightness: number): number {
     return 0.15 + 0.1 * (1 - Math.abs(lightness - 0.5) * 2);
   }
 
   let hue_emoji_rotation = $state(0);
   let user_lightness = $state(0.9); // 0 - 1
-  let user_hue = $state(available_hues[Math.floor(Math.random() * available_hues.length)]);
+  let user_hue = $state(AVAILABLE_HUES[Math.floor(Math.random() * AVAILABLE_HUES.length)]);
   let chroma = $derived(calculateChroma(user_lightness));
   let user_colour = $derived(`oklch(${user_lightness} ${chroma} ${user_hue})`);
   let black_or_white = $state('oklch(0 0 0)');
@@ -63,9 +61,9 @@
   }
 
   function changeHue() {
-    const current_index = available_hues.indexOf(user_hue);
-    const next_index = (current_index + 1) % available_hues.length;
-    user_hue = available_hues[next_index];
+    const current_index = AVAILABLE_HUES.indexOf(user_hue);
+    const next_index = (current_index + 1) % AVAILABLE_HUES.length;
+    user_hue = AVAILABLE_HUES[next_index];
     saveColorSettings({ hue: user_hue, lightness: user_lightness, theme });
   }
 
@@ -110,7 +108,6 @@
     if (disco_toggle) {
       const interval = Tone.getTransport().scheduleRepeat(() => {
         changeHue();
-        // changeTheme()
       }, '4n');
       return () => Tone.getTransport().clear(interval);
     }
