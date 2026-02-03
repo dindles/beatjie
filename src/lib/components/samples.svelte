@@ -5,7 +5,6 @@
   import type { FeedbackState } from '$lib/utils/feedback-state.svelte';
   import PackSelector from '$lib/components/pack-selector.svelte';
   import { AudioContext } from '$lib/audio-classes/audio-context.svelte';
-  import { MainAudioBus } from '$lib/audio-classes/main-audio-bus.svelte';
   import { cubicOut } from 'svelte/easing';
   import { fly } from 'svelte/transition';
   import { swipe } from '$lib/actions/swipeAction';
@@ -17,7 +16,6 @@
     packs: Packs;
     samples: Sample[];
     audio_context: AudioContext;
-    main_audio_bus: MainAudioBus;
     selected_sample: Sample | undefined;
     selected_pack_index?: number;
     preview_samples_active?: boolean;
@@ -29,7 +27,6 @@
     packs,
     samples,
     audio_context,
-    main_audio_bus,
     selected_sample = $bindable(),
     selected_pack_index = $bindable(0),
     preview_samples_active = $bindable(true),
@@ -181,7 +178,7 @@
       </div>
     {/key}
   </div>
-  <SelectedSampleSettings {selected_sample} {pitches} {main_audio_bus} {feedback_state} />
+  <SelectedSampleSettings {selected_sample} {pitches} {feedback_state} />
 </div>
 
 <style>

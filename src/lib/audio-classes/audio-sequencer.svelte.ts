@@ -1,4 +1,3 @@
-// audio-sequencer.svelte.ts
 import * as Tone from 'tone';
 import type { Sample } from '$lib/audio-classes/sample.svelte';
 

@@ -1,5 +1,3 @@
-// sample.svelte.ts - Audio sample wrapper with Tone.js integration
-
 import * as Tone from 'tone';
 import type { Note } from 'tone/build/esm/core/type/NoteUnits';
 import type { Time } from 'tone/build/esm/core/type/Units';
@@ -85,6 +83,21 @@ export class Sample {
       this.#playingTimeouts.delete(timeoutId);
     }, 100);
     this.#playingTimeouts.add(timeoutId);
+  }
+
+  toggleDelay(enabled: boolean): void {
+    this.delay_is_active = enabled;
+    this.#delay.wet.value = enabled ? 0.5 : 0;
+  }
+
+  toggleReverb(enabled: boolean): void {
+    this.reverb_is_active = enabled;
+    this.#reverb.wet.value = enabled ? 0.69 : 0;
+  }
+
+  toggleMute(enabled: boolean): void {
+    this.is_muted = enabled;
+    this.#channel.volume.value = enabled ? -Infinity : 0;
   }
 
   dispose(): void {

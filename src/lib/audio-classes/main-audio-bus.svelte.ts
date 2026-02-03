@@ -70,18 +70,6 @@ export class MainAudioBus {
     this.#mainChannel.volume.value = enabled ? -12 : 0;
   }
 
-  toggleSampleDelay(sample: Sample, enabled: boolean) {
-    sample.delay.wet.value = enabled ? 0.5 : 0;
-  }
-
-  toggleSampleReverb(sample: Sample, enabled: boolean) {
-    sample.reverb.wet.value = enabled ? 0.69 : 0;
-  }
-
-  toggleSampleMute(sample: Sample, enabled: boolean) {
-    sample.channel.volume.value = enabled ? -Infinity : 0;
-  }
-
   getAnalyserValues() {
     return this.#mainAnalyser.getValue();
   }

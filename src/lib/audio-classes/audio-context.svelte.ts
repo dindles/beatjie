@@ -1,4 +1,3 @@
-// audio-context.svelte.ts
 import * as Tone from 'tone';
 
 export class AudioContext {

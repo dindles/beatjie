@@ -128,8 +128,7 @@
     if (selected_sample) {
       switch (event.key.toLowerCase()) {
         case 'z': // mute
-          main_audio_bus.toggleSampleMute(selected_sample, !selected_sample.is_muted);
-          selected_sample.is_muted = !selected_sample.is_muted;
+          selected_sample.toggleMute(!selected_sample.is_muted);
           break;
         case 'x': {
           // pitch cycle
@@ -139,12 +138,10 @@
           break;
         }
         case 'c': // delay
-          main_audio_bus.toggleSampleDelay(selected_sample, !selected_sample.delay_is_active);
-          selected_sample.delay_is_active = !selected_sample.delay_is_active;
+          selected_sample.toggleDelay(!selected_sample.delay_is_active);
           break;
         case 'v': // reverb
-          main_audio_bus.toggleSampleReverb(selected_sample, !selected_sample.reverb_is_active);
-          selected_sample.reverb_is_active = !selected_sample.reverb_is_active;
+          selected_sample.toggleReverb(!selected_sample.reverb_is_active);
           break;
       }
     }
@@ -251,10 +248,10 @@
       sample.reverb_is_active = sample_data.reverb_active;
       sample.is_muted = sample_data.muted;
 
-      // Apply effects through audio chain
-      main_audio_bus.toggleSampleDelay(sample, sample_data.delay_active);
-      main_audio_bus.toggleSampleReverb(sample, sample_data.reverb_active);
-      main_audio_bus.toggleSampleMute(sample, sample_data.muted);
+      // Apply sample effects
+      sample.toggleDelay(sample_data.delay_active);
+      sample.toggleReverb(sample_data.reverb_active);
+      sample.toggleMute(sample_data.muted);
     });
 
     // Rebuild sequences with new pattern
@@ -301,7 +298,6 @@
         {packs}
         {samples}
         {audio_context}
-        {main_audio_bus}
         {feedback_state}
         bind:selected_sample
         bind:selected_pack_index
