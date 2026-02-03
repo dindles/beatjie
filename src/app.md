@@ -2,17 +2,11 @@
 
 ### v1.0
 
-#### main-audio-bus also sets per-sample effects chains
-
-#### samples: hut +3db
-
-#### samples: 909 kick +1db, subbier
-
-#### samples: mhmm -1db
-
 #### todos & logs & reading
 
-#### add some demo beats
+#### posts
+
+#### some demo beats
 
 ### v1.2
 
@@ -26,3 +20,6 @@
 #### accessibility
 
 ## demo beats
+
+"everything is bass if it's pitched low enough"
+http://localhost:5173/#N4IgbiBcCMA0ICMrQAwA54AcoCZ4GcoBtUASyhXgEdcUAWATngBcoQAxHEeAJymZ4BXAKYBfWGWQs2AYS7jJkPCFaQQckApDlIAZmlqNWnXQPr5E7VACsZo5Z0A2OxcUB2F5odQMK2a6tIJhAaJWtnP0MuXn4hMW8YSkjzL0VoOBDkCNUQAFFokD5IARFjZGUc+zT9TJhHXTRTZI0Y4riymCbKgJ1oW2aerM8O6A9ajMroVMDoX27p3uDQxy7ZKfhhWNKEnCTJhdwJ-wOlCuOOnBr5i9Wok5x+653s852xp8UcOdfP4I-A3R7H4Ao53UQAXVEQA

@@ -8,7 +8,7 @@ export const packs: Packs = [
   {
     name: '0',
     samples: [
-      { id: 0, emoji: '🥾', url: `${audio_path}/0/0_kick-909.mp3` },
+      { id: 0, emoji: '🥾', url: `${audio_path}/0/0_kick-909.mp3`, gain_adjustment: 2 },
       { id: 1, emoji: '👏', url: `${audio_path}/0/1_clap.mp3` },
       { id: 2, emoji: '🪤', url: `${audio_path}/0/2_snare.mp3` },
       { id: 3, emoji: '🪖', url: `${audio_path}/0/3_ch2.mp3` },
@@ -28,14 +28,14 @@ export const packs: Packs = [
       { id: 12, emoji: '💥', url: `${audio_path}/1/4_crash.mp3` },
       { id: 13, emoji: '💧', url: `${audio_path}/1/5_droplet.mp3` },
       { id: 14, emoji: '🫨', url: `${audio_path}/1/6_spring.mp3` },
-      { id: 15, emoji: '💅', url: `${audio_path}/1/7_mhm.mp3` }
+      { id: 15, emoji: '💅', url: `${audio_path}/1/7_mhm.mp3`, gain_adjustment: -1 }
     ]
   },
   {
     name: '2',
     samples: [
       { id: 16, emoji: '🏠', url: `${audio_path}/2/0_house.mp3` },
-      { id: 17, emoji: '🛖', url: `${audio_path}/2/1_hut.mp3` },
+      { id: 17, emoji: '🛖', url: `${audio_path}/2/1_hut.mp3`, gain_adjustment: 6 },
       { id: 18, emoji: '🔈', url: `${audio_path}/2/2_bass.mp3` },
       { id: 19, emoji: '🧘', url: `${audio_path}/2/3_yoga.mp3` },
       { id: 20, emoji: '🎸', url: `${audio_path}/2/4_standup.mp3` },

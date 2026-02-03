@@ -3,6 +3,7 @@ import type { Sample } from '$lib/audio-classes/sample.svelte';
 
 export class AudioSequencer {
   #sequences: Tone.Sequence[] = [];
+  #stepLoop: Tone.Sequence | null = null;
   #transport;
   #stepArray: number[]; // Cache the step array
   is_playing: boolean = $state(false);
@@ -12,18 +13,21 @@ export class AudioSequencer {
   constructor() {
     this.#transport = Tone.getTransport();
     this.#stepArray = [...Array(16).keys()];
+    this.#stepLoop = new Tone.Sequence(
+      (_time, step) => {
+        this.active_step_index = step;
+      },
+      this.#stepArray,
+      '16n'
+    );
   }
 
   async makeSequences(samples: Sample[]) {
-    await this.dispose();
+    await this.disposeSequences();
 
     this.#sequences = samples.map((sample) => {
       const seq = new Tone.Sequence(
         (time, step) => {
-          if (this.#sequences[0] === seq) {
-            this.active_step_index = step;
-          }
-
           if (sample.sequence[step]) {
             sample.play(time);
           }
@@ -54,6 +58,7 @@ export class AudioSequencer {
       await Tone.start();
     }
 
+    this.#stepLoop?.start(0);
     await Promise.all(this.#sequences.map((seq) => seq.start(0)));
     this.#transport.start('+0.1');
     this.is_playing = true;
@@ -65,6 +70,7 @@ export class AudioSequencer {
     this.#transport.stop();
     this.#transport.position = 0;
     // Cancel sequences instead of stopping them
+    this.#stepLoop?.cancel();
     await Promise.all(this.#sequences.map((seq) => seq.cancel()));
   }
 
@@ -77,8 +83,14 @@ export class AudioSequencer {
     this.#transport.bpm.value = new_bpm;
   }
 
-  async dispose() {
+  private async disposeSequences() {
     await Promise.all(this.#sequences.map((seq) => seq.dispose()));
     this.#sequences = [];
+  }
+
+  async dispose() {
+    await this.disposeSequences();
+    this.#stepLoop?.dispose();
+    this.#stepLoop = null;
   }
 }

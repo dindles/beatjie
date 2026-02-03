@@ -21,6 +21,7 @@ export class Sample {
   readonly pack: string;
   readonly emoji: string;
   readonly url: string;
+  readonly gain_adjustment: number = 0;
 
   volume: number = $state(DEFAULT_VOLUME);
   pitch: Note = $state(DEFAULT_PITCH);
@@ -31,14 +32,15 @@ export class Sample {
   sequence: Sequence = $state(new Array(DEFAULT_SEQUENCE_LENGTH).fill(false));
   is_playing: boolean = $state(false);
 
-  constructor(id: number, pack: string, emoji: string, url: string) {
+  constructor(id: number, pack: string, emoji: string, url: string, gain_adjustment: number = 0) {
     this.id = id;
     this.pack = pack;
     this.emoji = emoji;
     this.url = url;
+    this.gain_adjustment = gain_adjustment;
 
     this.#sampler = new Tone.Sampler();
-    this.#channel = new Tone.Channel().set({ volume: this.volume });
+    this.#channel = new Tone.Channel().set({ volume: gain_adjustment });
     this.#delay = new Tone.FeedbackDelay(DEFAULT_DELAY_CONFIG);
     this.#reverb = new Tone.Reverb({
       decay: 2.0,
@@ -102,7 +104,7 @@ export class Sample {
 
   toggleMute(enabled: boolean): void {
     this.is_muted = enabled;
-    this.#channel.volume.value = enabled ? -Infinity : 0;
+    this.#channel.volume.value = enabled ? -Infinity : this.gain_adjustment;
   }
 
   dispose(): void {

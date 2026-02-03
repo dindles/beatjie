@@ -1,9 +1,8 @@
-// audio.ts - Type definitions for the audio system
-
 export interface SampleHeader {
   readonly id: number;
   readonly emoji: string;
   readonly url: string;
+  readonly gain_adjustment?: number;
 }
 
 export interface Pack {
