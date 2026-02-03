@@ -14,7 +14,7 @@ src/
 │   └── +page.svelte              # Main app entry
 ├── lib/
 │   ├── audio-classes/            # Audio engine & sequencer logic
-│   │   ├── audio-engine.svelte.ts
+│   │   ├── audio-context.svelte.ts
 │   │   ├── audio-sequencer.svelte.ts
 │   │   ├── main-audio-bus.svelte.ts
 │   │   ├── audio-loader.svelte.ts

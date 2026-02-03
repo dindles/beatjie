@@ -2,10 +2,10 @@
   import type { AudioSequencer } from '$lib/audio-classes/audio-sequencer.svelte';
 
   interface Props {
-    audio_sequencer: AudioSequencer;
+    sequencer: AudioSequencer;
   }
 
-  let { audio_sequencer }: Props = $props();
+  let { sequencer }: Props = $props();
 
   const MIN_BPM = 60;
   const MAX_BPM = 200;
@@ -21,20 +21,20 @@
 
   function updateBPM(new_bpm: number) {
     const constrained = constrainBPM(new_bpm);
-    if (constrained !== audio_sequencer.getBPM()) {
-      audio_sequencer.setBPM(constrained);
+    if (constrained !== sequencer.getBPM()) {
+      sequencer.setBPM(constrained);
     }
   }
 
   function handleWheel(e: WheelEvent) {
     e.preventDefault();
-    updateBPM(audio_sequencer.getBPM() + Math.sign(e.deltaY) * -1);
+    updateBPM(sequencer.getBPM() + Math.sign(e.deltaY) * -1);
   }
 
   function handlePointerDown(e: PointerEvent) {
     is_dragging = true;
     drag_start_y = e.clientY;
-    start_bpm = audio_sequencer.getBPM();
+    start_bpm = sequencer.getBPM();
     (e.target as HTMLElement).setPointerCapture(e.pointerId);
   }
 
@@ -60,7 +60,7 @@
   onwheel={handleWheel}
   aria-label="BPM control"
 >
-  {audio_sequencer.getBPM()}
+  {sequencer.getBPM()}
 </button>
 
 <style>

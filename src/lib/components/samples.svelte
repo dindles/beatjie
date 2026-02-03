@@ -4,7 +4,7 @@
   import type { Sample } from '$lib/audio-classes/sample.svelte';
   import type { FeedbackState } from '$lib/utils/feedback-state.svelte';
   import PackSelector from '$lib/components/pack-selector.svelte';
-  import { AudioEngine } from '$lib/audio-classes/audio-engine.svelte';
+  import { AudioContext } from '$lib/audio-classes/audio-context.svelte';
   import { MainAudioBus } from '$lib/audio-classes/main-audio-bus.svelte';
   import { cubicOut } from 'svelte/easing';
   import { fly } from 'svelte/transition';
@@ -16,7 +16,7 @@
     pitches: string[];
     packs: Packs;
     samples: Sample[];
-    audio_engine: AudioEngine;
+    audio_context: AudioContext;
     main_audio_bus: MainAudioBus;
     selected_sample: Sample | undefined;
     selected_pack_index?: number;
@@ -28,7 +28,7 @@
     pitches,
     packs,
     samples,
-    audio_engine,
+    audio_context,
     main_audio_bus,
     selected_sample = $bindable(),
     selected_pack_index = $bindable(0),
@@ -71,7 +71,7 @@
     }
 
     function triggerSample(sample: Sample | undefined) {
-      if (audio_engine.isInitialised() && sample) {
+      if (audio_context.isInitialised() && sample) {
         sample.play(Tone.now());
       }
     }

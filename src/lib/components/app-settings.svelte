@@ -8,14 +8,14 @@
   import { serializePattern, createShareURL } from '$lib/utils/pattern-sharing';
 
   interface Props {
-    audio_sequencer: AudioSequencer;
+    sequencer: AudioSequencer;
     main_audio_bus: MainAudioBus;
     samples: Sample[];
     selected_pack_index: number;
     feedback_state: FeedbackState;
   }
 
-  let { audio_sequencer, main_audio_bus, samples, selected_pack_index, feedback_state }: Props =
+  let { sequencer, main_audio_bus, samples, selected_pack_index, feedback_state }: Props =
     $props();
 
   const available_hues = [30, 90, 140, 200, 280, 330];
@@ -49,7 +49,7 @@
   });
 
   async function deleteSequences() {
-    await audio_sequencer.stopPlayback();
+    await sequencer.stopPlayback();
 
     samples.forEach((sample: Sample) => {
       sample.sequence = new Array(sample.sequence.length).fill(false);
@@ -60,7 +60,7 @@
       sample.reverb_is_active = false;
     });
 
-    await audio_sequencer.makeSequences(samples);
+    await sequencer.makeSequences(samples);
   }
 
   function changeHue() {
@@ -87,7 +87,7 @@
 
   async function handleSharePattern() {
     try {
-      const current_bpm = audio_sequencer.getBPM();
+      const current_bpm = sequencer.getBPM();
       const pattern_data = serializePattern(current_bpm, selected_pack_index, main_audio_bus, samples);
       const share_url = createShareURL(pattern_data);
 

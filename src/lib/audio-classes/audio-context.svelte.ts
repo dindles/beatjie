@@ -1,7 +1,7 @@
-// audio-engine.svelte.ts
+// audio-context.svelte.ts
 import * as Tone from 'tone';
 
-export class AudioEngine {
+export class AudioContext {
   #initialised: boolean = false;
 
   async initAudioContext() {

@@ -6,15 +6,15 @@
   import type { FeedbackState } from '$lib/utils/feedback-state.svelte';
 
   interface Props {
-    audio_sequencer: AudioSequencer;
+    sequencer: AudioSequencer;
     main_audio_bus: MainAudioBus;
     feedback_state: FeedbackState;
   }
 
-  let { audio_sequencer, main_audio_bus, feedback_state }: Props = $props();
+  let { sequencer, main_audio_bus, feedback_state }: Props = $props();
 
   async function toggleSeqPlayback() {
-    await audio_sequencer.togglePlayback();
+    await sequencer.togglePlayback();
   }
 </script>
 
@@ -23,11 +23,11 @@
     <button
       class="emoji-large border"
       onmouseenter={() =>
-        feedback_state.showTooltip(audio_sequencer.is_playing ? 'pattern stop' : 'pattern play')}
+        feedback_state.showTooltip(sequencer.is_playing ? 'pattern stop' : 'pattern play')}
       onmouseleave={() => feedback_state.clear()}
       onclick={() => toggleSeqPlayback()}
     >
-      {audio_sequencer.is_playing ? '⏹' : '▶'}
+      {sequencer.is_playing ? '⏹' : '▶'}
     </button>
   </div>
 
@@ -58,7 +58,7 @@
       onmouseenter={() => feedback_state.showTooltip('pattern BPM')}
       onmouseleave={() => feedback_state.clear()}
     >
-      <BPMSelector {audio_sequencer} />
+      <BPMSelector {sequencer} />
     </div>
   </div>
 </div>

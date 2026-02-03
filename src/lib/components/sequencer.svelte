@@ -7,11 +7,11 @@
   interface Props {
     samples: Sample[];
     selected_sample: Sample | undefined;
-    audio_sequencer: AudioSequencer;
+    sequencer: AudioSequencer;
     feedback_state: FeedbackState;
   }
 
-  let { samples: _samples, selected_sample, audio_sequencer, feedback_state }: Props = $props();
+  let { samples: _samples, selected_sample, sequencer, feedback_state }: Props = $props();
 
   function handleSeqClick(sample: Sample, step_index: number) {
     sample.sequence[step_index] = !sample.sequence[step_index];
@@ -31,7 +31,7 @@
     {#each SEQUENCER_STEPS as _, index (index)}
       <button
         class="step border emoji-sequencer"
-        class:active={index === audio_sequencer.active_step_index}
+        class:active={index === sequencer.active_step_index}
         onclick={() => handleSeqClick(selected_sample, index)}
         onkeydown={() => handleSeqClick(selected_sample, index)}
       >
@@ -47,7 +47,7 @@
     {#each SEQUENCER_STEPS as _, index (index)}
       <div
         class="placeholder-step border"
-        class:active={index === audio_sequencer.active_step_index}
+        class:active={index === sequencer.active_step_index}
         role="button"
         tabindex="-1"
       ></div>

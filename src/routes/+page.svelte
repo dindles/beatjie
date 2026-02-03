@@ -8,7 +8,7 @@
 
   // === Audio types & classes
   import { Sample } from '$lib/audio-classes/sample.svelte';
-  import { AudioEngine } from '$lib/audio-classes/audio-engine.svelte';
+  import { AudioContext } from '$lib/audio-classes/audio-context.svelte';
   import { AudioLoader } from '$lib/audio-classes/audio-loader.svelte';
   import { MainAudioBus, type MainAudioBusConfig } from '$lib/audio-classes/main-audio-bus.svelte';
   import { AudioSequencer } from '$lib/audio-classes/audio-sequencer.svelte';
@@ -50,10 +50,10 @@
 
   const pitches = ['C2', 'E2', 'F2', 'C1'];
 
-  let audio_engine = new AudioEngine();
+  let audio_context = new AudioContext();
   let audio_loader = new AudioLoader();
   let main_audio_bus = new MainAudioBus(main_audio_bus_config);
-  let audio_sequencer = new AudioSequencer();
+  let sequencer = new AudioSequencer();
   let feedback_state = new FeedbackState();
 
   let samples: Sample[] = $state([]);
@@ -96,7 +96,7 @@
   async function handleKeydown(event: KeyboardEvent) {
     if (event.key === ' ') {
       event.preventDefault();
-      await audio_sequencer.togglePlayback();
+      await sequencer.togglePlayback();
     }
 
     // Pack selection with numbers 1-4
@@ -157,13 +157,13 @@
     // BPM (arrow keys)
     if (event.key === 'ArrowUp') {
       event.preventDefault();
-      const new_bpm = Math.min(200, audio_sequencer.getBPM() + 1);
-      audio_sequencer.setBPM(new_bpm);
+      const new_bpm = Math.min(200, sequencer.getBPM() + 1);
+      sequencer.setBPM(new_bpm);
     }
     if (event.key === 'ArrowDown') {
       event.preventDefault();
-      const new_bpm = Math.max(60, audio_sequencer.getBPM() - 1);
-      audio_sequencer.setBPM(new_bpm);
+      const new_bpm = Math.max(60, sequencer.getBPM() - 1);
+      sequencer.setBPM(new_bpm);
     }
   }
 
@@ -196,7 +196,7 @@
   });
 
   async function handleAudioConfirm() {
-    await audio_engine.initAudioContext();
+    await audio_context.initAudioContext();
     app_state['audio-prompt'] = false;
     app_state['audio-loading'] = true;
   }
@@ -229,7 +229,7 @@
 
   function applyPatternToState(pattern: PatternData) {
     // Set BPM
-    audio_sequencer.setBPM(pattern.bpm);
+    sequencer.setBPM(pattern.bpm);
 
     // Set main effects
     main_audio_bus.toggleMainHighPass(pattern.main_highpass);
@@ -253,23 +253,23 @@
     });
 
     // Rebuild sequences with new pattern
-    audio_sequencer.makeSequences(samples);
+    sequencer.makeSequences(samples);
   }
 
   // === Load data
   async function audioDataToCode() {
     samples = await audio_loader.processPacks(packs);
     main_audio_bus.setChains(samples);
-    await audio_sequencer.makeSequences(samples);
+    await sequencer.makeSequences(samples);
   }
 
   // === Cleanup
   $effect(() => {
     return () => {
-      audio_sequencer.dispose();
+      sequencer.dispose();
       main_audio_bus.dispose(samples);
       audio_loader.dispose();
-      audio_engine.dispose();
+      audio_context.dispose();
     };
   });
 </script>
@@ -291,7 +291,7 @@
     {:else if app_state['app-ready']}
       <AppSettings
         {main_audio_bus}
-        {audio_sequencer}
+        {sequencer}
         {samples}
         {selected_pack_index}
         {feedback_state}
@@ -301,15 +301,15 @@
         {pitches}
         {packs}
         {samples}
-        {audio_engine}
+        {audio_context}
         {main_audio_bus}
         {feedback_state}
         bind:selected_sample
         bind:selected_pack_index
         bind:preview_samples_active
       />
-      <Sequencer {samples} {selected_sample} {audio_sequencer} {feedback_state} />
-      <TransportAndMainSettings {audio_sequencer} {main_audio_bus} {feedback_state} />
+      <Sequencer {samples} {selected_sample} {sequencer} {feedback_state} />
+      <TransportAndMainSettings {sequencer} {main_audio_bus} {feedback_state} />
     {/if}
   </div>
 </main>
