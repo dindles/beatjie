@@ -51,10 +51,8 @@
     samples.forEach((sample: Sample) => {
       sample.sequence = new Array(sample.sequence.length).fill(false);
       sample.pitch = 'C2';
-      main_audio_bus.toggleSampleDelay(sample, false);
-      main_audio_bus.toggleSampleReverb(sample, false);
-      sample.delay_is_active = false;
-      sample.reverb_is_active = false;
+      sample.toggleDelay(false);
+      sample.toggleReverb(false);
     });
 
     await sequencer.makeSequences(samples);

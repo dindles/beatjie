@@ -62,6 +62,11 @@ export class Sample {
     return this.#reverb;
   }
 
+  async connectToMainChannel(mainChannel: Tone.Channel): Promise<void> {
+    await this.#reverb.generate();
+    this.#sampler.chain(this.#channel, this.#delay, this.#reverb, mainChannel);
+  }
+
   setSamplerBuffers(pitch: Note, buffer: Tone.ToneAudioBuffer): void {
     if (!buffer) {
       throw new Error('Invalid buffer provided to setSamplerBuffers');

@@ -261,7 +261,7 @@
   // === Load data
   async function loadAndConfigureAudio() {
     samples = await audio_loader.processPacks(packs);
-    main_audio_bus.setChains(samples);
+    await Promise.all(samples.map((sample) => sample.connectToMainChannel(main_audio_bus.mainChannel)));
     await sequencer.makeSequences(samples);
   }
 
@@ -269,7 +269,8 @@
   $effect(() => {
     return () => {
       sequencer.dispose();
-      main_audio_bus.dispose(samples);
+      samples.forEach((sample) => sample.dispose());
+      main_audio_bus.dispose();
       audio_loader.dispose();
       audio_context.dispose();
     };

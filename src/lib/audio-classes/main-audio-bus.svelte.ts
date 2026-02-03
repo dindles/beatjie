@@ -1,5 +1,4 @@
 import * as Tone from 'tone';
-import type { Sample } from '$lib/audio-classes/sample.svelte';
 
 export interface MainAudioBusConfig {
   readonly highpass_freq: number;
@@ -46,14 +45,8 @@ export class MainAudioBus {
     );
   }
 
-  // Set up chaining for each sample
-  async setChains(samples: Sample[]) {
-    await Promise.all(
-      samples.map(async (sample) => {
-        await sample.reverb.generate();
-        sample.sampler.chain(sample.channel, sample.delay, sample.reverb, this.#mainChannel);
-      })
-    );
+  get mainChannel(): Tone.Channel {
+    return this.#mainChannel;
   }
 
   toggleMainHighPass(enabled: boolean) {
@@ -74,13 +67,8 @@ export class MainAudioBus {
     return this.#mainAnalyser.getValue();
   }
 
-  dispose(samples: Sample[]) {
-    // Dispose samples first (disconnect from main chain)
-    samples.forEach((sample) => {
-      sample.dispose();
-    });
-
-    // Then dispose main chain nodes
+  dispose() {
+    // Dispose main chain nodes
     this.#mainChannel.dispose();
     this.#mainFilterHP.dispose();
     this.#mainDistortion.dispose();
