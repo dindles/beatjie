@@ -1,8 +1,8 @@
-// audio-packs.ts
-import { base } from '$app/paths';
+import { resolve } from '$app/paths';
 import type { Packs } from '$lib/types/audio';
 
-const audio_path = `${base}/audio`;
+// @ts-expect-error - resolve types are generated from routes, but it accepts any pathname
+const audio_path = resolve('/audio');
 
 export const packs: Packs = [
   {
