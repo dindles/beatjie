@@ -131,6 +131,7 @@
     {#key selected_pack_index}
       <div
         class="pack"
+        role="group"
         onmouseenter={() => feedback_state.showTooltip('sample select')}
         onmouseleave={() => feedback_state.clear()}
         in:fly={{

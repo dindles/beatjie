@@ -24,6 +24,7 @@
 <div class="pack-select">
   <div
     class="pack-indicators"
+    role="group"
     onmouseenter={() => feedback_state.showTooltip('pack select')}
     onmouseleave={() => feedback_state.clear()}
   >

@@ -23,6 +23,7 @@
 
 <div
   class="sequencer"
+  role="group"
   onmouseenter={() =>
     feedback_state.showTooltip(selected_sample ? 'per-sample sequencer' : '!select sample')}
   onmouseleave={() => feedback_state.clear()}
