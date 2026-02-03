@@ -2,14 +2,6 @@
 
 ### v1.0
 
-#### renames
-
-files and classes
-audio_chain - main_audio_bus
-audio-data-to-code - audio_loader
-
-#### console.log easter egg formatting
-
 #### base deprecated, use resolve https://svelte.dev/docs/kit/$app-paths#resolve
 
 #### aria alerts

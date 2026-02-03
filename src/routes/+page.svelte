@@ -186,7 +186,7 @@
 
         app_state['fonts-loading'] = false;
         console.log(
-          'beatjie\n\nhave fun, make beats!\n\nhttps://github.com/dindles/beatjie\n\nhttps://dindles.net',
+          '%cbeatjie\n\n%chave fun, make beats!\n\nhttps://github.com/dindles/beatjie\n\nhttps://dindles.net',
           'font-size: 20px; font-weight: bold;',
           'font-size: 12px; color: gray;'
         );
@@ -289,13 +289,7 @@
     {:else if app_state['audio-loading']}
       <AudioLoadingMessage />
     {:else if app_state['app-ready']}
-      <AppSettings
-        {main_audio_bus}
-        {sequencer}
-        {samples}
-        {selected_pack_index}
-        {feedback_state}
-      />
+      <AppSettings {main_audio_bus} {sequencer} {samples} {selected_pack_index} {feedback_state} />
       <Display {main_audio_bus} {selected_sample} {feedback_state} />
       <Samples
         {pitches}
