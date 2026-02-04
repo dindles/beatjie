@@ -26,10 +26,10 @@
 
     <div class="footer-links">
       <button class="link" onclick={() => (show_shortcuts = true)}>
-        <kbd>Q</kbd><kbd>W</kbd> shortcuts
+        <kbd>Q</kbd> shortcuts
       </button>
       <button class="link" onclick={() => (show_video = true)}>
-        <span class="play-icon">▶</span> demo vid
+        <span class="play-icon">▶</span> demo
       </button>
       <a class="link dindles-link" href="https://dindles.net" target="_blank" rel="noopener">
         <svg
