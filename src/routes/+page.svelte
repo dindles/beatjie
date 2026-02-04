@@ -23,7 +23,7 @@
   import AppSettings from '$lib/components/app-settings.svelte';
   import Display from '$lib/components/display.svelte';
   import Samples from '$lib/components/samples.svelte';
-  import Sequencer from '$lib/components/sequencer.svelte';
+  import SequencerUI from '$lib/components/sequencer-ui.svelte';
   import TransportAndMainSettings from '$lib/components/transport-and-main-settings.svelte';
 
   // === Utils
@@ -306,7 +306,7 @@
         bind:selected_pack_index
         bind:preview_samples_active
       />
-      <Sequencer {samples} {selected_sample} {sequencer} {feedback_state} />
+      <SequencerUI {samples} {selected_sample} {sequencer} {feedback_state} />
       <TransportAndMainSettings {sequencer} {main_audio_bus} {feedback_state} />
     {/if}
   </div>

@@ -13,7 +13,7 @@ src/
 ├── routes/
 │   └── +page.svelte              # Main app entry
 ├── lib/
-│   ├── audio-classes/            # Audio engine & sequencer logic
+│   ├── audio-classes/            # Audio engine, sample & sequencer logic
 │   │   ├── audio-context.svelte.ts
 │   │   ├── audio-sequencer.svelte.ts
 │   │   ├── main-audio-bus.svelte.ts
