@@ -6,7 +6,7 @@
 
 #### posts
 
-#### some demo beats
+#### demo beats
 
 ### v1.2
 

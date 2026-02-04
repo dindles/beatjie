@@ -35,6 +35,7 @@
         class:active={index === sequencer.active_step_index}
         onclick={() => handleSeqClick(selected_sample, index)}
         onkeydown={() => handleSeqClick(selected_sample, index)}
+        aria-label="{selected_sample.name} step {index + 1}, {selected_sample.sequence[index] ? 'active' : 'inactive'}"
       >
         {#if selected_sample.sequence[index]}
           {selected_sample.emoji}

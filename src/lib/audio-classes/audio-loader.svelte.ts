@@ -39,7 +39,7 @@ export class AudioLoader {
 
   private makeSamples(packs: Packs): Sample[] {
     return packs.flatMap((pack) =>
-      pack.samples.map((sample) => new Sample(sample.id, pack.name, sample.emoji, sample.url, sample.gain_adjustment ?? 0))
+      pack.samples.map((sample) => new Sample(sample.id, sample.name, pack.name, sample.emoji, sample.url, sample.gain_adjustment ?? 0))
     );
   }
 

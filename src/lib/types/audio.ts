@@ -1,5 +1,6 @@
 export interface SampleHeader {
   readonly id: number;
+  readonly name: string;
   readonly emoji: string;
   readonly url: string;
   readonly gain_adjustment?: number;

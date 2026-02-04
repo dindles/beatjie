@@ -210,6 +210,8 @@
     if (app_state['audio-loading']) {
       loadAndConfigureAudio().catch((error) => {
         console.error('Failed to load audio data:', error);
+        app_state['audio-loading'] = false;
+        feedback_state.show('audio failed to load — try refreshing', 10000);
       });
     }
   });

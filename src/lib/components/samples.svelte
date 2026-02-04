@@ -170,6 +170,7 @@
               ontouchstart={(e) => {
                 e.stopPropagation();
               }}
+              aria-label="{sample.name} sample"
             >
               {sample.emoji}
             </button>

@@ -1,4 +1,3 @@
-// pattern-sharing.ts
 import type { Sample } from '$lib/audio-classes/sample.svelte';
 import type { MainAudioBus } from '$lib/audio-classes/main-audio-bus.svelte';
 import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from 'lz-string';
@@ -19,7 +18,7 @@ const SAMPLE_DEFAULTS = {
   m: false // not muted
 };
 
-const PATTERN_DEFAULTS = {
+const MAIN_BUS_DEFAULTS = {
   h: false, // highpass off
   d: false // distortion off
 };
@@ -132,8 +131,8 @@ function decompressPattern(compressed: CompressedPatternData): PatternData {
     version: compressed.v,
     bpm: compressed.b,
     selected_pack_index: compressed.p,
-    main_highpass: compressed.h ?? PATTERN_DEFAULTS.h,
-    main_distortion: compressed.d ?? PATTERN_DEFAULTS.d,
+    main_highpass: compressed.h ?? MAIN_BUS_DEFAULTS.h,
+    main_distortion: compressed.d ?? MAIN_BUS_DEFAULTS.d,
     samples: compressed.s.map((sample) => ({
       id: sample.i,
       sequence: unpackSequence(sample.q ?? SAMPLE_DEFAULTS.q),
