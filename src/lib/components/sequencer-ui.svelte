@@ -5,13 +5,12 @@
   import type { FeedbackState } from '$lib/utils/feedback-state.svelte';
 
   interface Props {
-    samples: Sample[];
     selected_sample: Sample | undefined;
     sequencer: AudioSequencer;
     feedback_state: FeedbackState;
   }
 
-  let { samples: _samples, selected_sample, sequencer, feedback_state }: Props = $props();
+  let { selected_sample, sequencer, feedback_state }: Props = $props();
 
   function handleSeqClick(sample: Sample, step_index: number) {
     sample.sequence[step_index] = !sample.sequence[step_index];

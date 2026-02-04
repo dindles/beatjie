@@ -6,11 +6,10 @@
 
   interface Props {
     main_audio_bus: MainAudioBus;
-    selected_sample: Sample | undefined;
     feedback_state: FeedbackState;
   }
 
-  let { main_audio_bus, selected_sample: _selected_sample, feedback_state }: Props = $props();
+  let { main_audio_bus, feedback_state }: Props = $props();
   let canvas: HTMLCanvasElement;
   let analysis_values: Float32Array | Float32Array[] = $state([]);
 

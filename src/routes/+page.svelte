@@ -295,7 +295,7 @@
       <AudioLoadingMessage />
     {:else if app_state['app-ready']}
       <AppSettings {main_audio_bus} {sequencer} {samples} {selected_pack_index} {feedback_state} />
-      <Display {main_audio_bus} {selected_sample} {feedback_state} />
+      <Display {main_audio_bus} {feedback_state} />
       <Samples
         {pitches}
         {packs}
@@ -306,7 +306,7 @@
         bind:selected_pack_index
         bind:preview_samples_active
       />
-      <SequencerUI {samples} {selected_sample} {sequencer} {feedback_state} />
+      <SequencerUI {selected_sample} {sequencer} {feedback_state} />
       <TransportAndMainSettings {sequencer} {main_audio_bus} {feedback_state} />
     {/if}
   </div>
