@@ -1,6 +1,4 @@
 <script lang="ts">
-  // +page.svelte is our entry point; it orchestrates app state, audio engine, and keyboard controls.
-
   import * as Tone from 'tone'
   import { packs } from '$lib/data/audio-packs'
   import type { Note } from 'tone/build/esm/core/type/NoteUnits'
@@ -27,7 +25,7 @@
   import { getPatternFromURL, type PatternData } from '$lib/utils/pattern-sharing'
   import { FeedbackState } from '$lib/utils/feedback-state.svelte'
 
-  // Audio engine
+  // create audio context, main bus, and sequencer instances
   const main_audio_bus_config: MainAudioBusConfig = $state({
     highpass_freq: 500,
     distortion_init: 0,
@@ -52,6 +50,7 @@
   let pending_pattern_data: PatternData | null = $state(null)
   let preview_samples_active: boolean = $state(true)
 
+  // track loading and permission states to control UI flow
   interface AppState {
     'fonts-loading': boolean
     'audio-prompt': boolean
@@ -154,7 +153,7 @@
     }
   }
 
-  // lifecycle: fonts → colors → audio prompt → load samples → ready
+  // state: fonts → colors → audio prompt → load samples → ready
   $effect(() => {
     if (typeof document !== 'undefined') {
       document.fonts.ready.then(() => {
@@ -205,7 +204,7 @@
     }
   })
 
-  // URL pattern sharing: only apply shared pattern once audio is loaded
+  // URL pattern sharing: apply shared pattern once audio is loaded
   $effect(() => {
     if (app_state['app-ready'] && pending_pattern_data) {
       applyPatternToState(pending_pattern_data)
