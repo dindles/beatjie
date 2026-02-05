@@ -69,7 +69,6 @@ export class AudioSequencer {
     this.active_step_index = 0;
     this.#transport.stop();
     this.#transport.position = 0;
-    // Cancel sequences instead of stopping them
     this.#stepLoop?.cancel();
     await Promise.all(this.#sequences.map((seq) => seq.cancel()));
   }

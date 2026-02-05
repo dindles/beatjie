@@ -17,6 +17,7 @@
 
   let { sequencer, main_audio_bus, samples, selected_pack_index, feedback_state }: Props = $props();
 
+  // chroma peaks at mid-lightness and tapers toward extremes
   function calculateChroma(lightness: number): number {
     return 0.15 + 0.1 * (1 - Math.abs(lightness - 0.5) * 2);
   }
@@ -30,7 +31,6 @@
   let theme: 'light' | 'dark' = $state('light');
   let disco_toggle = $state(false);
 
-  // Load saved color settings on mount
   let initialized = false;
   $effect(() => {
     if (!initialized) {
@@ -74,7 +74,6 @@
 
   function toggleDisco() {
     disco_toggle = !disco_toggle;
-    // Save colour state when turning disco mode off
     if (!disco_toggle) {
       saveColorSettings({ hue: user_hue, lightness: user_lightness, theme });
     }
@@ -91,10 +90,9 @@
       );
       const share_url = createShareURL(pattern_data);
 
-      // Copy to clipboard
+      // copy to clipboard
       await navigator.clipboard.writeText(share_url);
 
-      // Show confirmation via global feedback
       feedback_state.showConfirmation('URL copied');
     } catch (error) {
       console.error('Failed to share pattern:', error);
@@ -111,7 +109,7 @@
     }
   });
 
-  // this is the piping that lets us apply reactive state to the app.css styles
+  // this is the plumbing that lets us apply reactive state to the app.css styles
   $effect(() => {
     document.documentElement.style.setProperty('--user-colour', user_colour);
     document.documentElement.style.setProperty('--black-or-white', black_or_white);

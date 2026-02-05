@@ -33,7 +33,14 @@ export class Sample {
   sequence: Sequence = $state(new Array(DEFAULT_SEQUENCE_LENGTH).fill(false));
   is_playing: boolean = $state(false);
 
-  constructor(id: number, name: string, pack: string, emoji: string, url: string, gain_adjustment: number = 0) {
+  constructor(
+    id: number,
+    name: string,
+    pack: string,
+    emoji: string,
+    url: string,
+    gain_adjustment: number = 0
+  ) {
     this.id = id;
     this.name = name;
     this.pack = pack;

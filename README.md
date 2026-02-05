@@ -1,6 +1,6 @@
 # Beatjie
 
-A simple sample player and sequencer using Svelte 5 and Tone.js.
+A little audio groovebox using Svelte 5 and Tone.js.
 
 **Have fun, make beats!**
 

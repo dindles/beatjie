@@ -1,4 +1,4 @@
-/* COLOUR */
+/* CONFIG */
 :root {
   --spacing: 3px;
   --border-radius: 14px;
@@ -21,7 +21,6 @@
 * {
   color: var(--user-colour);
   background-color: var(--black-or-white);
-  /* filter: blur(0.07px); */
 }
 
 /* RESET */
@@ -66,7 +65,7 @@ blockquote {
   overflow-wrap: break-word;
 }
 
-/* global elements & classes */
+/* GLOBAL ELEMENTS & CLASSES */
 
 button {
   background: transparent;

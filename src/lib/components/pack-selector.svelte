@@ -1,4 +1,3 @@
-<!-- PackSelector.svelte -->
 <script lang="ts">
   import type { Packs } from '$lib/types/audio';
   import type { Sample } from '$lib/audio-classes/sample.svelte';

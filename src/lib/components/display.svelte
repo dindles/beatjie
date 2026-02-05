@@ -14,6 +14,7 @@
   let analysis_values: Float32Array | Float32Array[] = $state([]);
 
   const AMPLITUDE_THRESHOLD = 0.001;
+  const LINE_WIDTH_RATIO = 0.08;
 
   function resizeCanvas() {
     if (!canvas) return;
@@ -50,7 +51,7 @@
     ctx.strokeStyle = getComputedStyle(document.documentElement)
       .getPropertyValue('--user-colour')
       .trim();
-    ctx.lineWidth = dim * 0.08;
+    ctx.lineWidth = dim * LINE_WIDTH_RATIO;
 
     if (!analysis_values || analysis_values.length === 0) return;
 

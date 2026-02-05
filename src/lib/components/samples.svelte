@@ -33,23 +33,19 @@
     feedback_state
   }: Props = $props();
 
-  let _slide_direction = $state<-1 | 1>(1);
+  let slide_direction = $state<-1 | 1>(1);
   let animating = $state(false);
 
   let previous_pack_index = $state(selected_pack_index);
 
   $effect(() => {
     if (previous_pack_index !== selected_pack_index) {
-      // Determine direction based on index change
       const diff = selected_pack_index - previous_pack_index;
 
-      // Handle wrap-around cases
       if (Math.abs(diff) > packs.length / 2) {
-        // Wrapped around - reverse the direction
-        _slide_direction = diff > 0 ? 1 : -1;
+        slide_direction = diff > 0 ? 1 : -1;
       } else {
-        // Normal case
-        _slide_direction = diff > 0 ? -1 : 1;
+        slide_direction = diff > 0 ? -1 : 1;
       }
 
       previous_pack_index = selected_pack_index;
@@ -84,7 +80,7 @@
     if (animating) return;
 
     animating = true;
-    _slide_direction = direction === 'prev' ? 1 : -1; // prev swipes content from left (positive x)
+    slide_direction = direction === 'prev' ? 1 : -1; // prev swipes content from left (positive x)
 
     const new_index =
       direction === 'prev'
