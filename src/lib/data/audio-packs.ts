@@ -1,5 +1,5 @@
 import { resolve } from '$app/paths'
-import type { Packs } from '$lib/types/audio'
+import type { Packs } from '$lib/types/audio-types'
 
 // @ts-expect-error - resolve types are generated from routes, but it accepts any pathname
 const audio_path = resolve('/audio')

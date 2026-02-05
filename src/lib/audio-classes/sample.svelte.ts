@@ -1,10 +1,9 @@
 import * as Tone from 'tone'
 import type { Note } from 'tone/build/esm/core/type/NoteUnits'
 import type { Time } from 'tone/build/esm/core/type/Units'
-import type { Sequence } from '$lib/types/audio'
+import type { Sequence } from '$lib/types/audio-types'
 import {
   DEFAULT_SEQUENCE_LENGTH,
-  DEFAULT_VOLUME,
   DEFAULT_PITCH,
   DEFAULT_ATTACK,
   DEFAULT_DELAY_CONFIG
@@ -24,7 +23,6 @@ export class Sample {
   readonly url: string
   readonly gain_adjustment: number = 0
 
-  volume: number = $state(DEFAULT_VOLUME)
   pitch: Note = $state(DEFAULT_PITCH)
   attack: number = $state(DEFAULT_ATTACK)
   delay_is_active: boolean = $state(false)

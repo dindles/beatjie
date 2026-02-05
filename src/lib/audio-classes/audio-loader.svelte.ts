@@ -1,5 +1,5 @@
 import * as Tone from 'tone'
-import type { Packs } from '$lib/types/audio'
+import type { Packs } from '$lib/types/audio-types'
 import { Sample } from '$lib/audio-classes/sample.svelte'
 
 export class AudioLoader {

@@ -9,7 +9,7 @@ const MAX_PACK_INDEX = 3
 const MAX_SAMPLE_ID = 31
 const SEQUENCE_LENGTH = 16
 
-// Defaults for omitting values during compression
+// defaults for omitting values during compression
 const SAMPLE_DEFAULTS = {
   q: 0, // empty sequence
   t: '0', // default pitch

@@ -4,7 +4,12 @@
   import type { AudioSequencer } from '$lib/audio-classes/audio-sequencer.svelte'
   import type { MainAudioBus } from '$lib/audio-classes/main-audio-bus.svelte'
   import type { FeedbackState } from '$lib/utils/feedback-state.svelte'
-  import { saveColorSettings, loadColorSettings, AVAILABLE_HUES } from '$lib/utils/color-storage'
+  import {
+    saveColorSettings,
+    loadColorSettings,
+    AVAILABLE_HUES,
+    calculateChroma
+  } from '$lib/utils/colour'
   import { serializePattern, createShareURL } from '$lib/utils/pattern-sharing'
 
   interface Props {
@@ -16,11 +21,6 @@
   }
 
   let { sequencer, main_audio_bus, samples, selected_pack_index, feedback_state }: Props = $props()
-
-  // chroma peaks at mid-lightness and tapers toward extremes
-  function calculateChroma(lightness: number): number {
-    return 0.15 + 0.1 * (1 - Math.abs(lightness - 0.5) * 2)
-  }
 
   let hue_emoji_rotation = $state(0)
   let user_lightness = $state(0.9) // 0 - 1
