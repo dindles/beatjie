@@ -1,8 +1,8 @@
-import { resolve } from '$app/paths';
-import type { Packs } from '$lib/types/audio';
+import { resolve } from '$app/paths'
+import type { Packs } from '$lib/types/audio'
 
 // @ts-expect-error - resolve types are generated from routes, but it accepts any pathname
-const audio_path = resolve('/audio');
+const audio_path = resolve('/audio')
 
 export const packs: Packs = [
   {
@@ -63,4 +63,4 @@ export const packs: Packs = [
       { id: 31, name: 'scream', emoji: '😱', url: `${audio_path}/3/7_scream.mp3` }
     ]
   }
-];
+]

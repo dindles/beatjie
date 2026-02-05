@@ -1,9 +1,9 @@
 <script lang="ts">
   interface Props {
-    onclose: () => void;
+    onclose: () => void
   }
 
-  let { onclose }: Props = $props();
+  let { onclose }: Props = $props()
 </script>
 
 <div class="keyboard-shortcuts border">

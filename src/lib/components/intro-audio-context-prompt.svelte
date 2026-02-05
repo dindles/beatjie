@@ -1,11 +1,11 @@
 <script lang="ts">
-  import KeyboardShortcuts from './keyboard-shortcuts.svelte';
-  import DemoVideo from './demo-video.svelte';
+  import KeyboardShortcuts from './keyboard-shortcuts.svelte'
+  import DemoVideo from './demo-video.svelte'
 
-  let { handleAudioConfirm: handle_audio_confirm, handleAudioDeny: handle_audio_deny } = $props();
+  let { handleAudioConfirm: handle_audio_confirm, handleAudioDeny: handle_audio_deny } = $props()
 
-  let show_shortcuts = $state(false);
-  let show_video = $state(false);
+  let show_shortcuts = $state(false)
+  let show_video = $state(false)
 </script>
 
 {#if show_shortcuts}

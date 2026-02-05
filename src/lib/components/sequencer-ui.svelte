@@ -1,22 +1,22 @@
 <!-- sequencer.svelte -->
 <script lang="ts">
-  import type { Sample } from '$lib/audio-classes/sample.svelte';
-  import type { AudioSequencer } from '$lib/audio-classes/audio-sequencer.svelte';
-  import type { FeedbackState } from '$lib/utils/feedback-state.svelte';
+  import type { Sample } from '$lib/audio-classes/sample.svelte'
+  import type { AudioSequencer } from '$lib/audio-classes/audio-sequencer.svelte'
+  import type { FeedbackState } from '$lib/utils/feedback-state.svelte'
 
   interface Props {
-    selected_sample: Sample | undefined;
-    sequencer: AudioSequencer;
-    feedback_state: FeedbackState;
+    selected_sample: Sample | undefined
+    sequencer: AudioSequencer
+    feedback_state: FeedbackState
   }
 
-  let { selected_sample, sequencer, feedback_state }: Props = $props();
+  let { selected_sample, sequencer, feedback_state }: Props = $props()
 
   function handleSeqClick(sample: Sample, step_index: number) {
-    sample.sequence[step_index] = !sample.sequence[step_index];
+    sample.sequence[step_index] = !sample.sequence[step_index]
   }
 
-  const SEQUENCER_STEPS = Array(16).fill(null);
+  const SEQUENCER_STEPS = Array(16).fill(null)
 </script>
 
 <div

@@ -1,11 +1,11 @@
 <script lang="ts">
-  import type { FeedbackState } from '$lib/utils/feedback-state.svelte';
+  import type { FeedbackState } from '$lib/utils/feedback-state.svelte'
 
   interface Props {
-    feedback_state: FeedbackState;
+    feedback_state: FeedbackState
   }
 
-  let { feedback_state }: Props = $props();
+  let { feedback_state }: Props = $props()
 </script>
 
 {#if feedback_state.is_visible}

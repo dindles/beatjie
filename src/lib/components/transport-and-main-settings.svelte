@@ -1,19 +1,19 @@
 <script lang="ts">
-  import BPMSelector from '$lib/components/bpm-selector.svelte';
-  import type { AudioSequencer } from '$lib/audio-classes/audio-sequencer.svelte';
-  import type { MainAudioBus } from '$lib/audio-classes/main-audio-bus.svelte';
-  import type { FeedbackState } from '$lib/utils/feedback-state.svelte';
+  import BPMSelector from '$lib/components/bpm-selector.svelte'
+  import type { AudioSequencer } from '$lib/audio-classes/audio-sequencer.svelte'
+  import type { MainAudioBus } from '$lib/audio-classes/main-audio-bus.svelte'
+  import type { FeedbackState } from '$lib/utils/feedback-state.svelte'
 
   interface Props {
-    sequencer: AudioSequencer;
-    main_audio_bus: MainAudioBus;
-    feedback_state: FeedbackState;
+    sequencer: AudioSequencer
+    main_audio_bus: MainAudioBus
+    feedback_state: FeedbackState
   }
 
-  let { sequencer, main_audio_bus, feedback_state }: Props = $props();
+  let { sequencer, main_audio_bus, feedback_state }: Props = $props()
 
   async function toggleSeqPlayback() {
-    await sequencer.togglePlayback();
+    await sequencer.togglePlayback()
   }
 </script>
 

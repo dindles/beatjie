@@ -1,25 +1,25 @@
 <script lang="ts">
-  import * as Tone from 'tone';
-  import type { Packs } from '$lib/types/audio';
-  import type { Sample } from '$lib/audio-classes/sample.svelte';
-  import type { FeedbackState } from '$lib/utils/feedback-state.svelte';
-  import PackSelector from '$lib/components/pack-selector.svelte';
-  import { AudioContext } from '$lib/audio-classes/audio-context.svelte';
-  import { cubicOut } from 'svelte/easing';
-  import { fly } from 'svelte/transition';
-  import { swipe } from '$lib/actions/swipeAction';
+  import * as Tone from 'tone'
+  import type { Packs } from '$lib/types/audio'
+  import type { Sample } from '$lib/audio-classes/sample.svelte'
+  import type { FeedbackState } from '$lib/utils/feedback-state.svelte'
+  import PackSelector from '$lib/components/pack-selector.svelte'
+  import { AudioContext } from '$lib/audio-classes/audio-context.svelte'
+  import { cubicOut } from 'svelte/easing'
+  import { fly } from 'svelte/transition'
+  import { swipe } from '$lib/actions/swipeAction'
 
-  import SelectedSampleSettings from '$lib/components/selected-sample-settings.svelte';
+  import SelectedSampleSettings from '$lib/components/selected-sample-settings.svelte'
 
   interface Props {
-    pitches: string[];
-    packs: Packs;
-    samples: Sample[];
-    audio_context: AudioContext;
-    selected_sample: Sample | undefined;
-    selected_pack_index?: number;
-    preview_samples_active?: boolean;
-    feedback_state: FeedbackState;
+    pitches: string[]
+    packs: Packs
+    samples: Sample[]
+    audio_context: AudioContext
+    selected_sample: Sample | undefined
+    selected_pack_index?: number
+    preview_samples_active?: boolean
+    feedback_state: FeedbackState
   }
 
   let {
@@ -31,67 +31,67 @@
     selected_pack_index = $bindable(0),
     preview_samples_active = $bindable(true),
     feedback_state
-  }: Props = $props();
+  }: Props = $props()
 
-  let animating = $state(false);
-  let previous_pack_index = $state(selected_pack_index);
+  let animating = $state(false)
+  let previous_pack_index = $state(selected_pack_index)
 
   let slide_direction = $derived.by(() => {
-    const diff = selected_pack_index - previous_pack_index;
-    if (diff === 0) return 1 as const;
+    const diff = selected_pack_index - previous_pack_index
+    if (diff === 0) return 1 as const
     if (Math.abs(diff) > packs.length / 2) {
-      return (diff > 0 ? 1 : -1) as -1 | 1;
+      return (diff > 0 ? 1 : -1) as -1 | 1
     }
-    return (diff > 0 ? -1 : 1) as -1 | 1;
-  });
+    return (diff > 0 ? -1 : 1) as -1 | 1
+  })
 
   $effect(() => {
-    previous_pack_index = selected_pack_index;
-  });
+    previous_pack_index = selected_pack_index
+  })
 
   function getSampleByID(sample_id: number) {
-    return samples.find((s: Sample) => s.id === sample_id);
+    return samples.find((s: Sample) => s.id === sample_id)
   }
 
   function handleSampleClick(sample: Sample | undefined) {
-    if (!sample) return;
+    if (!sample) return
 
     function selectSample(sample_id: number) {
-      selected_sample = samples.find((s) => s.id === sample_id);
+      selected_sample = samples.find((s) => s.id === sample_id)
     }
 
     function triggerSample(sample: Sample | undefined) {
       if (audio_context.isInitialised() && sample) {
-        sample.play(Tone.now());
+        sample.play(Tone.now())
       }
     }
 
-    selectSample(sample.id);
+    selectSample(sample.id)
 
     if (preview_samples_active) {
-      triggerSample(sample);
+      triggerSample(sample)
     }
   }
 
   function changePack(direction: 'prev' | 'next') {
-    if (animating) return;
+    if (animating) return
 
-    animating = true;
+    animating = true
 
     const new_index =
       direction === 'prev'
         ? (selected_pack_index - 1 + packs.length) % packs.length
-        : (selected_pack_index + 1) % packs.length;
+        : (selected_pack_index + 1) % packs.length
 
-    selected_pack_index = new_index;
+    selected_pack_index = new_index
 
     setTimeout(() => {
-      animating = false;
-    }, 250);
+      animating = false
+    }, 250)
   }
 
   function togglePreview() {
-    preview_samples_active = !preview_samples_active;
+    preview_samples_active = !preview_samples_active
   }
 </script>
 
@@ -134,7 +134,7 @@
               class:playing={sample.is_playing}
               onclick={() => handleSampleClick(getSampleByID(sample.id))}
               ontouchstart={(e) => {
-                e.stopPropagation();
+                e.stopPropagation()
               }}
               aria-label="{sample.name} sample"
             >

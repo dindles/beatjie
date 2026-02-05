@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { Packs } from '$lib/types/audio';
-  import type { Sample } from '$lib/audio-classes/sample.svelte';
-  import type { FeedbackState } from '$lib/utils/feedback-state.svelte';
+  import type { Packs } from '$lib/types/audio'
+  import type { Sample } from '$lib/audio-classes/sample.svelte'
+  import type { FeedbackState } from '$lib/utils/feedback-state.svelte'
 
   let {
     packs,
@@ -9,14 +9,14 @@
     selected_pack_index = $bindable(),
     feedback_state
   }: {
-    packs: Packs;
-    samples: Sample[];
-    selected_pack_index: number;
-    feedback_state: FeedbackState;
-  } = $props();
+    packs: Packs
+    samples: Sample[]
+    selected_pack_index: number
+    feedback_state: FeedbackState
+  } = $props()
 
   function selectPack(index: number) {
-    selected_pack_index = index;
+    selected_pack_index = index
   }
 </script>
 
