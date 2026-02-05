@@ -1,9 +1,14 @@
 <script lang="ts">
+  import { resolve } from '$app/paths'
+
   interface Props {
     onclose: () => void
   }
 
   let { onclose }: Props = $props()
+
+  // @ts-expect-error - resolve types are generated from routes, but it accepts any pathname
+  const video_src = resolve('/video/beatjie_demo.mp4')
 </script>
 
 <div class="demo-video">
@@ -13,7 +18,7 @@
 
   <div class="video-container">
     <video controls playsinline>
-      <source src="/video/beatjie_demo.mp4" type="video/mp4" />
+      <source src={video_src} type="video/mp4" />
       <track kind="captions" />
     </video>
   </div>
