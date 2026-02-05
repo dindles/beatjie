@@ -1,4 +1,3 @@
-<!-- transport-and-main-settings.svelte -->
 <script lang="ts">
   import BPMSelector from '$lib/components/bpm-selector.svelte';
   import type { AudioSequencer } from '$lib/audio-classes/audio-sequencer.svelte';

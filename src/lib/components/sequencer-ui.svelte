@@ -16,7 +16,6 @@
     sample.sequence[step_index] = !sample.sequence[step_index];
   }
 
-  // Create an array of 16 items to represent the sequencer steps
   const SEQUENCER_STEPS = Array(16).fill(null);
 </script>
 
@@ -46,7 +45,7 @@
       </button>
     {/each}
   {:else}
-    <!-- Display placeholder steps when no sample is selected -->
+    <!-- display placeholder steps when no sample is selected -->
     {#each SEQUENCER_STEPS as _, index (index)}
       <div
         class="placeholder-step border"
@@ -62,7 +61,7 @@
   .sequencer {
     display: grid;
     grid-template-columns: repeat(8, 1fr);
-    grid-template-rows: repeat(2, 1fr); /* Add this for 2 rows of 8 steps */
+    grid-template-rows: repeat(2, 1fr);
     gap: var(--spacing);
   }
 
