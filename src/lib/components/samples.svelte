@@ -33,23 +33,20 @@
     feedback_state
   }: Props = $props();
 
-  let slide_direction = $state<-1 | 1>(1);
   let animating = $state(false);
-
   let previous_pack_index = $state(selected_pack_index);
 
-  $effect(() => {
-    if (previous_pack_index !== selected_pack_index) {
-      const diff = selected_pack_index - previous_pack_index;
-
-      if (Math.abs(diff) > packs.length / 2) {
-        slide_direction = diff > 0 ? 1 : -1;
-      } else {
-        slide_direction = diff > 0 ? -1 : 1;
-      }
-
-      previous_pack_index = selected_pack_index;
+  let slide_direction = $derived.by(() => {
+    const diff = selected_pack_index - previous_pack_index;
+    if (diff === 0) return 1 as const;
+    if (Math.abs(diff) > packs.length / 2) {
+      return (diff > 0 ? 1 : -1) as -1 | 1;
     }
+    return (diff > 0 ? -1 : 1) as -1 | 1;
+  });
+
+  $effect(() => {
+    previous_pack_index = selected_pack_index;
   });
 
   function getSampleByID(sample_id: number) {
@@ -80,7 +77,6 @@
     if (animating) return;
 
     animating = true;
-    slide_direction = direction === 'prev' ? 1 : -1; // prev swipes content from left (positive x)
 
     const new_index =
       direction === 'prev'
@@ -127,34 +123,8 @@
         role="group"
         onmouseenter={() => feedback_state.showTooltip('sample select')}
         onmouseleave={() => feedback_state.clear()}
-        in:fly={{
-          duration: 250,
-          easing: cubicOut,
-          x: (() => {
-            const diff = selected_pack_index - previous_pack_index;
-            const direction =
-              Math.abs(diff) > packs.length / 2
-                ? diff > 0
-                  ? 1
-                  : -1 // wrapped
-                : diff > 0
-                  ? -1
-                  : 1; // normal
-            return direction * -300;
-          })(),
-          y: 0
-        }}
-        out:fly={{
-          duration: 120,
-          easing: cubicOut,
-          x: (() => {
-            const diff = selected_pack_index - previous_pack_index;
-            const direction =
-              Math.abs(diff) > packs.length / 2 ? (diff > 0 ? 1 : -1) : diff > 0 ? -1 : 1;
-            return direction * 300;
-          })(),
-          y: 0
-        }}
+        in:fly={{ duration: 250, easing: cubicOut, x: slide_direction * -300 }}
+        out:fly={{ duration: 120, easing: cubicOut, x: slide_direction * 300 }}
       >
         {#each samples as sample: Sample (sample.id)}
           {#if sample && sample.pack === packs[selected_pack_index].name}
