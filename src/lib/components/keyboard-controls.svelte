@@ -6,27 +6,27 @@
   let { onclose }: Props = $props()
 </script>
 
-<div class="keyboard-shortcuts border">
+<div class="keyboard-controls border">
   <div class="header">
     <button class="close-btn emoji-small" onclick={onclose} aria-label="close"> ❌ </button>
   </div>
 
-  <div class="shortcuts-content">
-    <div class="shortcut-group">
+  <div class="controls-content">
+    <div class="controls-group">
       <p class="label">pack select</p>
       <div class="keys">
         <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> <kbd>4</kbd>
       </div>
     </div>
 
-    <div class="shortcut-group">
+    <div class="controls-group">
       <p class="label">sample preview</p>
       <div class="keys">
         <kbd>P</kbd>
       </div>
     </div>
 
-    <div class="shortcut-group">
+    <div class="controls-group">
       <p class="label">sample select and playback</p>
       <div class="keys keys-grid">
         <kbd>Q</kbd> <kbd>W</kbd> <kbd>E</kbd> <kbd>R</kbd>
@@ -34,28 +34,28 @@
       </div>
     </div>
 
-    <div class="shortcut-group">
+    <div class="controls-group">
       <p class="label">sample effects</p>
       <div class="keys">
         <kbd>Z</kbd> <kbd>X</kbd> <kbd>C</kbd> <kbd>V</kbd>
       </div>
     </div>
 
-    <div class="shortcut-group">
+    <div class="controls-group">
       <p class="label">sequencer start/stop</p>
       <div class="keys">
         <kbd class="wide">space</kbd>
       </div>
     </div>
 
-    <div class="shortcut-group">
+    <div class="controls-group">
       <p class="label">main effects</p>
       <div class="keys">
         <kbd>B</kbd> <kbd>N</kbd>
       </div>
     </div>
 
-    <div class="shortcut-group">
+    <div class="controls-group">
       <p class="label">bpm</p>
       <div class="keys">
         <kbd>↑</kbd> <kbd>↓</kbd>
@@ -65,7 +65,7 @@
 </div>
 
 <style>
-  .keyboard-shortcuts {
+  .keyboard-controls {
     position: absolute;
     inset: 0;
     display: flex;
@@ -76,7 +76,7 @@
     -ms-overflow-style: none;
   }
 
-  .keyboard-shortcuts::-webkit-scrollbar {
+  .keyboard-controls::-webkit-scrollbar {
     display: none;
   }
 
@@ -92,13 +92,13 @@
     font-size: clamp(0.6rem, 1.6vmin, 0.9rem);
   }
 
-  .shortcuts-content {
+  .controls-content {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
   }
 
-  .shortcut-group {
+  .controls-group {
     display: flex;
     flex-direction: column;
     gap: 0.2rem;

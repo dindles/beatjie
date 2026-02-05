@@ -1,20 +1,14 @@
 <script lang="ts">
-  // === IMPORTS ==============================
+  // +page.svelte is our entry point; it orchestrates app state, audio engine, and keyboard controls.
 
   import * as Tone from 'tone'
-
-  // === Data
   import { packs } from '$lib/data/audio-packs'
   import type { Note } from 'tone/build/esm/core/type/NoteUnits'
-
-  // === Audio types & classes
   import { Sample } from '$lib/audio-classes/sample.svelte'
   import { AudioContext } from '$lib/audio-classes/audio-context.svelte'
   import { AudioLoader } from '$lib/audio-classes/audio-loader.svelte'
   import { MainAudioBus, type MainAudioBusConfig } from '$lib/audio-classes/main-audio-bus.svelte'
   import { AudioSequencer } from '$lib/audio-classes/audio-sequencer.svelte'
-
-  // === Svelte components
   import Meta from '$lib/components/meta.svelte'
   import FontLoadingMessage from '$lib/components/font-loading-message.svelte'
   import IntroAudioContextPrompt from '$lib/components/intro-audio-context-prompt.svelte'
@@ -25,19 +19,15 @@
   import Samples from '$lib/components/samples.svelte'
   import SequencerUI from '$lib/components/sequencer-ui.svelte'
   import TransportAndMainSettings from '$lib/components/transport-and-main-settings.svelte'
-
-  // === Utils
   import {
     loadColorSettings,
     getDefaultColorSettings,
     applyColorSettingsToDOM
-  } from '$lib/utils/color-storage'
+  } from '$lib/utils/colour'
   import { getPatternFromURL, type PatternData } from '$lib/utils/pattern-sharing'
   import { FeedbackState } from '$lib/utils/feedback-state.svelte'
 
-  // === VARIABLES ============================
-
-  // === Audio
+  // Audio engine
   const main_audio_bus_config: MainAudioBusConfig = $state({
     highpass_freq: 500,
     distortion_init: 0,
@@ -62,7 +52,6 @@
   let pending_pattern_data: PatternData | null = $state(null)
   let preview_samples_active: boolean = $state(true)
 
-  // === State
   interface AppState {
     'fonts-loading': boolean
     'audio-prompt': boolean
@@ -81,8 +70,7 @@
 
   let selected_pack_index: number = $state(Math.floor(Math.random() * packs.length))
 
-  // === KEYBOARD EVENTS ========================
-
+  // keyboard controls
   const key_map: Record<string, number> = {
     q: 0,
     w: 1,
@@ -100,14 +88,14 @@
       await sequencer.togglePlayback()
     }
 
-    // Pack selection with numbers 1-4
+    // 1-4: pack selection
     const pack_number = parseInt(event.key)
     if (pack_number >= 1 && pack_number <= 4) {
       selected_pack_index = pack_number - 1
       return
     }
 
-    // Sample selection with QWER/ASDF
+    // qwer/asdf: sample selection
     const sample_index = key_map[event.key.toLowerCase()]
     if (sample_index !== undefined) {
       const visible_samples = samples.filter((s) => s.pack === packs[selected_pack_index].name)
@@ -118,35 +106,34 @@
       }
     }
 
-    // Preview toggle
+    // p: preview toggle
     if (event.key.toLowerCase() === 'p') {
       preview_samples_active = !preview_samples_active
       return
     }
 
-    // Sample effects (z, x, c, v) - require selected_sample
+    // zxcv: sample effects (mute, pitch, delay, reverb)
     if (selected_sample) {
       switch (event.key.toLowerCase()) {
-        case 'z': // mute
+        case 'z':
           selected_sample.toggleMute(!selected_sample.is_muted)
           break
         case 'x': {
-          // pitch cycle
           const current_index = pitches.indexOf(selected_sample.pitch)
           const next_index = (current_index + 1) % pitches.length
           selected_sample.pitch = pitches[next_index] as typeof selected_sample.pitch
           break
         }
-        case 'c': // delay
+        case 'c':
           selected_sample.toggleDelay(!selected_sample.delay_is_active)
           break
-        case 'v': // reverb
+        case 'v':
           selected_sample.toggleReverb(!selected_sample.reverb_is_active)
           break
       }
     }
 
-    // Global effects (b, n)
+    // bn: global effects (highpass, distortion)
     if (event.key.toLowerCase() === 'b') {
       main_audio_bus.toggleMainHighPass(!main_audio_bus.mainIsHighPassed)
     }
@@ -154,7 +141,7 @@
       main_audio_bus.toggleMainDistortion(!main_audio_bus.mainIsDistorted)
     }
 
-    // BPM (arrow keys)
+    // arrows: BPM
     if (event.key === 'ArrowUp') {
       event.preventDefault()
       const new_bpm = Math.min(200, sequencer.getBPM() + 1)
@@ -167,19 +154,14 @@
     }
   }
 
-  // === LIFECYCLE ==============================
-
+  // lifecycle: fonts → colors → audio prompt → load samples → ready
   $effect(() => {
     if (typeof document !== 'undefined') {
       document.fonts.ready.then(() => {
-        // Try to load pattern from URL first
         pending_pattern_data = getPatternFromURL()
-
-        // Load and apply saved color settings before showing audio prompt
         const saved_colors = loadColorSettings() ?? getDefaultColorSettings()
         applyColorSettingsToDOM(saved_colors)
 
-        // Override random pack selection if pattern exists
         if (pending_pattern_data) {
           selected_pack_index = pending_pattern_data.selected_pack_index
         }
@@ -223,23 +205,19 @@
     }
   })
 
-  // Apply pattern from URL after app is ready
+  // URL pattern sharing: only apply shared pattern once audio is loaded
   $effect(() => {
     if (app_state['app-ready'] && pending_pattern_data) {
       applyPatternToState(pending_pattern_data)
-      pending_pattern_data = null // Clear to prevent re-application
+      pending_pattern_data = null
     }
   })
 
   function applyPatternToState(pattern: PatternData) {
-    // Set BPM
     sequencer.setBPM(pattern.bpm)
-
-    // Set main effects
     main_audio_bus.toggleMainHighPass(pattern.main_highpass)
     main_audio_bus.toggleMainDistortion(pattern.main_distortion)
 
-    // Apply sample states
     pattern.samples.forEach((sample_data) => {
       const sample = samples.find((s) => s.id === sample_data.id)
       if (!sample) return
@@ -249,25 +227,21 @@
       sample.delay_is_active = sample_data.delay_active
       sample.reverb_is_active = sample_data.reverb_active
       sample.is_muted = sample_data.muted
-
-      // Apply sample effects
       sample.toggleDelay(sample_data.delay_active)
       sample.toggleReverb(sample_data.reverb_active)
       sample.toggleMute(sample_data.muted)
     })
 
-    // Rebuild sequences with new pattern
     sequencer.makeSequences(samples)
   }
 
-  // === Load data
   async function loadAndConfigureAudio() {
     samples = await audio_loader.processPacks(packs)
     await audio_loader.connectSamplesToMainChannel(samples, main_audio_bus.mainChannel)
     await sequencer.makeSequences(samples)
   }
 
-  // === Cleanup
+  // cleanup on unmount
   $effect(() => {
     return () => {
       sequencer.dispose()

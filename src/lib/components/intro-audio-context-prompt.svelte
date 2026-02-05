@@ -1,15 +1,15 @@
 <script lang="ts">
-  import KeyboardShortcuts from './keyboard-shortcuts.svelte'
+  import KeyboardControls from './keyboard-controls.svelte'
   import DemoVideo from './demo-video.svelte'
 
   let { handleAudioConfirm: handle_audio_confirm, handleAudioDeny: handle_audio_deny } = $props()
 
-  let show_shortcuts = $state(false)
+  let show_kbd_controls = $state(false)
   let show_video = $state(false)
 </script>
 
-{#if show_shortcuts}
-  <KeyboardShortcuts onclose={() => (show_shortcuts = false)} />
+{#if show_kbd_controls}
+  <KeyboardControls onclose={() => (show_kbd_controls = false)} />
 {:else if show_video}
   <DemoVideo onclose={() => (show_video = false)} />
 {:else}
@@ -25,8 +25,8 @@
     </div>
 
     <div class="footer-links">
-      <button class="link" onclick={() => (show_shortcuts = true)}>
-        <kbd>Q</kbd> shortcuts
+      <button class="link" onclick={() => (show_kbd_controls = true)}>
+        <kbd>Q</kbd> controls
       </button>
       <button class="link" onclick={() => (show_video = true)}>
         <span class="play-icon">▶</span> demo
