@@ -16,8 +16,7 @@
 <div class="og-container">
   <h1 class="title">beatjie</h1>
   <div class="smiley">😊</div>
-  <br />
-  <p class="tagline">a little audio groovebox</p>
+  <p class="tagline">have fun <br /> make beats</p>
 </div>
 
 <style>
@@ -26,6 +25,7 @@
     height: 630px;
     background: #000;
     display: flex;
+    text-align: center;
     flex-direction: column;
     align-items: center;
     justify-content: center;
@@ -34,7 +34,7 @@
 
   .title {
     font-family: 'Zen Dots', sans-serif;
-    font-size: 140px;
+    font-size: 120px;
     font-weight: 500;
     color: oklch(0.75 0.15 200);
     margin: 0;
@@ -43,11 +43,12 @@
 
   .smiley {
     font-family: 'Noto Emoji', sans-serif;
-    font-size: 180px;
+    font-size: 140px;
     font-weight: 700;
     color: oklch(0.75 0.15 200);
     line-height: 1;
     margin: -0.5rem 0;
+    margin-top: 0.5rem;
     font-variant-emoji: text;
   }
 
@@ -57,7 +58,7 @@
     font-weight: 500;
     color: oklch(0.6 0.1 200);
     margin: 0;
-    margin-top: 0.5rem;
+    margin-top: 2.5rem;
     letter-spacing: 0.02em;
   }
 </style>
