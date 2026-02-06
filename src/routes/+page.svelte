@@ -7,7 +7,7 @@
   import { AudioLoader } from '$lib/audio-classes/audio-loader.svelte'
   import { MainAudioBus, type MainAudioBusConfig } from '$lib/audio-classes/main-audio-bus.svelte'
   import { AudioSequencer } from '$lib/audio-classes/audio-sequencer.svelte'
-  import Meta from '$lib/components/meta.svelte'
+
   import FontLoadingMessage from '$lib/components/font-loading-message.svelte'
   import IntroAudioContextPrompt from '$lib/components/intro-audio-context-prompt.svelte'
   import AudioPromptDenied from '$lib/components/audio-prompt-denied.svelte'
@@ -251,8 +251,6 @@
     }
   })
 </script>
-
-<Meta />
 
 <svelte:window onkeydown={handleKeydown} />
 
