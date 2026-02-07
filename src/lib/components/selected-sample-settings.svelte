@@ -4,24 +4,24 @@
 
   type Props = {
     selected_sample: Sample | undefined
-    pitches: string[]
+    PITCHES: string[]
     feedback_state: FeedbackState
   }
 
-  let { selected_sample, pitches, feedback_state }: Props = $props()
+  let { selected_sample, PITCHES, feedback_state }: Props = $props()
 
   let pitch_emoji_rotation = $derived.by(() => {
     if (!selected_sample) return 0
-    const pitch_index = pitches.indexOf(selected_sample.pitch)
+    const pitch_index = PITCHES.indexOf(selected_sample.pitch)
     return pitch_index * 90
   })
 
   function loopSamplePitch() {
     if (!selected_sample) return
 
-    const current_index = pitches.indexOf(selected_sample.pitch)
-    const next_index = (current_index + 1) % pitches.length
-    selected_sample.pitch = pitches[next_index] as typeof selected_sample.pitch
+    const current_index = PITCHES.indexOf(selected_sample.pitch)
+    const next_index = (current_index + 1) % PITCHES.length
+    selected_sample.pitch = PITCHES[next_index] as typeof selected_sample.pitch
   }
 
   function toggleSampleMute() {

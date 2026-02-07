@@ -10,8 +10,8 @@ export class AudioLoader {
   async processPacks(packs: Packs): Promise<Sample[]> {
     try {
       this.#buffers = await this.makeBuffers(packs)
-      const samples = this.makeSamples(packs)
-      const buffered_samples = this.setBuffers(samples, this.#buffers)
+      const unbuffered_samples = this.makeSamples(packs)
+      const buffered_samples = this.setBuffers(unbuffered_samples, this.#buffers)
       this.#buffers_are_loaded = true
       this.#error_state = null
       return buffered_samples

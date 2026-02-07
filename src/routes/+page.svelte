@@ -1,12 +1,15 @@
 <script lang="ts">
   import * as Tone from 'tone'
+
   import { packs } from '$lib/data/audio-packs'
-  import type { Note } from 'tone/build/esm/core/type/NoteUnits'
+
   import { Sample } from '$lib/audio-classes/sample.svelte'
   import { AudioContext } from '$lib/audio-classes/audio-context.svelte'
   import { AudioLoader } from '$lib/audio-classes/audio-loader.svelte'
   import { MainAudioBus, type MainAudioBusConfig } from '$lib/audio-classes/main-audio-bus.svelte'
   import { AudioSequencer } from '$lib/audio-classes/audio-sequencer.svelte'
+
+  import type { Note } from 'tone/build/esm/core/type/NoteUnits'
 
   import FontLoadingMessage from '$lib/components/font-loading-message.svelte'
   import IntroAudioContextPrompt from '$lib/components/intro-audio-context-prompt.svelte'
@@ -17,6 +20,7 @@
   import Samples from '$lib/components/samples.svelte'
   import SequencerUI from '$lib/components/sequencer-ui.svelte'
   import TransportAndMainSettings from '$lib/components/transport-and-main-settings.svelte'
+
   import {
     loadColorSettings,
     getDefaultColorSettings,
@@ -37,20 +41,20 @@
     bit_crusher_bits: 4
   })
 
-  const pitches = ['C2', 'E2', 'F2', 'C1']
+  const PITCHES = ['C2', 'E2', 'F2', 'C1']
 
-  let audio_context = new AudioContext()
-  let audio_loader = new AudioLoader()
-  let main_audio_bus = new MainAudioBus(main_audio_bus_config)
-  let sequencer = new AudioSequencer()
-  let feedback_state = new FeedbackState()
+  const audio_context = new AudioContext()
+  const audio_loader = new AudioLoader()
+  const main_audio_bus = new MainAudioBus(main_audio_bus_config)
+  const sequencer = new AudioSequencer()
+  const feedback_state = new FeedbackState()
 
   let samples: Sample[] = $state([])
   let selected_sample: Sample | undefined = $state(undefined)
   let pending_pattern_data: PatternData | null = $state(null)
   let preview_samples_active: boolean = $state(true)
 
-  // track loading and permission states to control UI flow
+  // track loading and permission states to control UI
   interface AppState {
     'fonts-loading': boolean
     'audio-prompt': boolean
@@ -70,7 +74,7 @@
   let selected_pack_index: number = $state(Math.floor(Math.random() * packs.length))
 
   // keyboard controls
-  const key_map: Record<string, number> = {
+  const KEY_MAP: Record<string, number> = {
     q: 0,
     w: 1,
     e: 2,
@@ -95,7 +99,7 @@
     }
 
     // qwer/asdf: sample selection
-    const sample_index = key_map[event.key.toLowerCase()]
+    const sample_index = KEY_MAP[event.key.toLowerCase()]
     if (sample_index !== undefined) {
       const visible_samples = samples.filter((s) => s.pack === packs[selected_pack_index].name)
       const sample = visible_samples[sample_index]
@@ -118,9 +122,9 @@
           selected_sample.toggleMute(!selected_sample.is_muted)
           break
         case 'x': {
-          const current_index = pitches.indexOf(selected_sample.pitch)
-          const next_index = (current_index + 1) % pitches.length
-          selected_sample.pitch = pitches[next_index] as typeof selected_sample.pitch
+          const current_index = PITCHES.indexOf(selected_sample.pitch)
+          const next_index = (current_index + 1) % PITCHES.length
+          selected_sample.pitch = PITCHES[next_index] as typeof selected_sample.pitch
           break
         }
         case 'c':
@@ -153,7 +157,7 @@
     }
   }
 
-  // state: fonts → colors → audio prompt → load samples → ready
+  // lifecycle: fonts → colors → audio prompt → load samples → ready
   $effect(() => {
     if (typeof document !== 'undefined') {
       document.fonts.ready.then(() => {
@@ -204,7 +208,7 @@
     }
   })
 
-  // URL pattern sharing: apply shared pattern once audio is loaded
+  // URL pattern sharing. apply shared pattern after samples are loaded
   $effect(() => {
     if (app_state['app-ready'] && pending_pattern_data) {
       applyPatternToState(pending_pattern_data)
@@ -268,7 +272,7 @@
       <AppSettings {main_audio_bus} {sequencer} {samples} {selected_pack_index} {feedback_state} />
       <Display {main_audio_bus} {feedback_state} />
       <Samples
-        {pitches}
+        {PITCHES}
         {packs}
         {samples}
         {audio_context}

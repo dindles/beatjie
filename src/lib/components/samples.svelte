@@ -12,7 +12,7 @@
   import SelectedSampleSettings from '$lib/components/selected-sample-settings.svelte'
 
   interface Props {
-    pitches: string[]
+    PITCHES: string[]
     packs: Packs
     samples: Sample[]
     audio_context: AudioContext
@@ -23,7 +23,7 @@
   }
 
   let {
-    pitches,
+    PITCHES,
     packs,
     samples,
     audio_context,
@@ -145,7 +145,7 @@
       </div>
     {/key}
   </div>
-  <SelectedSampleSettings {selected_sample} {pitches} {feedback_state} />
+  <SelectedSampleSettings {selected_sample} {PITCHES} {feedback_state} />
 </div>
 
 <style>
