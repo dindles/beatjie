@@ -6,7 +6,7 @@
   let { onclose }: Props = $props()
 </script>
 
-<div class="keyboard-controls-help border">
+<div class="keyboard-controls-help">
   <div class="header">
     <button class="close-btn emoji-small" onclick={onclose} aria-label="close"> ❌ </button>
   </div>

@@ -172,7 +172,7 @@
 </script>
 
 <main>
-  <div class="app" class:border={app_state['app-ready']}>
+  <div class="app" class:border={!app_state['fonts-loading']}>
     {#if app_state['fonts-loading']}
       <FontLoadingMessage />
     {:else if app_state['audio-prompt']}

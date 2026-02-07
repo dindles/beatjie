@@ -19,28 +19,25 @@
         this page <br />uses audio. <br />is that ok?
       </p>
       <div class="buttons">
-        <button class="emoji-small" onclick={handle_audio_confirm}>👍</button>
-        <button class="emoji-small" onclick={handle_audio_deny}>👎</button>
+        <button class="emoji-small border" onclick={handle_audio_confirm}>👍</button>
+        <button class="emoji-small border" onclick={handle_audio_deny}>👎</button>
       </div>
     </div>
 
-    <div class="footer-links">
-      <button class="link" onclick={() => (show_kbd_controls = true)}>
+    <div class="footer-actions">
+      <button class="action-btn border" onclick={() => (show_kbd_controls = true)}>
         <kbd>Q</kbd> controls
       </button>
-      <button class="link" onclick={() => (show_video = true)}>
-        <span class="play-icon">▶</span> demo
+      <button class="action-btn border" onclick={() => (show_video = true)}>
+        <span class="play-icon">▶</span> demo vid
       </button>
-      <a class="link dindles-link" href="https://dindles.net" target="_blank" rel="noopener">
-        <svg
-          class="blob"
-          viewBox="0 0 300 299"
-          xmlns="http://www.w3.org/2000/svg"
-          aria-hidden="true"
-        >
-          <g transform="translate(0,299) scale(0.05,-0.05)" fill="currentColor">
-            <path
-              d="M2211 5205 c-33 -5 -82 -31 -109 -57 -38 -38 -40 -46 -12 -35 29 11
+    </div>
+
+    <a class="dindles-link" href="https://dindles.net" target="_blank" rel="noopener">
+      <svg class="blob" viewBox="0 0 300 299" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <g transform="translate(0,299) scale(0.05,-0.05)" fill="currentColor">
+          <path
+            d="M2211 5205 c-33 -5 -82 -31 -109 -57 -38 -38 -40 -46 -12 -35 29 11
 34 7 23 -21 -7 -19 -13 -39 -13 -43 0 -4 -38 -18 -85 -30 -54 -14 -118 -54
 -175 -110 -49 -48 -121 -102 -160 -119 -182 -84 -211 -111 -282 -269 -41 -91
 -102 -174 -197 -271 -157 -160 -181 -219 -181 -453 0 -160 -10 -177 -101 -177
@@ -56,12 +53,11 @@
 44 -207 60 -268 28 -64 -35 -101 -3 -137 118 l-27 92 -97 -6 c-54 -4 -168 -24
 -253 -45 l-156 -38 -114 72 c-63 39 -138 87 -166 107 -45 31 -114 48 -279 68
 -27 4 -77 2 -109 -3z"
-            />
-          </g>
-        </svg>
-        dindles.net
-      </a>
-    </div>
+          />
+        </g>
+      </svg>
+      dindles.net
+    </a>
   </div>
 {/if}
 
@@ -71,8 +67,10 @@
     inset: 0;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: center;
+    align-items: center;
     padding: 2rem 1rem;
+    gap: 1.5rem;
   }
 
   .audio-prompt {
@@ -80,59 +78,57 @@
     place-content: center;
     text-align: center;
     gap: 1em;
-    flex: 1;
   }
 
   .buttons {
     display: flex;
-    gap: 1em;
+    gap: var(--spacing);
     justify-content: center;
   }
 
-  .footer-links {
+  .footer-actions {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.6rem;
+    gap: var(--spacing);
+    justify-content: center;
+    margin-top: auto;
   }
 
-  .link {
+  .action-btn {
     font-family: var(--font-text);
     font-size: clamp(0.7rem, 2vmin, 1rem);
-    text-decoration: underline;
-    opacity: 0.7;
     cursor: pointer;
     aspect-ratio: unset;
     display: flex;
     align-items: center;
     gap: 0.3em;
+    padding: 0.4em 0.8em;
   }
 
-  .link:hover {
-    opacity: 1;
-  }
-
-  .link kbd {
+  .action-btn kbd {
     font-family: var(--font-text);
     font-size: 0.85em;
     border: 1.5px solid currentColor;
     border-radius: 3px;
     padding: 0 0.25em;
-    text-decoration: none;
     margin-right: -0.15em;
   }
 
   .play-icon {
     font-size: 0.9em;
-    text-decoration: none;
   }
 
   .dindles-link {
     display: flex;
     align-items: center;
     gap: 0.4rem;
-    margin-top: 2rem;
+    font-family: var(--font-text);
     font-size: 0.75em;
+    opacity: 0.5;
+    cursor: pointer;
+  }
+
+  .dindles-link:hover {
+    opacity: 1;
   }
 
   .blob {
