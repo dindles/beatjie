@@ -6,7 +6,7 @@
   let { onclose }: Props = $props()
 </script>
 
-<div class="keyboard-controls border">
+<div class="keyboard-controls-help border">
   <div class="header">
     <button class="close-btn emoji-small" onclick={onclose} aria-label="close"> ❌ </button>
   </div>
@@ -65,7 +65,7 @@
 </div>
 
 <style>
-  .keyboard-controls {
+  .keyboard-controls-help {
     position: absolute;
     inset: 0;
     display: flex;
@@ -76,7 +76,7 @@
     -ms-overflow-style: none;
   }
 
-  .keyboard-controls::-webkit-scrollbar {
+  .keyboard-controls-help::-webkit-scrollbar {
     display: none;
   }
 
