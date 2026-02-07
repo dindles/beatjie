@@ -1,5 +1,5 @@
 <script lang="ts">
-  import KeyboardControls from './keyboard-controls.svelte'
+  import KeyboardControls from './keyboard-controls-help.svelte'
   import DemoVideo from './demo-video.svelte'
 
   let { handleAudioConfirm: handle_audio_confirm, handleAudioDeny: handle_audio_deny } = $props()
