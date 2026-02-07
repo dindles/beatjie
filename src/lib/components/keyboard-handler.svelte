@@ -11,7 +11,7 @@
     main_audio_bus: MainAudioBus
     samples: Sample[]
     packs: Packs
-    PITCHES: string[]
+    pitches: string[]
     selected_sample: Sample | undefined
     selected_pack_index: number
     preview_samples_active: boolean
@@ -22,7 +22,7 @@
     main_audio_bus,
     samples,
     packs,
-    PITCHES,
+    pitches,
     selected_sample = $bindable(),
     selected_pack_index = $bindable(),
     preview_samples_active = $bindable()
@@ -76,9 +76,9 @@
           selected_sample.toggleMute(!selected_sample.is_muted)
           break
         case 'x': {
-          const current_index = PITCHES.indexOf(selected_sample.pitch)
-          const next_index = (current_index + 1) % PITCHES.length
-          selected_sample.pitch = PITCHES[next_index] as typeof selected_sample.pitch
+          const current_index = pitches.indexOf(selected_sample.pitch)
+          const next_index = (current_index + 1) % pitches.length
+          selected_sample.pitch = pitches[next_index] as typeof selected_sample.pitch
           break
         }
         case 'c':

@@ -40,7 +40,7 @@
     bit_crusher_bits: 4
   })
 
-  const PITCHES = ['C2', 'E2', 'F2', 'C1']
+  const pitches = ['C2', 'E2', 'F2', 'C1']
 
   const audio_context = new AudioContext()
   const audio_loader = new AudioLoader()
@@ -187,7 +187,7 @@
         {main_audio_bus}
         {samples}
         {packs}
-        {PITCHES}
+        {pitches}
         bind:selected_sample
         bind:selected_pack_index
         bind:preview_samples_active
@@ -195,7 +195,7 @@
       <AppSettings {main_audio_bus} {sequencer} {samples} {selected_pack_index} {feedback_state} />
       <Display {main_audio_bus} {feedback_state} />
       <Samples
-        {PITCHES}
+        {pitches}
         {packs}
         {samples}
         {audio_context}
