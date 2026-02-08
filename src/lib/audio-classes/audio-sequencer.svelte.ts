@@ -5,7 +5,7 @@ export class AudioSequencer {
   #sequences: Tone.Sequence[] = []
   #stepLoop: Tone.Sequence | null = null
   #transport
-  #stepArray: number[] // Cache the step array
+  #stepArray: number[]
   is_playing: boolean = $state(false)
   active_step_index: number = $state(0)
   bpm: number = $state(120)

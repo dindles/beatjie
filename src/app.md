@@ -12,7 +12,7 @@
 
 #### visualiser
 
-- add toggles between waveform and fft?
+- toggles between waveform and fft?
 - threlte?
 
 #### additional effects, use display to interact with effects
