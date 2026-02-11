@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { Sample } from '$lib/audio-classes/sample.svelte'
   import type { FeedbackState } from '$lib/utils/feedback-state.svelte'
+  import { press } from '$lib/actions/pressAction'
 
   type Props = {
     selected_sample: Sample | undefined
@@ -45,7 +46,7 @@
     class="emoji-large"
     onmouseenter={() => feedback_state.showTooltip('sample mute')}
     onmouseleave={() => feedback_state.clear()}
-    onclick={() => toggleSampleMute()}
+    use:press={() => toggleSampleMute()}
   >
     {selected_sample?.is_muted ? '🔇' : '🔊'}
   </button>
@@ -54,9 +55,7 @@
     style="transform: rotate({pitch_emoji_rotation}deg)"
     onmouseenter={() => feedback_state.showTooltip('sample pitch')}
     onmouseleave={() => feedback_state.clear()}
-    onclick={() => {
-      loopSamplePitch()
-    }}
+    use:press={() => loopSamplePitch()}
   >
     🎵
   </button>
@@ -65,7 +64,7 @@
     class:active={selected_sample?.delay_is_active}
     onmouseenter={() => feedback_state.showTooltip('sample echo')}
     onmouseleave={() => feedback_state.clear()}
-    onclick={toggleSampleDelay}
+    use:press={toggleSampleDelay}
   >
     🪞
   </button>
@@ -74,7 +73,7 @@
     class:active={selected_sample?.reverb_is_active}
     onmouseenter={() => feedback_state.showTooltip('sample reverb')}
     onmouseleave={() => feedback_state.clear()}
-    onclick={toggleSampleReverb}
+    use:press={toggleSampleReverb}
   >
     😶‍🌫️
   </button>

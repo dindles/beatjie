@@ -3,6 +3,7 @@
   import type { AudioSequencer } from '$lib/audio-classes/audio-sequencer.svelte'
   import type { MainAudioBus } from '$lib/audio-classes/main-audio-bus.svelte'
   import type { FeedbackState } from '$lib/utils/feedback-state.svelte'
+  import { press } from '$lib/actions/pressAction'
 
   interface Props {
     sequencer: AudioSequencer
@@ -24,7 +25,7 @@
       onmouseenter={() =>
         feedback_state.showTooltip(sequencer.is_playing ? 'pattern stop' : 'pattern play')}
       onmouseleave={() => feedback_state.clear()}
-      onclick={() => toggleSeqPlayback()}
+      use:press={() => toggleSeqPlayback()}
     >
       {sequencer.is_playing ? '⏹' : '▶'}
     </button>
@@ -36,7 +37,7 @@
       class:active={main_audio_bus.mainIsHighPassed}
       onmouseenter={() => feedback_state.showTooltip('pattern high-pass')}
       onmouseleave={() => feedback_state.clear()}
-      onclick={() => main_audio_bus.toggleMainHighPass(!main_audio_bus.mainIsHighPassed)}
+      use:press={() => main_audio_bus.toggleMainHighPass(!main_audio_bus.mainIsHighPassed)}
     >
       🫴
     </button>
@@ -45,7 +46,7 @@
       class:active={main_audio_bus.mainIsDistorted}
       onmouseenter={() => feedback_state.showTooltip('pattern distort')}
       onmouseleave={() => feedback_state.clear()}
-      onclick={() => main_audio_bus.toggleMainDistortion(!main_audio_bus.mainIsDistorted)}
+      use:press={() => main_audio_bus.toggleMainDistortion(!main_audio_bus.mainIsDistorted)}
     >
       💥
     </button>

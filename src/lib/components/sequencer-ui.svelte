@@ -3,6 +3,7 @@
   import type { Sample } from '$lib/audio-classes/sample.svelte'
   import type { AudioSequencer } from '$lib/audio-classes/audio-sequencer.svelte'
   import type { FeedbackState } from '$lib/utils/feedback-state.svelte'
+  import { press } from '$lib/actions/pressAction'
 
   interface Props {
     selected_sample: Sample | undefined
@@ -31,8 +32,7 @@
       <button
         class="step border emoji-sequencer"
         class:active={index === sequencer.active_step_index}
-        onclick={() => handleSeqClick(selected_sample, index)}
-        onkeydown={() => handleSeqClick(selected_sample, index)}
+        use:press={() => handleSeqClick(selected_sample, index)}
         aria-label="{selected_sample.name} step {index + 1}, {selected_sample.sequence[index]
           ? 'active'
           : 'inactive'}"

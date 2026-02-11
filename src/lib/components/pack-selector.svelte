@@ -2,6 +2,7 @@
   import type { Packs } from '$lib/types/audio-types'
   import type { Sample } from '$lib/audio-classes/sample.svelte'
   import type { FeedbackState } from '$lib/utils/feedback-state.svelte'
+  import { press } from '$lib/actions/pressAction'
 
   let {
     packs,
@@ -32,7 +33,7 @@
         class="pack-indicator border"
         class:active={index === selected_pack_index}
         class:playing={samples.some((sample) => sample.pack === pack.name && sample.is_playing)}
-        onclick={() => selectPack(index)}
+        use:press={() => selectPack(index)}
         aria-label={pack.name}
       ></button>
     {/each}

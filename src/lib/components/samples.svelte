@@ -10,6 +10,7 @@
   import { swipe } from '$lib/actions/swipeAction'
 
   import SelectedSampleSettings from '$lib/components/selected-sample-settings.svelte'
+  import { press } from '$lib/actions/pressAction'
 
   interface Props {
     pitches: string[]
@@ -132,7 +133,7 @@
               class="sample border emoji-large"
               class:active={sample.id === selected_sample?.id}
               class:playing={sample.is_playing}
-              onclick={() => handleSampleClick(getSampleByID(sample.id))}
+              use:press={() => handleSampleClick(getSampleByID(sample.id))}
               ontouchstart={(e) => {
                 e.stopPropagation()
               }}
