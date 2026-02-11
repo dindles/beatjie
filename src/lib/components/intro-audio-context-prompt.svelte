@@ -29,7 +29,7 @@
         <kbd>Q</kbd> controls
       </button>
       <button class="action-btn border" onclick={() => (show_video = true)}>
-        <span class="play-icon">▶</span> demo vid
+        <span class="play-icon">▶</span> demo
       </button>
     </div>
 
