@@ -35,6 +35,9 @@
   }: Props = $props()
 
   let animating = $state(false)
+  // previous-value tracking: must lag one update behind selected_pack_index so
+  // slide_direction can compare them; a writable $derived would resync immediately
+  // eslint-disable-next-line svelte/prefer-writable-derived
   let previous_pack_index = $state(selected_pack_index)
 
   let slide_direction = $derived.by(() => {
@@ -50,27 +53,11 @@
     previous_pack_index = selected_pack_index
   })
 
-  function getSampleByID(sample_id: number) {
-    return samples.find((s: Sample) => s.id === sample_id)
-  }
+  function handleSampleClick(sample: Sample) {
+    selected_sample = sample
 
-  function handleSampleClick(sample: Sample | undefined) {
-    if (!sample) return
-
-    function selectSample(sample_id: number) {
-      selected_sample = samples.find((s) => s.id === sample_id)
-    }
-
-    function triggerSample(sample: Sample | undefined) {
-      if (audio_context.isInitialised() && sample) {
-        sample.play(Tone.now())
-      }
-    }
-
-    selectSample(sample.id)
-
-    if (preview_samples_active) {
-      triggerSample(sample)
+    if (preview_samples_active && audio_context.isInitialised()) {
+      sample.play(Tone.now())
     }
   }
 
@@ -133,7 +120,7 @@
               class="sample border emoji-large"
               class:active={sample.id === selected_sample?.id}
               class:playing={sample.is_playing}
-              use:press={() => handleSampleClick(getSampleByID(sample.id))}
+              use:press={() => handleSampleClick(sample)}
               ontouchstart={(e) => {
                 e.stopPropagation()
               }}

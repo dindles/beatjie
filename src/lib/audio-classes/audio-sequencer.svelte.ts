@@ -1,5 +1,6 @@
 import * as Tone from 'tone'
 import type { Sample } from '$lib/audio-classes/sample.svelte'
+import { MIN_BPM, MAX_BPM } from '$lib/data/audio-config'
 
 export class AudioSequencer {
   #sequences: Tone.Sequence[] = []
@@ -22,8 +23,8 @@ export class AudioSequencer {
     )
   }
 
-  async makeSequences(samples: Sample[]) {
-    await this.disposeSequences()
+  makeSequences(samples: Sample[]) {
+    this.disposeSequences()
 
     this.#sequences = samples.map((sample) => {
       const seq = new Tone.Sequence(
@@ -37,7 +38,7 @@ export class AudioSequencer {
       )
 
       if (this.is_playing) {
-        seq.start()
+        seq.start(0)
       }
       return seq
     })
@@ -48,7 +49,7 @@ export class AudioSequencer {
       this.active_step_index = 0
       await this.startPlayback()
     } else {
-      await this.stopPlayback()
+      this.stopPlayback()
     }
   }
 
@@ -59,18 +60,18 @@ export class AudioSequencer {
     }
 
     this.#stepLoop?.start(0)
-    await Promise.all(this.#sequences.map((seq) => seq.start(0)))
+    this.#sequences.forEach((seq) => seq.start(0))
     this.#transport.start('+0.1')
     this.is_playing = true
   }
 
-  async stopPlayback() {
+  stopPlayback() {
     this.is_playing = false
     this.active_step_index = 0
     this.#transport.stop()
     this.#transport.position = 0
     this.#stepLoop?.cancel()
-    await Promise.all(this.#sequences.map((seq) => seq.cancel()))
+    this.#sequences.forEach((seq) => seq.cancel())
   }
 
   getBPM(): number {
@@ -78,17 +79,18 @@ export class AudioSequencer {
   }
 
   setBPM(new_bpm: number) {
-    this.bpm = new_bpm
-    this.#transport.bpm.value = new_bpm
+    const clamped = Math.min(MAX_BPM, Math.max(MIN_BPM, new_bpm))
+    this.bpm = clamped
+    this.#transport.bpm.value = clamped
   }
 
-  private async disposeSequences() {
-    await Promise.all(this.#sequences.map((seq) => seq.dispose()))
+  private disposeSequences() {
+    this.#sequences.forEach((seq) => seq.dispose())
     this.#sequences = []
   }
 
-  async dispose() {
-    await this.disposeSequences()
+  dispose() {
+    this.disposeSequences()
     this.#stepLoop?.dispose()
     this.#stepLoop = null
   }

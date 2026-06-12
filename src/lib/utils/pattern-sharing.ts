@@ -1,10 +1,9 @@
 import type { Sample } from '$lib/audio-classes/sample.svelte'
 import type { MainAudioBus } from '$lib/audio-classes/main-audio-bus.svelte'
 import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from 'lz-string'
+import { DEFAULT_PITCH, AVAILABLE_PITCHES, MIN_BPM, MAX_BPM } from '$lib/data/audio-config'
 
 const PATTERN_VERSION = 1
-const MIN_BPM = 60
-const MAX_BPM = 300
 const MAX_PACK_INDEX = 3
 const MAX_SAMPLE_ID = 31
 const SEQUENCE_LENGTH = 16
@@ -12,7 +11,7 @@ const SEQUENCE_LENGTH = 16
 // defaults for omitting values during compression
 const SAMPLE_DEFAULTS = {
   q: 0, // empty sequence
-  t: '0', // default pitch
+  t: DEFAULT_PITCH as string, // default pitch
   e: false, // delay off
   r: false, // reverb off
   m: false // not muted
@@ -213,7 +212,10 @@ function deserializePattern(data: unknown): PatternData | null {
         return null
       }
 
-      if (typeof sample.pitch !== 'string') {
+      if (
+        typeof sample.pitch !== 'string' ||
+        !(AVAILABLE_PITCHES as string[]).includes(sample.pitch)
+      ) {
         console.error(`Invalid pitch for sample ${sample.id}`)
         return null
       }

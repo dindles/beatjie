@@ -5,7 +5,6 @@ import type { Sequence } from '$lib/types/audio-types'
 import {
   DEFAULT_SEQUENCE_LENGTH,
   DEFAULT_PITCH,
-  DEFAULT_ATTACK,
   DEFAULT_DELAY_CONFIG
 } from '$lib/data/audio-config'
 
@@ -24,7 +23,6 @@ export class Sample {
   readonly gain_adjustment: number = 0
 
   pitch: Note = $state(DEFAULT_PITCH)
-  attack: number = $state(DEFAULT_ATTACK)
   delay_is_active: boolean = $state(false)
   reverb_is_active: boolean = $state(false)
   is_muted: boolean = $state(false)
@@ -89,14 +87,19 @@ export class Sample {
       return
     }
 
-    this.is_playing = true
     this.#sampler.triggerAttack(this.pitch, time)
 
-    const timeoutId = window.setTimeout(() => {
-      this.is_playing = false
-      this.#playingTimeouts.delete(timeoutId)
-    }, 100)
-    this.#playingTimeouts.add(timeoutId)
+    // sync the visual flash to the scheduled audio time rather than the
+    // (lookahead-early) call time
+    Tone.getDraw().schedule(() => {
+      this.is_playing = true
+
+      const timeoutId = window.setTimeout(() => {
+        this.is_playing = false
+        this.#playingTimeouts.delete(timeoutId)
+      }, 100)
+      this.#playingTimeouts.add(timeoutId)
+    }, time)
   }
 
   toggleDelay(enabled: boolean): void {

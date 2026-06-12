@@ -10,7 +10,6 @@
 
   let { main_audio_bus, feedback_state }: Props = $props()
   let canvas: HTMLCanvasElement
-  let analysis_values: Float32Array | Float32Array[] = $state([])
 
   const AMPLITUDE_THRESHOLD = 0.001
   const LINE_WIDTH_RATIO = 0.08
@@ -22,23 +21,12 @@
     canvas.height = rect.height
   }
 
-  $effect(() => {
-    function updateAnalysis() {
-      analysis_values = main_audio_bus.getAnalyserValues()
-      requestAnimationFrame(updateAnalysis)
-    }
-
-    updateAnalysis()
-
-    return () => {
-      analysis_values = []
-    }
-  })
-
   function draw() {
     if (!canvas) return
     const ctx = canvas.getContext('2d', { alpha: false })
     if (!ctx) return
+
+    const analysis_values = main_audio_bus.getAnalyserValues()
 
     const dim = Math.min(canvas.width, canvas.height)
 
@@ -52,7 +40,7 @@
       .trim()
     ctx.lineWidth = dim * LINE_WIDTH_RATIO
 
-    if (!analysis_values || analysis_values.length === 0) return
+    if (analysis_values.length === 0) return
 
     const values = analysis_values instanceof Float32Array ? analysis_values : analysis_values[0]
 

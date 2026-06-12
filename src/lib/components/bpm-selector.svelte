@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { AudioSequencer } from '$lib/audio-classes/audio-sequencer.svelte'
+  import { MIN_BPM, MAX_BPM } from '$lib/data/audio-config'
 
   interface Props {
     sequencer: AudioSequencer
@@ -7,8 +8,6 @@
 
   let { sequencer }: Props = $props()
 
-  const MIN_BPM = 60
-  const MAX_BPM = 200
   const DRAG_SENSITIVITY = 0.5
 
   let is_dragging = $state(false)

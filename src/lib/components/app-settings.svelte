@@ -6,9 +6,9 @@
   import type { FeedbackState } from '$lib/utils/feedback-state.svelte'
   import {
     saveColorSettings,
-    loadColorSettings,
     AVAILABLE_HUES,
-    calculateChroma
+    calculateChroma,
+    type ColorSettings
   } from '$lib/utils/colour'
   import { serializePattern, createShareURL } from '$lib/utils/pattern-sharing'
 
@@ -18,35 +18,33 @@
     samples: Sample[]
     selected_pack_index: number
     feedback_state: FeedbackState
+    color_settings: ColorSettings
   }
 
-  let { sequencer, main_audio_bus, samples, selected_pack_index, feedback_state }: Props = $props()
+  let {
+    sequencer,
+    main_audio_bus,
+    samples,
+    selected_pack_index,
+    feedback_state,
+    color_settings
+  }: Props = $props()
+
+  // color_settings is the startup snapshot from +page; intentionally captured once
+  // svelte-ignore state_referenced_locally
+  const initial_colors = { ...color_settings }
 
   let hue_emoji_rotation = $state(0)
-  let user_lightness = $state(0.9) // 0 - 1
-  let user_hue = $state(AVAILABLE_HUES[Math.floor(Math.random() * AVAILABLE_HUES.length)])
+  let user_lightness = $state(initial_colors.lightness) // 0 - 1
+  let user_hue = $state(initial_colors.hue)
   let chroma = $derived(calculateChroma(user_lightness))
   let user_colour = $derived(`oklch(${user_lightness} ${chroma} ${user_hue})`)
-  let black_or_white = $state('oklch(0 0 0)')
-  let theme: 'light' | 'dark' = $state('light')
+  let theme: 'light' | 'dark' = $state(initial_colors.theme)
+  let black_or_white = $state(initial_colors.theme === 'light' ? 'oklch(0 0 0)' : 'oklch(1 0 0)')
   let disco_toggle = $state(false)
 
-  let initialized = false
-  $effect(() => {
-    if (!initialized) {
-      initialized = true
-      const saved = loadColorSettings()
-      if (saved) {
-        user_hue = saved.hue
-        user_lightness = saved.lightness
-        theme = saved.theme
-        black_or_white = theme === 'light' ? 'oklch(0 0 0)' : 'oklch(1 0 0)'
-      }
-    }
-  })
-
-  async function deleteSequences() {
-    await sequencer.stopPlayback()
+  function deleteSequences() {
+    sequencer.stopPlayback()
 
     samples.forEach((sample: Sample) => {
       sample.sequence = new Array(sample.sequence.length).fill(false)
@@ -55,13 +53,17 @@
       sample.toggleReverb(false)
     })
 
-    await sequencer.makeSequences(samples)
+    sequencer.makeSequences(samples)
   }
 
-  function changeHue() {
+  function rotateHue() {
     const current_index = AVAILABLE_HUES.indexOf(user_hue)
     const next_index = (current_index + 1) % AVAILABLE_HUES.length
     user_hue = AVAILABLE_HUES[next_index]
+  }
+
+  function changeHue() {
+    rotateHue()
     saveColorSettings({ hue: user_hue, lightness: user_lightness, theme })
   }
 
@@ -103,7 +105,7 @@
   $effect(() => {
     if (disco_toggle) {
       const interval = Tone.getTransport().scheduleRepeat(() => {
-        changeHue()
+        rotateHue()
       }, '4n')
       return () => Tone.getTransport().clear(interval)
     }

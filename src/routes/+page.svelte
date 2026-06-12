@@ -1,5 +1,6 @@
 <script lang="ts">
   import { packs } from '$lib/data/audio-packs'
+  import { AVAILABLE_PITCHES } from '$lib/data/audio-config'
 
   import { Sample } from '$lib/audio-classes/sample.svelte'
   import { AudioContext } from '$lib/audio-classes/audio-context.svelte'
@@ -29,7 +30,7 @@
   import { FeedbackState } from '$lib/utils/feedback-state.svelte'
 
   // create audio context, main bus, and sequencer instances
-  const main_audio_bus_config: MainAudioBusConfig = $state({
+  const main_audio_bus_config: MainAudioBusConfig = {
     highpass_freq: 500,
     distortion_init: 0,
     distortion_wet_amount: 0.8,
@@ -38,9 +39,9 @@
     compressor_attack: 0.05,
     compressor_release: 0.15,
     bit_crusher_bits: 4
-  })
+  }
 
-  const pitches = ['C2', 'E2', 'F2', 'C1']
+  const pitches = AVAILABLE_PITCHES
 
   const audio_context = new AudioContext()
   const audio_loader = new AudioLoader()
@@ -72,13 +73,15 @@
 
   let selected_pack_index: number = $state(Math.floor(Math.random() * packs.length))
 
-  // lifecycle: fonts → colors → audio prompt → load samples → ready
+  // colour settings are owned here at startup, then handed to AppSettings via prop
+  const color_settings = loadColorSettings() ?? getDefaultColorSettings()
+  applyColorSettingsToDOM(color_settings)
+
+  // lifecycle: fonts → audio prompt → load samples → ready
   $effect(() => {
     if (typeof document !== 'undefined') {
       document.fonts.ready.then(() => {
         pending_pattern_data = getPatternFromURL()
-        const saved_colors = loadColorSettings() ?? getDefaultColorSettings()
-        applyColorSettingsToDOM(saved_colors)
 
         if (pending_pattern_data) {
           selected_pack_index = pending_pattern_data.selected_pack_index
@@ -142,9 +145,6 @@
 
       sample.sequence = [...sample_data.sequence]
       sample.pitch = sample_data.pitch as Note
-      sample.delay_is_active = sample_data.delay_active
-      sample.reverb_is_active = sample_data.reverb_active
-      sample.is_muted = sample_data.muted
       sample.toggleDelay(sample_data.delay_active)
       sample.toggleReverb(sample_data.reverb_active)
       sample.toggleMute(sample_data.muted)
@@ -156,7 +156,7 @@
   async function loadAndConfigureAudio() {
     samples = await audio_loader.processPacks(packs)
     await audio_loader.connectSamplesToMainChannel(samples, main_audio_bus.mainChannel)
-    await sequencer.makeSequences(samples)
+    sequencer.makeSequences(samples)
   }
 
   // cleanup on unmount
@@ -192,7 +192,14 @@
         bind:selected_pack_index
         bind:preview_samples_active
       />
-      <AppSettings {main_audio_bus} {sequencer} {samples} {selected_pack_index} {feedback_state} />
+      <AppSettings
+        {main_audio_bus}
+        {sequencer}
+        {samples}
+        {selected_pack_index}
+        {feedback_state}
+        {color_settings}
+      />
       <Display {main_audio_bus} {feedback_state} />
       <Samples
         {pitches}

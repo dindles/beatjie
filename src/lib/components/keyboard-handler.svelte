@@ -40,6 +40,13 @@
   }
 
   async function handleKeydown(event: KeyboardEvent) {
+    // ignore held-key repeats and shortcuts like cmd+R
+    if (event.repeat || event.metaKey || event.ctrlKey || event.altKey) return
+
+    // focused buttons consume space/enter themselves (via pressAction or native activation)
+    const target_is_button = event.target instanceof HTMLElement && !!event.target.closest('button')
+    if (target_is_button && (event.key === ' ' || event.key === 'Enter')) return
+
     if (event.key === ' ') {
       event.preventDefault()
       await sequencer.togglePlayback()
@@ -98,16 +105,14 @@
       main_audio_bus.toggleMainDistortion(!main_audio_bus.mainIsDistorted)
     }
 
-    // arrows: BPM
+    // arrows: BPM (setBPM clamps to MIN_BPM/MAX_BPM)
     if (event.key === 'ArrowUp') {
       event.preventDefault()
-      const new_bpm = Math.min(200, sequencer.getBPM() + 1)
-      sequencer.setBPM(new_bpm)
+      sequencer.setBPM(sequencer.getBPM() + 1)
     }
     if (event.key === 'ArrowDown') {
       event.preventDefault()
-      const new_bpm = Math.max(60, sequencer.getBPM() - 1)
-      sequencer.setBPM(new_bpm)
+      sequencer.setBPM(sequencer.getBPM() - 1)
     }
   }
 </script>
