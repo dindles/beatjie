@@ -8,11 +8,12 @@
   let { feedback_state }: Props = $props()
 </script>
 
-{#if feedback_state.is_visible}
-  <div class="global-feedback text-display">
-    {feedback_state.message}
-  </div>
-{/if}
+<!-- always mounted so assistive tech picks up message changes -->
+<div class="global-feedback text-display" role="status" aria-live="polite">
+  {#if feedback_state.is_visible}
+    <span class="message">{feedback_state.message}</span>
+  {/if}
+</div>
 
 <style>
   .global-feedback {
@@ -21,8 +22,12 @@
     right: 0.5rem;
     z-index: 50;
     pointer-events: none;
+  }
+
+  .message {
+    display: block;
     animation: fadeIn 0.2s ease;
-    opacity: 0.8;
+    opacity: 0.85;
   }
 
   @keyframes fadeIn {
@@ -30,7 +35,7 @@
       opacity: 0;
     }
     to {
-      opacity: 0.8;
+      opacity: 0.85;
     }
   }
 </style>

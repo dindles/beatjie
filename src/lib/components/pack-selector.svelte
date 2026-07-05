@@ -25,8 +25,11 @@
   <div
     class="pack-indicators"
     role="group"
+    aria-label="pack select"
     onmouseenter={() => feedback_state.showTooltip('pack select')}
     onmouseleave={() => feedback_state.clear()}
+    onfocusin={() => feedback_state.showTooltip('pack select')}
+    onfocusout={() => feedback_state.clear()}
   >
     {#each packs as pack, index (pack.name)}
       <button
@@ -34,7 +37,8 @@
         class:active={index === selected_pack_index}
         class:playing={samples.some((sample) => sample.pack === pack.name && sample.is_playing)}
         use:press={() => selectPack(index)}
-        aria-label={pack.name}
+        aria-label="{pack.name} pack"
+        aria-pressed={index === selected_pack_index}
       ></button>
     {/each}
   </div>

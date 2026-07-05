@@ -22,9 +22,13 @@
   <div class="transport">
     <button
       class="emoji-large border"
+      aria-label={sequencer.is_playing ? 'stop pattern' : 'play pattern'}
       onmouseenter={() =>
         feedback_state.showTooltip(sequencer.is_playing ? 'pattern stop' : 'pattern play')}
       onmouseleave={() => feedback_state.clear()}
+      onfocusin={() =>
+        feedback_state.showTooltip(sequencer.is_playing ? 'pattern stop' : 'pattern play')}
+      onfocusout={() => feedback_state.clear()}
       use:press={() => toggleSeqPlayback()}
     >
       {sequencer.is_playing ? '⏹' : '▶'}
@@ -35,8 +39,12 @@
     <button
       class="emoji-large border"
       class:active={main_audio_bus.mainIsHighPassed}
+      aria-label="pattern high-pass filter"
+      aria-pressed={main_audio_bus.mainIsHighPassed}
       onmouseenter={() => feedback_state.showTooltip('pattern high-pass')}
       onmouseleave={() => feedback_state.clear()}
+      onfocusin={() => feedback_state.showTooltip('pattern high-pass')}
+      onfocusout={() => feedback_state.clear()}
       use:press={() => main_audio_bus.toggleMainHighPass(!main_audio_bus.mainIsHighPassed)}
     >
       🫴
@@ -44,8 +52,12 @@
     <button
       class="emoji-large border"
       class:active={main_audio_bus.mainIsDistorted}
+      aria-label="pattern distortion"
+      aria-pressed={main_audio_bus.mainIsDistorted}
       onmouseenter={() => feedback_state.showTooltip('pattern distort')}
       onmouseleave={() => feedback_state.clear()}
+      onfocusin={() => feedback_state.showTooltip('pattern distort')}
+      onfocusout={() => feedback_state.clear()}
       use:press={() => main_audio_bus.toggleMainDistortion(!main_audio_bus.mainIsDistorted)}
     >
       💥
@@ -57,6 +69,8 @@
       aria-label="BPM control"
       onmouseenter={() => feedback_state.showTooltip('pattern BPM')}
       onmouseleave={() => feedback_state.clear()}
+      onfocusin={() => feedback_state.showTooltip('pattern BPM')}
+      onfocusout={() => feedback_state.clear()}
     >
       <BPMSelector {sequencer} />
     </div>

@@ -19,6 +19,7 @@
     selected_pack_index: number
     feedback_state: FeedbackState
     color_settings: ColorSettings
+    onShowHelp: () => void
   }
 
   let {
@@ -27,8 +28,12 @@
     samples,
     selected_pack_index,
     feedback_state,
-    color_settings
+    color_settings,
+    onShowHelp: on_show_help
   }: Props = $props()
+
+  const reduced_motion =
+    typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
   // color_settings is the startup snapshot from +page; intentionally captured once
   // svelte-ignore state_referenced_locally
@@ -68,13 +73,18 @@
   }
 
   function changeTheme() {
-    user_lightness = user_lightness === 0.9 ? 0.5 : 0.9
+    // dark theme (colour on white) needs the lower lightness for text contrast
+    user_lightness = user_lightness === 0.9 ? 0.45 : 0.9
     theme = theme === 'light' ? 'dark' : 'light'
     black_or_white = theme === 'light' ? 'oklch(0 0 0)' : 'oklch(1 0 0)'
     saveColorSettings({ hue: user_hue, lightness: user_lightness, theme })
   }
 
   function toggleDisco() {
+    if (reduced_motion) {
+      feedback_state.showConfirmation('disco is off (reduced motion)')
+      return
+    }
     disco_toggle = !disco_toggle
     if (!disco_toggle) {
       saveColorSettings({ hue: user_hue, lightness: user_lightness, theme })
@@ -121,8 +131,11 @@
 <div class="controls-container">
   <button
     class="delete emoji-small"
+    aria-label="delete pattern"
     onmouseenter={() => feedback_state.showTooltip('pattern delete')}
     onmouseleave={() => feedback_state.clear()}
+    onfocusin={() => feedback_state.showTooltip('pattern delete')}
+    onfocusout={() => feedback_state.clear()}
     onclick={deleteSequences}
   >
     🗑
@@ -132,8 +145,11 @@
     <button
       class="hue-control emoji-small"
       style="transform: rotate({hue_emoji_rotation}deg)"
+      aria-label="change colour"
       onmouseenter={() => feedback_state.showTooltip('colour')}
       onmouseleave={() => feedback_state.clear()}
+      onfocusin={() => feedback_state.showTooltip('colour')}
+      onfocusout={() => feedback_state.clear()}
       onclick={() => {
         hue_emoji_rotation += 90
         changeHue()
@@ -143,16 +159,23 @@
     </button>
     <button
       class="light-dark emoji-small"
+      aria-label="switch to {theme === 'light' ? 'dark' : 'light'} theme"
       onmouseenter={() => feedback_state.showTooltip('theme')}
       onmouseleave={() => feedback_state.clear()}
+      onfocusin={() => feedback_state.showTooltip('theme')}
+      onfocusout={() => feedback_state.clear()}
       onclick={changeTheme}
     >
       {theme === 'light' ? '🤩' : '😎'}
     </button>
     <button
       class="emoji-small disco-ball {disco_toggle ? 'active' : ''}"
+      aria-label="disco mode"
+      aria-pressed={disco_toggle}
       onmouseenter={() => feedback_state.showTooltip('disco mode')}
       onmouseleave={() => feedback_state.clear()}
+      onfocusin={() => feedback_state.showTooltip('disco mode')}
+      onfocusout={() => feedback_state.clear()}
       onclick={toggleDisco}
     >
       🪩
@@ -161,9 +184,23 @@
 
   <div class="right-controls">
     <button
+      class="help emoji-small"
+      aria-label="keyboard controls help"
+      onmouseenter={() => feedback_state.showTooltip('keyboard controls')}
+      onmouseleave={() => feedback_state.clear()}
+      onfocusin={() => feedback_state.showTooltip('keyboard controls')}
+      onfocusout={() => feedback_state.clear()}
+      onclick={on_show_help}
+    >
+      ❓
+    </button>
+    <button
       class="share emoji-small"
+      aria-label="copy share link"
       onmouseenter={() => feedback_state.showTooltip('share pattern via URL')}
       onmouseleave={() => feedback_state.clear()}
+      onfocusin={() => feedback_state.showTooltip('share pattern via URL')}
+      onfocusout={() => feedback_state.clear()}
       onclick={handleSharePattern}
     >
       🔗

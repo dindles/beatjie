@@ -65,7 +65,13 @@ export function loadColorSettings(): ColorSettings | null {
       return null
     }
 
-    return { hue, lightness, theme: theme as 'light' | 'dark' }
+    // dark theme (colour on white) is capped at 0.45 lightness for text contrast;
+    // migrates settings saved before this cap existed
+    return {
+      hue,
+      lightness: theme === 'dark' ? Math.min(lightness, 0.45) : lightness,
+      theme: theme as 'light' | 'dark'
+    }
   } catch (error) {
     console.error('Failed to load color settings:', error)
     return null

@@ -65,6 +65,9 @@
     ctx.stroke()
   }
 
+  const reduced_motion =
+    typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
   $effect(() => {
     if (!canvas) return
 
@@ -76,7 +79,9 @@
 
     function animate() {
       draw()
-      animation_frame_id = requestAnimationFrame(animate)
+      if (!reduced_motion) {
+        animation_frame_id = requestAnimationFrame(animate)
+      }
     }
 
     animate()
@@ -91,7 +96,8 @@
 </script>
 
 <div class="display">
-  <canvas bind:this={canvas}></canvas>
+  <!-- decorative oscilloscope -->
+  <canvas bind:this={canvas} aria-hidden="true"></canvas>
   <GlobalFeedback {feedback_state} />
 </div>
 

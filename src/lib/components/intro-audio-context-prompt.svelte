@@ -19,8 +19,16 @@
         this page <br />uses audio. <br />is that ok?
       </p>
       <div class="buttons">
-        <button class="emoji-small border" onclick={handle_audio_confirm}>👍</button>
-        <button class="emoji-small border" onclick={handle_audio_deny}>👎</button>
+        <button
+          class="emoji-small border"
+          aria-label="yes, enable audio"
+          onclick={handle_audio_confirm}
+        >
+          👍
+        </button>
+        <button class="emoji-small border" aria-label="no thanks" onclick={handle_audio_deny}>
+          👎
+        </button>
       </div>
     </div>
 
@@ -123,7 +131,7 @@
     gap: 0.4rem;
     font-family: var(--font-text);
     font-size: 0.75em;
-    opacity: 0.5;
+    opacity: 0.75;
     cursor: pointer;
   }
 

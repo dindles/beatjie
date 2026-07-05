@@ -1,6 +1,9 @@
 <div class="audio-prompt-denied">
   <p class="emoji-small audio-denied-message">
-    <a href="https://wikipedia.org/wiki/Special:Random">👋</a>
+    <a
+      href="https://wikipedia.org/wiki/Special:Random"
+      aria-label="goodbye — visit a random Wikipedia page">👋</a
+    >
   </p>
 </div>
 

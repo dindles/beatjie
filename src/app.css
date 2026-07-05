@@ -4,18 +4,19 @@
   --border-radius: 14px;
   --border-weight: 5px;
 
-  --user-colour: oklch(100 0 0);
+  --user-colour: oklch(1 0 0);
   --black-or-white: oklch(0 0 0);
 
   --font-emoji: 'Noto Emoji';
   --font-text: 'Zen Dots', sans-serif;
 
-  --emoji-large: clamp(3.2rem, 8vmin, 6rem);
-  --emoji-small: clamp(1.6rem, 3.2vmin, 4rem);
-  --emoji-sequencer: clamp(1.3rem, 2.3vmin, 4rem);
-  --text-small: clamp(1.2rem, 3.2vmin, 2.6rem);
-  --text-display: clamp(1rem, 2.4vmin, 2.4rem);
-  --text-logo: clamp(2rem, 6.2vmin, 8rem);
+  /* preferred terms mix rem with vmin so browser font-size settings still scale text */
+  --emoji-large: clamp(3.2rem, 1rem + 6vmin, 6rem);
+  --emoji-small: clamp(1.6rem, 0.5rem + 2.2vmin, 4rem);
+  --emoji-sequencer: clamp(1.3rem, 0.5rem + 1.3vmin, 4rem);
+  --text-small: clamp(1.2rem, 0.5rem + 2.2vmin, 2.6rem);
+  --text-display: clamp(1rem, 0.5rem + 1.4vmin, 2.4rem);
+  --text-logo: clamp(2rem, 1rem + 4.2vmin, 8rem);
 }
 
 * {
@@ -118,4 +119,36 @@ button {
 .active.playing {
   color: var(--user-colour);
   background-color: var(--black-or-white);
+}
+
+:focus-visible {
+  outline: 3px solid var(--user-colour);
+  outline-offset: 2px;
+}
+
+/* non-colour cue for toggled controls: a dot under the emoji */
+button[aria-pressed] {
+  position: relative;
+}
+
+button[aria-pressed='true']::after {
+  content: '';
+  position: absolute;
+  bottom: 8%;
+  left: 50%;
+  translate: -50% 0;
+  width: 0.3em;
+  height: 0.3em;
+  border-radius: 50%;
+  background-color: currentColor;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

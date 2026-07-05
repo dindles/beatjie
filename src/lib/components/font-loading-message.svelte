@@ -1,4 +1,4 @@
-<div class="font-loading">
+<div class="font-loading" role="status">
   <p class="text-small fonts-loading-message">loading fonts...</p>
 </div>
 

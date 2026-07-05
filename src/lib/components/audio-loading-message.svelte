@@ -2,7 +2,7 @@
   <div class="welcome text-logo"><i>beatjie</i></div>
   <div class="emoji-large">🙂</div>
 </div>
-<div class="audio-loading">
+<div class="audio-loading" role="status">
   <p class="text-small audio-loading-message">loading...</p>
 </div>
 

@@ -44,8 +44,12 @@
 <div class="selected-sample-settings">
   <button
     class="emoji-large"
+    aria-label="mute sample"
+    aria-pressed={selected_sample?.is_muted ?? false}
     onmouseenter={() => feedback_state.showTooltip('sample mute')}
     onmouseleave={() => feedback_state.clear()}
+    onfocusin={() => feedback_state.showTooltip('sample mute')}
+    onfocusout={() => feedback_state.clear()}
     use:press={() => toggleSampleMute()}
   >
     {selected_sample?.is_muted ? '🔇' : '🔊'}
@@ -53,8 +57,11 @@
   <button
     class="selected-sample-pitch emoji-large"
     style="transform: rotate({pitch_emoji_rotation}deg)"
+    aria-label="sample pitch{selected_sample ? `: ${selected_sample.pitch}` : ''}"
     onmouseenter={() => feedback_state.showTooltip('sample pitch')}
     onmouseleave={() => feedback_state.clear()}
+    onfocusin={() => feedback_state.showTooltip('sample pitch')}
+    onfocusout={() => feedback_state.clear()}
     use:press={() => loopSamplePitch()}
   >
     🎵
@@ -62,8 +69,12 @@
   <button
     class="emoji-large delay"
     class:active={selected_sample?.delay_is_active}
+    aria-label="sample echo"
+    aria-pressed={selected_sample?.delay_is_active ?? false}
     onmouseenter={() => feedback_state.showTooltip('sample echo')}
     onmouseleave={() => feedback_state.clear()}
+    onfocusin={() => feedback_state.showTooltip('sample echo')}
+    onfocusout={() => feedback_state.clear()}
     use:press={toggleSampleDelay}
   >
     🪞
@@ -71,8 +82,12 @@
   <button
     class="emoji-large reverb"
     class:active={selected_sample?.reverb_is_active}
+    aria-label="sample reverb"
+    aria-pressed={selected_sample?.reverb_is_active ?? false}
     onmouseenter={() => feedback_state.showTooltip('sample reverb')}
     onmouseleave={() => feedback_state.clear()}
+    onfocusin={() => feedback_state.showTooltip('sample reverb')}
+    onfocusout={() => feedback_state.clear()}
     use:press={toggleSampleReverb}
   >
     😶‍🌫️

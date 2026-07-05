@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { dialog } from '$lib/actions/dialogAction'
+
   interface Props {
     onclose: () => void
   }
@@ -6,7 +8,13 @@
   let { onclose }: Props = $props()
 </script>
 
-<div class="keyboard-controls-help">
+<div
+  class="keyboard-controls-help"
+  role="dialog"
+  aria-modal="true"
+  aria-label="keyboard controls"
+  use:dialog={onclose}
+>
   <div class="header">
     <button class="close-btn emoji-small" onclick={onclose} aria-label="close"> ❌ </button>
   </div>
@@ -61,6 +69,13 @@
         <kbd>↑</kbd> <kbd>↓</kbd>
       </div>
     </div>
+
+    <div class="controls-group">
+      <p class="label">show this help</p>
+      <div class="keys">
+        <kbd>?</kbd>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -89,7 +104,9 @@
 
   .close-btn {
     aspect-ratio: 1;
-    font-size: clamp(0.6rem, 1.6vmin, 0.9rem);
+    font-size: clamp(0.8rem, 2vmin, 1.1rem);
+    min-width: 28px;
+    min-height: 28px;
   }
 
   .controls-content {
@@ -107,7 +124,7 @@
   .label {
     font-family: var(--font-text);
     font-size: clamp(1rem, 1.6vmin, 0.9rem);
-    opacity: 0.7;
+    opacity: 0.85;
   }
 
   .keys {

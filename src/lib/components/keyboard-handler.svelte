@@ -15,6 +15,7 @@
     selected_sample: Sample | undefined
     selected_pack_index: number
     preview_samples_active: boolean
+    onToggleHelp: () => void
   }
 
   let {
@@ -25,7 +26,8 @@
     pitches,
     selected_sample = $bindable(),
     selected_pack_index = $bindable(),
-    preview_samples_active = $bindable()
+    preview_samples_active = $bindable(),
+    onToggleHelp: on_toggle_help
   }: Props = $props()
 
   const KEY_MAP: Record<string, number> = {
@@ -50,6 +52,12 @@
     if (event.key === ' ') {
       event.preventDefault()
       await sequencer.togglePlayback()
+    }
+
+    // ?: keyboard controls help
+    if (event.key === '?') {
+      on_toggle_help()
+      return
     }
 
     // 1-4: pack selection

@@ -23,9 +23,13 @@
 <div
   class="sequencer"
   role="group"
+  aria-label="step sequencer"
   onmouseenter={() =>
     feedback_state.showTooltip(selected_sample ? 'per-sample sequencer' : '!select sample')}
   onmouseleave={() => feedback_state.clear()}
+  onfocusin={() =>
+    feedback_state.showTooltip(selected_sample ? 'per-sample sequencer' : '!select sample')}
+  onfocusout={() => feedback_state.clear()}
 >
   {#if selected_sample}
     {#each SEQUENCER_STEPS as _, index (index)}
@@ -33,9 +37,8 @@
         class="step border emoji-sequencer"
         class:active={index === sequencer.active_step_index}
         use:press={() => handleSeqClick(selected_sample, index)}
-        aria-label="{selected_sample.name} step {index + 1}, {selected_sample.sequence[index]
-          ? 'active'
-          : 'inactive'}"
+        aria-label="{selected_sample.name} step {index + 1}"
+        aria-pressed={selected_sample.sequence[index]}
       >
         {#if selected_sample.sequence[index]}
           {selected_sample.emoji}
@@ -50,8 +53,7 @@
       <div
         class="placeholder-step border"
         class:active={index === sequencer.active_step_index}
-        role="button"
-        tabindex="-1"
+        aria-hidden="true"
       ></div>
     {/each}
   {/if}
@@ -84,5 +86,16 @@
     display: grid;
     place-items: center;
     border-radius: 6px;
+  }
+
+  /* steps show their state via emoji content; skip the global pressed-dot */
+  .step::after {
+    content: none;
+  }
+
+  /* playhead position gets a size cue on top of the colour inversion */
+  .step.active,
+  .placeholder-step.active {
+    scale: 0.85;
   }
 </style>

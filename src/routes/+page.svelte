@@ -20,6 +20,7 @@
   import SequencerUI from '$lib/components/sequencer-ui.svelte'
   import TransportAndMainSettings from '$lib/components/transport-and-main-settings.svelte'
   import KeyboardHandler from '$lib/components/keyboard-handler.svelte'
+  import KeyboardControlsHelp from '$lib/components/keyboard-controls-help.svelte'
 
   import {
     loadColorSettings,
@@ -53,6 +54,7 @@
   let selected_sample: Sample | undefined = $state(undefined)
   let pending_pattern_data: PatternData | null = $state(null)
   let preview_samples_active: boolean = $state(true)
+  let show_keyboard_help: boolean = $state(false)
 
   // track loading and permission states to control UI
   interface AppState {
@@ -123,6 +125,8 @@
     if (app_state['audio-loading'] && audio_loader.buffersAreLoaded() && samples.length > 0) {
       app_state['audio-loading'] = false
       app_state['app-ready'] = true
+      // announced via the global-feedback live region
+      feedback_state.showConfirmation('beatjie ready')
     }
   })
 
@@ -191,6 +195,7 @@
         bind:selected_sample
         bind:selected_pack_index
         bind:preview_samples_active
+        onToggleHelp={() => (show_keyboard_help = !show_keyboard_help)}
       />
       <AppSettings
         {main_audio_bus}
@@ -199,6 +204,7 @@
         {selected_pack_index}
         {feedback_state}
         {color_settings}
+        onShowHelp={() => (show_keyboard_help = true)}
       />
       <Display {main_audio_bus} {feedback_state} />
       <Samples
@@ -213,6 +219,10 @@
       />
       <SequencerUI {selected_sample} {sequencer} {feedback_state} />
       <TransportAndMainSettings {sequencer} {main_audio_bus} {feedback_state} />
+
+      {#if show_keyboard_help}
+        <KeyboardControlsHelp onclose={() => (show_keyboard_help = false)} />
+      {/if}
     {/if}
   </div>
 </main>

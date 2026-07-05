@@ -9,6 +9,9 @@
   import { fly } from 'svelte/transition'
   import { swipe } from '$lib/actions/swipeAction'
 
+  const reduced_motion =
+    typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
   import SelectedSampleSettings from '$lib/components/selected-sample-settings.svelte'
   import { press } from '$lib/actions/pressAction'
 
@@ -91,8 +94,11 @@
       class="preview-toggle emoji-small"
       onmouseenter={() => feedback_state.showTooltip('sample preview')}
       onmouseleave={() => feedback_state.clear()}
+      onfocusin={() => feedback_state.showTooltip('sample preview')}
+      onfocusout={() => feedback_state.clear()}
       onclick={togglePreview}
-      aria-label={preview_samples_active ? 'disable sample preview' : 'enable sample preview'}
+      aria-label="sample preview"
+      aria-pressed={preview_samples_active}
     >
       {preview_samples_active ? '🎧' : '🚫'}
     </button>
@@ -109,10 +115,13 @@
       <div
         class="pack"
         role="group"
+        aria-label="sample select"
         onmouseenter={() => feedback_state.showTooltip('sample select')}
         onmouseleave={() => feedback_state.clear()}
-        in:fly={{ duration: 250, easing: cubicOut, x: slide_direction * -300 }}
-        out:fly={{ duration: 120, easing: cubicOut, x: slide_direction * 300 }}
+        onfocusin={() => feedback_state.showTooltip('sample select')}
+        onfocusout={() => feedback_state.clear()}
+        in:fly={{ duration: reduced_motion ? 0 : 250, easing: cubicOut, x: slide_direction * -300 }}
+        out:fly={{ duration: reduced_motion ? 0 : 120, easing: cubicOut, x: slide_direction * 300 }}
       >
         {#each samples as sample: Sample (sample.id)}
           {#if sample && sample.pack === packs[selected_pack_index].name}
@@ -125,6 +134,7 @@
                 e.stopPropagation()
               }}
               aria-label="{sample.name} sample"
+              aria-pressed={sample.id === selected_sample?.id}
             >
               {sample.emoji}
             </button>
