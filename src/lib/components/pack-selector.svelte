@@ -33,7 +33,7 @@
   >
     {#each packs as pack, index (pack.name)}
       <button
-        class="pack-indicator border border-hair"
+        class="pack-indicator border"
         class:active={index === selected_pack_index}
         class:playing={samples.some((sample) => sample.pack === pack.name && sample.is_playing)}
         use:press={() => selectPack(index)}
@@ -62,6 +62,7 @@
     aspect-ratio: 1;
     height: 2.2em;
     transition: all 0.1s ease;
+    border-radius: 6px;
   }
 
   .pack-indicator.playing {

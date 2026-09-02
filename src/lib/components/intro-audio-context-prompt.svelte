@@ -1,20 +1,8 @@
 <script lang="ts">
-  import BrandHeader from './brand-header.svelte'
   import KeyboardControls from './keyboard-controls-help.svelte'
   import DemoVideo from './demo-video.svelte'
 
-  interface Props {
-    handleAudioConfirm: () => void
-    handleAudioDeny: () => void
-    // samples are loading: the start button becomes a busy indicator in the same footprint
-    loading?: boolean
-  }
-
-  let {
-    handleAudioConfirm: handle_audio_confirm,
-    handleAudioDeny: handle_audio_deny,
-    loading = false
-  }: Props = $props()
+  let { handleAudioConfirm: handle_audio_confirm, handleAudioDeny: handle_audio_deny } = $props()
 
   let show_kbd_controls = $state(false)
   let show_video = $state(false)
@@ -26,45 +14,39 @@
   <DemoVideo onclose={() => (show_video = false)} />
 {:else}
   <div class="intro-screen">
-    <BrandHeader tagline="have fun, make beats" />
-
-    <div class="consent">
-      <button
-        class="start border border-case text-small"
-        aria-describedby="audio-note"
-        aria-disabled={loading}
-        aria-busy={loading}
-        onclick={() => {
-          if (!loading) handle_audio_confirm()
-        }}
-      >
-        {#if loading}
-          loading…
-        {:else}
-          <span class="play-icon" aria-hidden="true">▶</span> start
-        {/if}
-      </button>
-      <p id="audio-note" class="audio-note" role="status">
-        {#if loading}
-          loading samples
-        {:else}
-          this page makes noise.
-          <button class="link" onclick={handle_audio_deny}>no thanks</button>
-        {/if}
+    <div class="audio-prompt">
+      <p class="text-small">
+        this page <br />uses audio. <br />is that ok?
       </p>
+      <div class="buttons">
+        <button
+          class="emoji-small border"
+          aria-label="yes, enable audio"
+          onclick={handle_audio_confirm}
+        >
+          👍
+        </button>
+        <button class="emoji-small border" aria-label="no thanks" onclick={handle_audio_deny}>
+          👎
+        </button>
+      </div>
     </div>
 
-    <div class="secondary">
-      <button class="ghost" onclick={() => (show_kbd_controls = true)}>
-        <span class="icon" aria-hidden="true">⌨</span> keyboard controls
+    <div class="footer-actions">
+      <button
+        class="action-btn border"
+        aria-label="keyboard controls"
+        onclick={() => (show_kbd_controls = true)}
+      >
+        <kbd aria-hidden="true">Q</kbd> controls
       </button>
-      <button class="ghost" onclick={() => (show_video = true)}>
-        <span class="icon" aria-hidden="true">🎬</span> watch demo
+      <button class="action-btn border" onclick={() => (show_video = true)}>
+        <span class="play-icon">▶</span> demo
       </button>
     </div>
 
     <a
-      class="credit"
+      class="dindles-link"
       href="https://dindles.net"
       target="_blank"
       rel="noopener"
@@ -105,101 +87,64 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: clamp(1.2rem, 4vmin, 2.6rem);
-    padding: 1.5rem 1rem;
-    text-align: center;
+    padding: 2rem 1rem;
+    gap: 1.5rem;
   }
 
-  .consent {
+  .audio-prompt {
     display: grid;
-    justify-items: center;
-    gap: 0.7em;
+    place-content: center;
+    text-align: center;
+    gap: 1em;
   }
 
-  /* the one heavy-bordered element on the screen: the primary action */
-  .start {
-    aspect-ratio: unset;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4em;
-    padding: 0.3em 1.1em 0.3em 0.9em;
+  .buttons {
+    display: flex;
+    gap: var(--spacing);
+    justify-content: center;
+  }
+
+  .footer-actions {
+    display: flex;
+    gap: var(--spacing);
+    justify-content: center;
+    margin-top: auto;
+  }
+
+  .action-btn {
+    font-family: var(--font-text);
+    font-size: clamp(0.7rem, 2vmin, 1rem);
     cursor: pointer;
+    aspect-ratio: unset;
+    display: flex;
+    align-items: center;
+    gap: 0.3em;
+    padding: 0.4em 0.8em;
   }
 
-  .start[aria-disabled='true'] {
-    cursor: progress;
+  .action-btn kbd {
+    font-family: var(--font-text);
+    font-size: 0.85em;
+    border: 1.5px solid currentColor;
+    border-radius: 3px;
+    padding: 0 0.25em;
+    margin-right: -0.15em;
   }
 
   .play-icon {
-    font-family: var(--font-emoji);
-    font-variant-emoji: text;
-    font-size: 0.8em;
+    font-size: 0.9em;
   }
 
-  .audio-note {
-    font-family: var(--font-text);
-    font-size: var(--text-display);
-    /* two lines reserved so the header doesn't shift when the note changes to 'loading samples' */
-    min-height: 2.6em;
-  }
-
-  .link {
-    display: inline;
-    aspect-ratio: unset;
-    padding: 0;
-    font: inherit;
-    text-decoration: underline;
-    text-underline-offset: 0.15em;
-    cursor: pointer;
-  }
-
-  .link:hover {
-    text-decoration-thickness: 2px;
-  }
-
-  .secondary {
+  .dindles-link {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.4rem 1.6rem;
-  }
-
-  /* quiet text buttons: the underline appears on hover/focus so "start" stays the obvious action */
-  .ghost {
-    aspect-ratio: unset;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4em;
-    padding: 0.3em 0.2em;
-    font-family: var(--font-text);
-    font-size: var(--text-display);
-    text-decoration: underline;
-    text-decoration-color: transparent;
-    text-underline-offset: 0.2em;
-    transition: text-decoration-color 0.15s ease;
-    cursor: pointer;
-  }
-
-  .ghost:hover,
-  .ghost:focus-visible {
-    text-decoration-color: currentColor;
-  }
-
-  .icon {
-    font-family: var(--font-emoji);
-    font-variant-emoji: text;
-  }
-
-  .credit {
-    display: inline-flex;
     align-items: center;
     gap: 0.4rem;
     font-family: var(--font-text);
-    font-size: clamp(0.75rem, 0.4rem + 1.2vmin, 1rem);
+    font-size: 0.75em;
     cursor: pointer;
   }
 
-  .credit:hover {
+  .dindles-link:hover {
     text-decoration-thickness: 2px;
   }
 

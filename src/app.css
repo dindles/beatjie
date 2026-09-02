@@ -1,15 +1,8 @@
 /* CONFIG */
 :root {
-  --spacing: clamp(3px, 0.6vmin, 6px);
-
-  /* hierarchy in a two-colour system comes from stroke weight, size and spacing:
-     case = the outer frame and primary actions, pad = main controls, hair = grids and readouts */
-  --stroke-case: 4px;
-  --stroke-pad: 2.5px;
-  --stroke-hair: 1.5px;
-  --radius-case: 18px;
-  --radius-pad: 10px;
-  --radius-step: 6px;
+  --spacing: 3px;
+  --border-radius: 14px;
+  --border-weight: 5px;
 
   --user-colour: oklch(1 0 0);
   --black-or-white: oklch(0 0 0);
@@ -88,20 +81,10 @@ button {
 }
 
 .border {
-  border: var(--stroke-pad) solid var(--user-colour);
-  border-radius: var(--radius-pad);
+  border: var(--border-weight) solid var(--user-colour);
+  border-radius: var(--border-radius);
   color: var(--user-colour);
   background-color: var(--black-or-white);
-}
-
-.border-case {
-  border-width: var(--stroke-case);
-  border-radius: var(--radius-case);
-}
-
-.border-hair {
-  border-width: var(--stroke-hair);
-  border-radius: var(--radius-step);
 }
 
 .emoji-large {

@@ -21,7 +21,7 @@
 <div class="transport-and-main-settings">
   <div class="transport">
     <button
-      class="emoji-large border border-case"
+      class="emoji-large border"
       aria-label={sequencer.is_playing ? 'stop pattern' : 'play pattern'}
       onmouseenter={() =>
         feedback_state.showTooltip(sequencer.is_playing ? 'pattern stop' : 'pattern play')}
@@ -64,7 +64,7 @@
     </button>
 
     <div
-      class="bpm-control border border-hair"
+      class="bpm-control border"
       role="group"
       aria-label="BPM control"
       onmouseenter={() => feedback_state.showTooltip('pattern BPM')}

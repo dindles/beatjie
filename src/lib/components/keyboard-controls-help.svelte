@@ -137,16 +137,16 @@
     min-height: 28px;
   }
 
-  /* label | keys, one row per group. keys keep their width; long labels wrap */
   .controls-content {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) max-content;
-    gap: 0.6rem 1rem;
-    align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
   }
 
   .controls-group {
-    display: contents;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
   }
 
   .label {
@@ -158,13 +158,12 @@
     display: flex;
     gap: 0.3rem;
     flex-wrap: wrap;
-    justify-content: flex-end;
   }
 
   .keys-grid {
     display: grid;
     grid-template-columns: repeat(4, auto);
-    justify-content: end;
+    justify-content: start;
   }
 
   kbd,
