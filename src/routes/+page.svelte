@@ -13,7 +13,6 @@
   import FontLoadingMessage from '$lib/components/font-loading-message.svelte'
   import IntroAudioContextPrompt from '$lib/components/intro-audio-context-prompt.svelte'
   import AudioPromptDenied from '$lib/components/audio-prompt-denied.svelte'
-  import AudioLoadingMessage from '$lib/components/audio-loading-message.svelte'
   import AppSettings from '$lib/components/app-settings.svelte'
   import Display from '$lib/components/display.svelte'
   import Samples from '$lib/components/samples.svelte'
@@ -186,12 +185,14 @@
   <div class="app" class:border={!app_state['fonts-loading']}>
     {#if app_state['fonts-loading']}
       <FontLoadingMessage />
-    {:else if app_state['audio-prompt']}
-      <IntroAudioContextPrompt {handleAudioConfirm} {handleAudioDeny} />
+    {:else if app_state['audio-prompt'] || app_state['audio-loading']}
+      <IntroAudioContextPrompt
+        {handleAudioConfirm}
+        {handleAudioDeny}
+        loading={app_state['audio-loading']}
+      />
     {:else if app_state['audio-prompt-denied']}
       <AudioPromptDenied />
-    {:else if app_state['audio-loading']}
-      <AudioLoadingMessage />
     {:else if app_state['app-ready']}
       <h1 class="sr-only">beatjie</h1>
       <KeyboardHandler
