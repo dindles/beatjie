@@ -3,23 +3,45 @@
 
   interface Props {
     onclose: () => void
+    shortcuts_enabled?: boolean
+    can_toggle_shortcuts?: boolean
   }
 
-  let { onclose }: Props = $props()
+  let {
+    onclose,
+    shortcuts_enabled = $bindable(true),
+    can_toggle_shortcuts = false
+  }: Props = $props()
 </script>
 
 <div
   class="keyboard-controls-help"
   role="dialog"
   aria-modal="true"
-  aria-label="keyboard controls"
+  aria-labelledby="keyboard-help-title"
   use:dialog={onclose}
 >
   <div class="header">
+    <h2 id="keyboard-help-title" class="title">keyboard controls</h2>
     <button class="close-btn emoji-small" onclick={onclose} aria-label="close"> ❌ </button>
   </div>
 
   <div class="controls-content">
+    {#if can_toggle_shortcuts}
+      <div class="controls-group">
+        <p class="label">single-key shortcuts</p>
+        <div class="keys">
+          <button
+            class="toggle"
+            aria-pressed={shortcuts_enabled}
+            onclick={() => (shortcuts_enabled = !shortcuts_enabled)}
+          >
+            {shortcuts_enabled ? 'on' : 'off'}
+          </button>
+        </div>
+      </div>
+    {/if}
+
     <div class="controls-group">
       <p class="label">pack select</p>
       <div class="keys">
@@ -97,9 +119,15 @@
 
   .header {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 0.5rem;
+  }
+
+  .title {
+    font-family: var(--font-text);
+    font-size: var(--text-display);
+    font-weight: normal;
   }
 
   .close-btn {
@@ -124,7 +152,6 @@
   .label {
     font-family: var(--font-text);
     font-size: clamp(1rem, 1.6vmin, 0.9rem);
-    opacity: 0.85;
   }
 
   .keys {
@@ -139,7 +166,8 @@
     justify-content: start;
   }
 
-  kbd {
+  kbd,
+  .toggle {
     font-family: var(--font-text);
     font-size: clamp(0.6rem, 1.8vmin, 1rem);
     border: 2px solid var(--user-colour);
@@ -153,5 +181,16 @@
 
   kbd.wide {
     min-width: 3.5em;
+  }
+
+  .toggle {
+    aspect-ratio: unset;
+    min-width: 3.5em;
+    cursor: pointer;
+  }
+
+  /* state is spelled out in the text; skip the global pressed-dot */
+  .toggle::after {
+    content: none;
   }
 </style>

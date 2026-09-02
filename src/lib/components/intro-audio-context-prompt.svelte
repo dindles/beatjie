@@ -33,15 +33,25 @@
     </div>
 
     <div class="footer-actions">
-      <button class="action-btn border" onclick={() => (show_kbd_controls = true)}>
-        <kbd>Q</kbd> controls
+      <button
+        class="action-btn border"
+        aria-label="keyboard controls"
+        onclick={() => (show_kbd_controls = true)}
+      >
+        <kbd aria-hidden="true">Q</kbd> controls
       </button>
       <button class="action-btn border" onclick={() => (show_video = true)}>
         <span class="play-icon">▶</span> demo
       </button>
     </div>
 
-    <a class="dindles-link" href="https://dindles.net" target="_blank" rel="noopener">
+    <a
+      class="dindles-link"
+      href="https://dindles.net"
+      target="_blank"
+      rel="noopener"
+      aria-label="dindles.net (opens in a new tab)"
+    >
       <svg class="blob" viewBox="0 0 300 299" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <g transform="translate(0,299) scale(0.05,-0.05)" fill="currentColor">
           <path
@@ -131,12 +141,11 @@
     gap: 0.4rem;
     font-family: var(--font-text);
     font-size: 0.75em;
-    opacity: 0.75;
     cursor: pointer;
   }
 
   .dindles-link:hover {
-    opacity: 1;
+    text-decoration-thickness: 2px;
   }
 
   .blob {

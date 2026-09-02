@@ -5,6 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Beatjie — a web-based audio groovebox</title>
     <meta name="theme-color" content="#000000" />
+    <script>
+      // apply the saved colour theme before first paint so dark-theme users don't get a black flash.
+      // mirrors loadColorSettings/calculateChroma in src/lib/utils/colour.ts
+      ;(function () {
+        try {
+          var s = JSON.parse(localStorage.getItem('beatjie-color-settings'))
+          if (!s || typeof s.hue !== 'number' || typeof s.lightness !== 'number') return
+          var l = s.theme === 'dark' ? Math.min(s.lightness, 0.45) : s.lightness
+          var c = 0.15 + 0.1 * (1 - Math.abs(l - 0.5) * 2)
+          var root = document.documentElement.style
+          root.setProperty('--user-colour', 'oklch(' + l + ' ' + c + ' ' + s.hue + ')')
+          root.setProperty('--black-or-white', s.theme === 'dark' ? 'oklch(1 0 0)' : 'oklch(0 0 0)')
+          var meta = document.querySelector('meta[name="theme-color"]')
+          if (meta) meta.setAttribute('content', s.theme === 'dark' ? '#ffffff' : '#000000')
+        } catch (e) {}
+      })()
+    </script>
     <meta
       name="description"
       content="Create and share drum beats in your browser. 16-step sequencer, per-sample effects, and pattern sharing via URL. No signup, no install."

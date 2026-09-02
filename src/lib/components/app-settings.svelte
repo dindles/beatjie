@@ -11,6 +11,7 @@
     type ColorSettings
   } from '$lib/utils/colour'
   import { serializePattern, createShareURL } from '$lib/utils/pattern-sharing'
+  import { prefersReducedMotion } from '$lib/utils/reduced-motion.svelte'
 
   interface Props {
     sequencer: AudioSequencer
@@ -31,9 +32,6 @@
     color_settings,
     onShowHelp: on_show_help
   }: Props = $props()
-
-  const reduced_motion =
-    typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
   // color_settings is the startup snapshot from +page; intentionally captured once
   // svelte-ignore state_referenced_locally
@@ -81,7 +79,7 @@
   }
 
   function toggleDisco() {
-    if (reduced_motion) {
+    if (prefersReducedMotion()) {
       feedback_state.showConfirmation('disco is off (reduced motion)')
       return
     }
@@ -114,9 +112,11 @@
 
   $effect(() => {
     if (disco_toggle) {
+      // keep hue changes under 3 per second at high BPM (WCAG 2.3.1 margin)
+      const rate = sequencer.getBPM() > 170 ? '2n' : '4n'
       const interval = Tone.getTransport().scheduleRepeat(() => {
         rotateHue()
-      }, '4n')
+      }, rate)
       return () => Tone.getTransport().clear(interval)
     }
   })

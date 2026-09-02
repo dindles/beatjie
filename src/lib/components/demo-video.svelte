@@ -18,10 +18,11 @@
   class="demo-video"
   role="dialog"
   aria-modal="true"
-  aria-label="demo video"
+  aria-labelledby="demo-video-title"
   use:dialog={onclose}
 >
   <div class="header">
+    <h2 id="demo-video-title" class="title">demo</h2>
     <button class="close-btn emoji-small" onclick={onclose} aria-label="close"> ❌ </button>
   </div>
 
@@ -44,9 +45,15 @@
 
   .header {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 0.5rem;
+  }
+
+  .title {
+    font-family: var(--font-text);
+    font-size: var(--text-display);
+    font-weight: normal;
   }
 
   .close-btn {

@@ -37,7 +37,7 @@
         class:active={index === selected_pack_index}
         class:playing={samples.some((sample) => sample.pack === pack.name && sample.is_playing)}
         use:press={() => selectPack(index)}
-        aria-label="{pack.name} pack"
+        aria-label="pack {index + 1}"
         aria-pressed={index === selected_pack_index}
       ></button>
     {/each}

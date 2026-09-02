@@ -27,6 +27,7 @@
     getDefaultColorSettings,
     applyColorSettingsToDOM
   } from '$lib/utils/colour'
+  import { loadShortcutsEnabled, saveShortcutsEnabled } from '$lib/utils/shortcuts'
   import { getPatternFromURL, type PatternData } from '$lib/utils/pattern-sharing'
   import { FeedbackState } from '$lib/utils/feedback-state.svelte'
 
@@ -55,6 +56,7 @@
   let pending_pattern_data: PatternData | null = $state(null)
   let preview_samples_active: boolean = $state(true)
   let show_keyboard_help: boolean = $state(false)
+  let shortcuts_enabled: boolean = $state(loadShortcutsEnabled())
 
   // track loading and permission states to control UI
   interface AppState {
@@ -138,6 +140,11 @@
     }
   })
 
+  // persist the single-key shortcut preference
+  $effect(() => {
+    saveShortcutsEnabled(shortcuts_enabled)
+  })
+
   function applyPatternToState(pattern: PatternData) {
     sequencer.setBPM(pattern.bpm)
     main_audio_bus.toggleMainHighPass(pattern.main_highpass)
@@ -186,6 +193,7 @@
     {:else if app_state['audio-loading']}
       <AudioLoadingMessage />
     {:else if app_state['app-ready']}
+      <h1 class="sr-only">beatjie</h1>
       <KeyboardHandler
         {sequencer}
         {main_audio_bus}
@@ -195,6 +203,8 @@
         bind:selected_sample
         bind:selected_pack_index
         bind:preview_samples_active
+        enabled={shortcuts_enabled}
+        paused={show_keyboard_help}
         onToggleHelp={() => (show_keyboard_help = !show_keyboard_help)}
       />
       <AppSettings
@@ -221,7 +231,11 @@
       <TransportAndMainSettings {sequencer} {main_audio_bus} {feedback_state} />
 
       {#if show_keyboard_help}
-        <KeyboardControlsHelp onclose={() => (show_keyboard_help = false)} />
+        <KeyboardControlsHelp
+          onclose={() => (show_keyboard_help = false)}
+          bind:shortcuts_enabled
+          can_toggle_shortcuts
+        />
       {/if}
     {/if}
   </div>
@@ -229,18 +243,19 @@
 
 <style>
   main {
-    height: 100%;
+    min-height: 100%;
     display: grid;
     place-items: center;
   }
 
+  /* the panel sizes itself from vmin-based content; on short viewports or at high zoom the
+     page scrolls rather than clipping (WCAG 1.4.10). the min-height only matters for the
+     intro/loading states, whose content is absolutely positioned */
   .app {
     position: relative;
     min-width: 360px;
     max-width: 98vw;
-    min-height: 600px;
-    max-height: 88vh;
-    overflow: hidden;
+    min-height: min(600px, 96vh);
     padding: 0.7%;
   }
 </style>

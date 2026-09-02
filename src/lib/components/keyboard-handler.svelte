@@ -15,6 +15,10 @@
     selected_sample: Sample | undefined
     selected_pack_index: number
     preview_samples_active: boolean
+    // user preference: single-key shortcuts can be switched off (WCAG 2.1.4)
+    enabled?: boolean
+    // true while a dialog is open: everything but ? (which closes it) is ignored
+    paused?: boolean
     onToggleHelp: () => void
   }
 
@@ -27,6 +31,8 @@
     selected_sample = $bindable(),
     selected_pack_index = $bindable(),
     preview_samples_active = $bindable(),
+    enabled = true,
+    paused = false,
     onToggleHelp: on_toggle_help
   }: Props = $props()
 
@@ -42,8 +48,18 @@
   }
 
   async function handleKeydown(event: KeyboardEvent) {
+    if (!enabled) return
+
     // ignore held-key repeats and shortcuts like cmd+R
     if (event.repeat || event.metaKey || event.ctrlKey || event.altKey) return
+
+    // ?: keyboard controls help (also closes it, so it works while paused)
+    if (event.key === '?') {
+      on_toggle_help()
+      return
+    }
+
+    if (paused) return
 
     // focused buttons consume space/enter themselves (via pressAction or native activation)
     const target_is_button = event.target instanceof HTMLElement && !!event.target.closest('button')
@@ -52,12 +68,6 @@
     if (event.key === ' ') {
       event.preventDefault()
       await sequencer.togglePlayback()
-    }
-
-    // ?: keyboard controls help
-    if (event.key === '?') {
-      on_toggle_help()
-      return
     }
 
     // 1-4: pack selection

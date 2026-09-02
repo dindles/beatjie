@@ -8,10 +8,15 @@
   let { feedback_state }: Props = $props()
 </script>
 
-<!-- always mounted so assistive tech picks up message changes -->
-<div class="global-feedback text-display" role="status" aria-live="polite">
-  {#if feedback_state.is_visible}
-    <span class="message">{feedback_state.message}</span>
+<div class="global-feedback text-display">
+  <!-- confirmations are announced. tooltips repeat the focused control's own label, so they're visual only -->
+  <div role="status" aria-live="polite">
+    {#if feedback_state.is_visible && feedback_state.kind === 'confirmation'}
+      <span class="message">{feedback_state.message}</span>
+    {/if}
+  </div>
+  {#if feedback_state.is_visible && feedback_state.kind === 'tooltip'}
+    <span class="message" aria-hidden="true">{feedback_state.message}</span>
   {/if}
 </div>
 

@@ -2,6 +2,7 @@
   import type { MainAudioBus } from '$lib/audio-classes/main-audio-bus.svelte'
   import type { FeedbackState } from '$lib/utils/feedback-state.svelte'
   import GlobalFeedback from '$lib/components/global-feedback.svelte'
+  import { prefersReducedMotion } from '$lib/utils/reduced-motion.svelte'
 
   interface Props {
     main_audio_bus: MainAudioBus
@@ -65,9 +66,6 @@
     ctx.stroke()
   }
 
-  const reduced_motion =
-    typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
-
   $effect(() => {
     if (!canvas) return
 
@@ -79,7 +77,7 @@
 
     function animate() {
       draw()
-      if (!reduced_motion) {
+      if (!prefersReducedMotion()) {
         animation_frame_id = requestAnimationFrame(animate)
       }
     }
