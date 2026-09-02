@@ -34,7 +34,7 @@
   {#if selected_sample}
     {#each SEQUENCER_STEPS as _, index (index)}
       <button
-        class="step border emoji-sequencer"
+        class="step border border-hair emoji-sequencer"
         class:active={index === sequencer.active_step_index}
         use:press={() => handleSeqClick(selected_sample, index)}
         aria-label="{selected_sample.name} step {index + 1}"
@@ -51,7 +51,7 @@
     <!-- display placeholder steps when no sample is selected -->
     {#each SEQUENCER_STEPS as _, index (index)}
       <div
-        class="placeholder-step border"
+        class="placeholder-step border border-hair"
         class:active={index === sequencer.active_step_index}
         aria-hidden="true"
       ></div>
@@ -60,11 +60,16 @@
 </div>
 
 <style>
+  /* 16 steps as four bars: each row is two groups of four with a spacer column between */
   .sequencer {
     display: grid;
-    grid-template-columns: repeat(8, 1fr);
+    grid-template-columns: repeat(4, 1fr) calc(var(--spacing) * 2) repeat(4, 1fr);
     grid-template-rows: repeat(2, 1fr);
     gap: var(--spacing);
+  }
+
+  .sequencer > :nth-child(8n + 5) {
+    grid-column-start: 6;
   }
 
   .emoji-sequencer {
@@ -85,7 +90,6 @@
   .step {
     display: grid;
     place-items: center;
-    border-radius: 6px;
   }
 
   /* steps show their state via emoji content; skip the global pressed-dot */
@@ -96,6 +100,6 @@
   /* playhead position gets a size cue on top of the colour inversion */
   .step.active,
   .placeholder-step.active {
-    scale: 0.85;
+    scale: 0.92;
   }
 </style>

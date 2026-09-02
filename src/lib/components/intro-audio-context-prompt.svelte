@@ -30,7 +30,7 @@
 
     <div class="consent">
       <button
-        class="start border text-small"
+        class="start border border-case text-small"
         aria-describedby="audio-note"
         aria-disabled={loading}
         aria-busy={loading}

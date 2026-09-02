@@ -43,7 +43,7 @@
 
 <div class="selected-sample-settings">
   <button
-    class="emoji-large"
+    class="setting emoji-large"
     aria-label="mute sample"
     aria-pressed={selected_sample?.is_muted ?? false}
     onmouseenter={() => feedback_state.showTooltip('sample mute')}
@@ -55,8 +55,7 @@
     {selected_sample?.is_muted ? '🔇' : '🔊'}
   </button>
   <button
-    class="selected-sample-pitch emoji-large"
-    style="transform: rotate({pitch_emoji_rotation}deg)"
+    class="setting emoji-large"
     aria-label="sample pitch{selected_sample ? `: ${selected_sample.pitch}` : ''}"
     onmouseenter={() => feedback_state.showTooltip('sample pitch')}
     onmouseleave={() => feedback_state.clear()}
@@ -64,10 +63,10 @@
     onfocusout={() => feedback_state.clear()}
     use:press={() => loopSamplePitch()}
   >
-    🎵
+    <span class="pitch-icon" style="transform: rotate({pitch_emoji_rotation}deg)">🎵</span>
   </button>
   <button
-    class="emoji-large delay"
+    class="setting emoji-large"
     class:active={selected_sample?.delay_is_active}
     aria-label="sample echo"
     aria-pressed={selected_sample?.delay_is_active ?? false}
@@ -80,7 +79,7 @@
     🪞
   </button>
   <button
-    class="emoji-large reverb"
+    class="setting emoji-large"
     class:active={selected_sample?.reverb_is_active}
     aria-label="sample reverb"
     aria-pressed={selected_sample?.reverb_is_active ?? false}
@@ -99,22 +98,21 @@
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: var(--spacing);
-    margin-top: 0.2rem;
-    margin-bottom: 0.2rem;
+    margin-top: 0.3rem;
+    margin-bottom: 0.3rem;
   }
 
-  .selected-sample-pitch {
-    display: grid;
-    place-items: center;
+  /* per-sample controls: smaller hairline pads, a clear step down from the sample pads */
+  .setting {
+    width: 74%;
+    justify-self: center;
+    border: var(--stroke-hair) solid var(--user-colour);
+    border-radius: var(--radius-step);
+    font-size: calc(var(--emoji-large) * 0.78);
+  }
+
+  .pitch-icon {
+    display: block;
     transition: transform 0.3s ease;
-    background-color: transparent;
-  }
-
-  .delay {
-    border-radius: 4px;
-  }
-
-  .reverb {
-    border-radius: 4px;
   }
 </style>

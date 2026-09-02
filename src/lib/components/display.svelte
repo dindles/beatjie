@@ -49,6 +49,12 @@
     const scaling_factor = max_amplitude > 0 ? 0.2 / max_amplitude : 1
 
     if (max_amplitude < AMPLITUDE_THRESHOLD) {
+      // resting trace, so the screen never reads as an empty band
+      ctx.lineWidth = Math.max(1, dim * LINE_WIDTH_RATIO * 0.35)
+      ctx.beginPath()
+      ctx.moveTo(0, canvas.height / 2)
+      ctx.lineTo(canvas.width, canvas.height / 2)
+      ctx.stroke()
       return
     }
 
@@ -102,6 +108,10 @@
 <style>
   .display {
     position: relative;
+    border: var(--stroke-hair) solid var(--user-colour);
+    border-radius: var(--radius-step);
+    overflow: hidden;
+    margin: 0.3rem 0;
   }
 
   canvas {

@@ -220,6 +220,12 @@
     padding-top: 0.5rem;
   }
 
+  /* comfortable hit boxes for the small emoji buttons */
+  .controls-container button {
+    min-width: 40px;
+    min-height: 40px;
+  }
+
   .delete {
     margin-right: auto;
   }
@@ -247,6 +253,6 @@
 
   .disco-ball {
     transition: transform 0.3s ease;
-    border-radius: var(--border-radius);
+    border-radius: var(--radius-step);
   }
 </style>

@@ -182,7 +182,7 @@
 </script>
 
 <main>
-  <div class="app" class:border={!app_state['fonts-loading']}>
+  <div class="app border-case" class:border={!app_state['fonts-loading']}>
     {#if app_state['fonts-loading']}
       <FontLoadingMessage />
     {:else if app_state['audio-prompt'] || app_state['audio-loading']}
@@ -257,6 +257,6 @@
     min-width: 360px;
     max-width: 98vw;
     min-height: min(600px, 96vh);
-    padding: 0.7%;
+    padding: clamp(8px, 1.2vmin, 16px);
   }
 </style>
