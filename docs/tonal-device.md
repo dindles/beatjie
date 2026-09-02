@@ -1,9 +1,13 @@
 # Tonal device: a depth system for beatjie
 
-Design notes for a future pass. The hierarchy work (stroke scale, bar grouping, hairline
-pads, bordered display) stays two-colour. This document describes the next step: giving the
-panel real surfaces so it reads as a handheld instrument rather than a wireframe, without
-losing the line-art emoji identity or the single-hue palette.
+Design notes for a future pass. A first attempt was made and reverted on the `design`
+branch on 2026-09-02 (commits `fbafda1` intro redesign and `bb3d418` ui hierarchy are still
+in history for reference). It tried a stroke-weight scale (case / pad / hairline), bar
+grouping in the sequencer, hairline pads for the per-sample row, a bordered display with a
+resting trace, and a launch-screen intro with a single start button. This document
+describes the fuller direction: giving the panel real surfaces so it reads as a handheld
+instrument rather than a wireframe, without losing the line-art emoji identity or the
+single-hue palette.
 
 ## Why it is hard today
 
